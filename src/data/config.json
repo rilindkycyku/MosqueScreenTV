@@ -1,0 +1,19 @@
+{
+    "tvOptions": {
+        "name": "Xhamia e Dushkajës",
+        "address": "Kaçanik",
+        "imamName": "Nehat ef. Shehu",
+        "qrUrl": "https://xhamiaedushkajes.org",
+        "durations": {
+            "hadith": 120000,
+            "qr": 60000,
+            "notification": 600000,
+            "announcement": 60000,
+            "hadithRefresh": 3600000
+        }
+    },
+    "ramazan": {
+        "active": false,
+        "kohaTeravise": "20:00"
+    }
+}
