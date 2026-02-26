@@ -269,12 +269,12 @@ export default function App() {
     }, [vaktiSot, settings.ramazan]);
 
     const formatDallim = (min) => {
-        if (min <= 0) return "0m";
+        if (min <= 0) return "0 minuta";
         const o = Math.floor(min / 60);
         const m = min % 60;
         let result = "";
         if (o > 0) result += `${o} orë${m > 0 ? ' e ' : ''}`;
-        if (m > 0) result += `${m} minuta`;
+        if (m > 0) result += `${m} ${m === 1 ? 'minutë' : 'minuta'}`;
         return result || "0 minuta";
     };
 
