@@ -3,6 +3,7 @@ import { HiCog } from "react-icons/hi";
 import vaktet from './data/vaktet-e-namazit.json';
 import config from './data/config.json';
 import haditheData from './data/hadithe.json';
+import { Analytics } from "@vercel/analytics/react";
 
 // Components
 import SettingsModal from './components/SettingsModal/SettingsModal';
@@ -328,6 +329,7 @@ export default function App() {
 
     return (
         <div className="tv-container h-screen bg-black text-white font-sans overflow-hidden flex flex-col p-8 select-none relative">
+            <Analytics />
             <style>
                 {`
                     body::before { display: none !important; }
