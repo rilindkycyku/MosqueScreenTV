@@ -1,6 +1,13 @@
-import { useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
-export default function Clock({ currentTime, hijriDate }) {
+export default function Clock() {
+    const [currentTime, setCurrentTime] = useState(new Date());
+
+    useEffect(() => {
+        const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+        return () => clearInterval(timer);
+    }, []);
+
     const timeFormatter = useMemo(() => new Intl.DateTimeFormat('en-GB', {
         hour: '2-digit',
         minute: '2-digit',
@@ -11,7 +18,25 @@ export default function Clock({ currentTime, hijriDate }) {
         const days = ['E Diele', 'E Hëne', 'E Marte', 'E Mërkure', 'E Enjte', 'E Premte', 'E Shtune'];
         const months = ['Janar', 'Shkurt', 'Mars', 'Prill', 'Maj', 'Qershor', 'Korrik', 'Gusht', 'Shtator', 'Tetor', 'Nëntor', 'Dhjetor'];
         return `${days[currentTime.getDay()]}, ${currentTime.getDate()} ${months[currentTime.getMonth()]} ${currentTime.getFullYear()}`;
-    }, [currentTime]);
+    }, [currentTime.getDate(), currentTime.getMonth(), currentTime.getFullYear()]); // Only recalculate when date changes
+
+    const hijriDate = useMemo(() => {
+        try {
+            const adjustedDate = new Date(currentTime);
+            adjustedDate.setDate(adjustedDate.getDate() - 1);
+            let parts;
+            try {
+                parts = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { day: 'numeric', month: 'numeric', year: 'numeric' }).formatToParts(adjustedDate);
+            } catch (e) {
+                parts = new Intl.DateTimeFormat('en-u-ca-islamic', { day: 'numeric', month: 'numeric', year: 'numeric' }).formatToParts(adjustedDate);
+            }
+            const d = parts.find(p => p.type === 'day')?.value;
+            const m = parts.find(p => p.type === 'month')?.value;
+            let y = parts.find(p => p.type === 'year')?.value?.replace(/[^0-9]/g, '');
+            const monthNames = ["Muharrem", "Safer", "Rebiul Evel", "Rebiul Ahir", "Xhumadel Ula", "Xhumadel Ahire", "Rexhep", "Shaban", "Ramazan", "Sheval", "Dhul Kade", "Dhul Hixhe"];
+            return `${d} ${monthNames[parseInt(m) - 1]} ${y}`;
+        } catch (e) { return ""; }
+    }, [currentTime.getDate(), currentTime.getMonth(), currentTime.getFullYear()]); // Only recalculate when date changes
 
     return (
         <div className="text-right flex flex-col items-end">
@@ -28,3 +53,4 @@ export default function Clock({ currentTime, hijriDate }) {
         </div>
     );
 }
+

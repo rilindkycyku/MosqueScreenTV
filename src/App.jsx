@@ -13,7 +13,6 @@ import NextPrayer from './components/Display/NextPrayer';
 import ActivityBox from './components/Display/ActivityBox';
 
 export default function App() {
-    const [currentTime, setCurrentTime] = useState(new Date());
     const [vaktiSot, setVaktiSot] = useState(null);
     const [infoTani, setInfoTani] = useState(null);
     const [currentHadith, setCurrentHadith] = useState(null);
@@ -51,7 +50,7 @@ export default function App() {
         };
         const showHadith = () => {
             setDisplayMode('hadith');
-            const duration = settings.customMsg ? settings.durations.hadith : 600000;
+            const duration = settings.durations.hadith || 120000;
             if (settings.durations.qr > 0) timeoutId = setTimeout(showQR, duration);
             else timeoutId = setTimeout(showMsgIfAny, duration);
         };
@@ -72,14 +71,58 @@ export default function App() {
         return () => clearTimeout(timeoutId);
     }, [vaktiSot, settings]);
 
-    // Handle Keyboard Input
+    // Handle Keyboard & Remote Input
     useEffect(() => {
         const handleKeyDown = (e) => {
-            if (e.key.toLowerCase() === 's' || e.key.toLowerCase() === 'm') setShowSettings(true);
+            const key = e.key.toLowerCase();
+            // Opening settings: S, M, or Enter/OK on remote
+            if (key === 's' || key === 'm' || key === 'enter' || key === 'select') {
+                setShowSettings(true);
+            }
             if (e.key === 'Escape') setShowSettings(false);
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
+    // Daily Maintenance: Reload at 3 AM to clear TV memory leaks
+    useEffect(() => {
+        const checkReload = () => {
+            const now = new Date();
+            if (now.getHours() === 3 && now.getMinutes() === 0) {
+                window.location.reload();
+            }
+        };
+        const interval = setInterval(checkReload, 60000); // Check every minute
+        return () => clearInterval(interval);
+    }, []);
+
+    // Screen Wake Lock: Prevent TV from going to sleep
+    useEffect(() => {
+        let wakeLock = null;
+        const requestWakeLock = async () => {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                }
+            } catch (err) {
+                console.log(`${err.name}, ${err.message}`);
+            }
+        };
+
+        requestWakeLock();
+
+        const handleVisibilityChange = () => {
+            if (wakeLock !== null && document.visibilityState === 'visible') {
+                requestWakeLock();
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            wakeLock?.release();
+        };
     }, []);
 
     const saveSettings = () => {
@@ -120,10 +163,6 @@ export default function App() {
         setShowConfirm(false);
     };
 
-    useEffect(() => {
-        const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-        return () => clearInterval(timer);
-    }, []);
 
     useEffect(() => {
         const pickHadith = () => {
@@ -218,10 +257,14 @@ export default function App() {
                 setInfoTani({ tani: { id: "Jacia", label: "Jacia", kohe: dje.Jacia }, ardhshëm: moments[0], mbetur: neMinuta(moments[0].kohe) - minTani });
                 return;
             }
-            setInfoTani({ tani: moments[nextIdx - 1], ardhshëm: moments[nextIdx], mbetur: neMinuta(moments[nextIdx].kohe) - minTani });
+            setInfoTani((prev) => {
+                const newState = { tani: moments[nextIdx - 1], ardhshëm: moments[nextIdx], mbetur: neMinuta(moments[nextIdx].kohe) - minTani };
+                if (JSON.stringify(prev) === JSON.stringify(newState)) return prev;
+                return newState;
+            });
         };
         perditeso();
-        const interval = setInterval(perditeso, 1000);
+        const interval = setInterval(perditeso, 10000); // 10 seconds check is plenty for logic
         return () => clearInterval(interval);
     }, [vaktiSot, settings.ramazan]);
 
@@ -280,20 +323,6 @@ export default function App() {
         { id: "Jacia", label: settings.ramazan?.active ? "Teravia (Jacia)" : "Jacia" },
     ], [settings.ramazan]);
 
-    const hijriDate = useMemo(() => {
-        try {
-            const adjustedDate = new Date(currentTime);
-            adjustedDate.setDate(adjustedDate.getDate() - 1);
-            let parts;
-            try { parts = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { day: 'numeric', month: 'numeric', year: 'numeric' }).formatToParts(adjustedDate); }
-            catch (e) { parts = new Intl.DateTimeFormat('en-u-ca-islamic', { day: 'numeric', month: 'numeric', year: 'numeric' }).formatToParts(adjustedDate); }
-            const d = parts.find(p => p.type === 'day')?.value;
-            const m = parts.find(p => p.type === 'month')?.value;
-            let y = parts.find(p => p.type === 'year')?.value?.replace(/[^0-9]/g, '');
-            const monthNames = ["Muharrem", "Safer", "Rebiul Evel", "Rebiul Ahir", "Xhumadel Ula", "Xhumadel Ahire", "Rexhep", "Shaban", "Ramazan", "Sheval", "Dhul Kade", "Dhul Hixhe"];
-            return `${d} ${monthNames[parseInt(m) - 1]} ${y}`;
-        } catch (e) { return ""; }
-    }, [currentTime]);
 
     if (!vaktiSot) return <div className="h-screen bg-black flex items-center justify-center text-white text-3xl font-bold animate-pulse">Duke ngarkuar...</div>;
 
@@ -307,17 +336,16 @@ export default function App() {
                     ::-webkit-scrollbar-thumb { background: rgba(16,185,129,0.3); border-radius: 4px; }
                     ::-webkit-scrollbar-thumb:hover { background: rgba(16,185,129,0.5); }
                     @keyframes slide-up { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-                    .animate-slide-up { animation: slide-up 0.4s ease-out forwards; }
-                    .glass-input { background: rgba(0, 0, 0, 0.4); border: 2px solid rgba(255, 255, 255, 0.05); border-radius: 1.25rem; transition: all 0.3s cubic'; }
+                    .animate-slide-up { animation: slide-up 0.4s ease-out forwards; will-change: transform, opacity; }
+                    .glass-input { background: rgba(0, 0, 0, 0.4); border: 2px solid rgba(255, 255, 255, 0.05); border-radius: 1.25rem; transition: border-color 0.3s ease, background-color 0.3s ease; }
                     .glass-input:focus { border-color: #10b981; background: rgba(0, 0, 0, 0.6); box-shadow: 0 0 20px rgba(16, 185, 129, 0.1); }
-                    @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-                    .animate-spin-slow { animation: spin-slow 8s linear infinite; }
+                    .animate-pulse { will-change: opacity; }
                 `}
             </style>
 
             <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
-                <div className="absolute -top-[20%] -left-[20%] w-[60%] h-[60%] rounded-full" style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%)' }} />
-                <div className="absolute -bottom-[20%] -right-[20%] w-[60%] h-[60%] rounded-full" style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%)' }} />
+                <div className="absolute -top-[20%] -left-[20%] w-[60%] h-[60%] rounded-full" style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%)', willChange: 'transform' }} />
+                <div className="absolute -bottom-[20%] -right-[20%] w-[60%] h-[60%] rounded-full" style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%)', willChange: 'transform' }} />
             </div>
 
             <button onClick={() => setShowSettings(true)} className="absolute top-0 right-0 w-32 h-32 flex items-start justify-end p-6 bg-transparent opacity-0 hover:opacity-100 transition-opacity z-[100] cursor-pointer">
@@ -332,7 +360,7 @@ export default function App() {
                 <div className="text-center flex flex-col items-center justify-center">
                     <h1 className="text-7xl font-black text-emerald-400 tracking-tighter uppercase whitespace-nowrap drop-shadow-2xl">{settings.name}</h1>
                 </div>
-                <Clock currentTime={currentTime} hijriDate={hijriDate} />
+                <Clock />
             </header>
 
             <main className="flex-1 flex flex-col gap-6 min-h-0">

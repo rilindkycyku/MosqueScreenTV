@@ -1,4 +1,6 @@
-export default function NextPrayer({ infoTani, ne24hFn, formatDallimFn }) {
+import { memo } from 'react';
+
+const NextPrayer = memo(function NextPrayer({ infoTani, ne24hFn, formatDallimFn }) {
     if (!infoTani?.ardhshëm) {
         return (
             <div className="bg-zinc-900/80 backdrop-blur-sm border-2 border-white/5 rounded-[3.5rem] p-12 relative overflow-hidden flex flex-col items-center justify-center shadow-2xl">
@@ -39,4 +41,7 @@ export default function NextPrayer({ infoTani, ne24hFn, formatDallimFn }) {
             </div>
         </div>
     );
-}
+});
+
+export default NextPrayer;
+

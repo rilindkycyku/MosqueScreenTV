@@ -35,7 +35,7 @@ export default function SettingsModal({
     ];
 
     return (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/98 backdrop-blur-3xl animate-in fade-in duration-500">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/98 animate-in fade-in duration-500">
             <div className="bg-zinc-950 border border-white/10 rounded-[4.5rem] w-[96vw] h-[92vh] shadow-[0_0_150px_rgba(0,0,0,1)] overflow-hidden flex relative">
 
                 {/* --- SIDEBAR --- */}

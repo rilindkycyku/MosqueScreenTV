@@ -1,20 +1,21 @@
+import { memo } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 
-export default function ActivityBox({ displayMode, settings, currentHadith, vaktiSot }) {
+const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHadith, vaktiSot }) {
     if (displayMode === 'qr') {
         return (
-            <div className="bg-zinc-900/80 backdrop-blur-sm border-2 border-white/5 rounded-[3.5rem] p-12 relative overflow-hidden flex flex-col items-center justify-center shadow-2xl">
-                <div className="flex flex-row items-center gap-16 w-full h-full justify-center px-10">
+            <div className="bg-zinc-900/80 backdrop-blur-sm border-2 border-white/5 rounded-[3.5rem] p-8 relative overflow-hidden flex flex-col items-center justify-center shadow-2xl">
+                <div className="flex flex-row items-center gap-10 w-full h-full justify-between px-8">
                     <div className="p-5 bg-white rounded-[2rem] shrink-0 shadow-2xl">
                         <QRCodeCanvas value={settings.qrUrl} size={380} level="H" />
                     </div>
-                    <div className="flex flex-col items-start gap-6 text-left">
+                    <div className="flex flex-col items-start gap-6 text-left flex-1 ml-4">
                         <div className="flex flex-col">
-                            <p className="text-emerald-400 uppercase tracking-[0.5em] text-3xl font-black leading-tight">SKANO FAQEN</p>
+                            <p className="text-emerald-400 uppercase tracking-[0.4em] text-3xl font-black leading-tight">SKANO FAQEN</p>
                             <p className="text-zinc-500 uppercase tracking-[0.2em] text-sm font-bold mt-2">Për më shumë informata</p>
                         </div>
                         <div className="h-px w-32 bg-zinc-800" />
-                        <p className="text-zinc-400 text-4xl font-black tracking-tighter opacity-80 break-all max-w-[350px] leading-tight italic">
+                        <p className="text-zinc-400 text-4xl lg:text-5xl font-black tracking-tighter opacity-80 break-all leading-tight italic">
                             {settings.qrUrl.replace('https://', '').replace('www.', '')}
                         </p>
                     </div>
@@ -63,4 +64,7 @@ export default function ActivityBox({ displayMode, settings, currentHadith, vakt
             </div>
         </div>
     );
-}
+});
+
+export default ActivityBox;
+

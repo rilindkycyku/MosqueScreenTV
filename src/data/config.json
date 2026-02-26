@@ -1,9 +1,9 @@
 {
     "tvOptions": {
-        "name": "Xhamia e Dushkajës",
-        "address": "Kaçanik",
-        "imamName": "Nehat ef. Shehu",
-        "qrUrl": "https://xhamiaedushkajes.org",
+        "name": "Emri i Xhamisë",
+        "address": "Qyteti / Adresa",
+        "imamName": "Emri i Imamit",
+        "qrUrl": "https://rilindkycyku.dev",
         "durations": {
             "hadith": 120000,
             "qr": 60000,
@@ -14,6 +14,6 @@
     },
     "ramazan": {
         "active": false,
-        "kohaTeravise": "20:00"
+        "kohaTeravise": "00:00"
     }
 }
