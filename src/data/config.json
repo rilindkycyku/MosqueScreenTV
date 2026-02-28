@@ -4,16 +4,18 @@
         "address": "Qyteti / Adresa",
         "imamName": "Emri i Imamit",
         "qrUrl": "https://rilindkycyku.dev",
+        "showQr": false,
         "durations": {
-            "hadith": 120000,
-            "qr": 60000,
-            "notification": 600000,
-            "announcement": 60000,
-            "hadithRefresh": 3600000
+            "hadith": 10,
+            "qr": 1,
+            "notification": 10,
+            "announcement": 1,
+            "hadithRefresh": 45,
+            "sabahuOffset": 35
         }
     },
     "ramazan": {
-        "active": false,
+        "active": true,
         "kohaTeravise": "00:00"
     }
 }

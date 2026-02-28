@@ -11,8 +11,8 @@ export default function ConfirmDialog({ show, config, onCancel }) {
                         <HiRefresh className="text-6xl text-red-500 animate-spin-slow" />
                     </div>
                     <div>
-                        <h2 className="text-4xl font-black text-white uppercase tracking-tight mb-4">{config.title}</h2>
-                        <p className="text-zinc-400 text-2xl leading-relaxed">{config.message}</p>
+                        <h2 className="text-3xl font-black text-white uppercase tracking-tight mb-4">{config.title}</h2>
+                        <p className="text-zinc-400 text-lg leading-relaxed">{config.message}</p>
                     </div>
                     <div className="flex gap-6 w-full pt-4">
                         <button

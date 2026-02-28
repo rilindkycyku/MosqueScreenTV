@@ -35,24 +35,24 @@ export default function SettingsModal({
     ];
 
     return (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/98 animate-in fade-in duration-500">
-            <div className="bg-zinc-950 border border-white/10 rounded-[4.5rem] w-[96vw] h-[92vh] shadow-[0_0_150px_rgba(0,0,0,1)] overflow-hidden flex relative">
+        <div className="fixed inset-0 z-[200] bg-black animate-in fade-in duration-500">
+            <div className="w-full h-full flex relative">
 
                 {/* --- SIDEBAR --- */}
-                <aside className="w-[30rem] bg-zinc-900/40 border-r border-white/5 p-12 flex flex-col relative z-20 shadow-2xl overflow-y-auto custom-scrollbar shrink-0">
+                <aside className="w-[35rem] bg-zinc-900 border-r border-white/5 p-16 flex flex-col relative z-20 shadow-2xl overflow-y-auto custom-scrollbar shrink-0">
 
                     {/* Primary Close Action */}
                     <button
                         onClick={onClose}
-                        className="flex items-center gap-7 px-10 py-7 rounded-[3rem] bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white transition-all duration-500 border-2 border-red-500/20 mb-12 active:scale-95 group shadow-lg shrink-0"
+                        className="flex items-center gap-5 px-8 py-5 rounded-[2.5rem] bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white transition-all duration-500 border-2 border-red-500/20 mb-8 active:scale-95 group shadow-lg shrink-0"
                     >
-                        <HiX className="text-4xl group-hover:rotate-90 transition-transform duration-300" />
-                        <span className="font-black text-2xl uppercase tracking-widest">Mbyll</span>
+                        <HiX className="text-3xl group-hover:rotate-90 transition-transform duration-300" />
+                        <span className="font-black text-xl uppercase tracking-widest">Mbyll</span>
                     </button>
 
-                    <div className="mb-10 px-4 shrink-0">
+                    <div className="mb-12 px-4 shrink-0">
                         <h2 className="text-5xl font-black text-white tracking-tighter uppercase leading-none">Cilësimet</h2>
-                        <div className="h-1.5 w-24 bg-emerald-500 mt-4 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
+                        <div className="h-1.5 w-24 bg-emerald-500 mt-4 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.5)]" />
                     </div>
 
                     {/* Navigation Tabs */}
@@ -67,7 +67,7 @@ export default function SettingsModal({
                                     }`}
                             >
                                 {activeTab === tab.id && (
-                                    <div className="absolute left-0 top-1/4 bottom-1/4 w-2 bg-emerald-500 rounded-r-full shadow-[0_0_30px_rgba(16,185,129,0.8)]" />
+                                    <div className="absolute left-0 top-0 bottom-0 w-3 bg-emerald-500 rounded-r-full shadow-[0_0_30px_rgba(16,185,129,0.8)]" />
                                 )}
                                 <tab.icon className={`text-5xl transition-all duration-500 ${activeTab === tab.id
                                     ? 'text-emerald-400 scale-110 drop-shadow-[0_0_15px_rgba(16,185,129,0.6)]'
@@ -100,7 +100,7 @@ export default function SettingsModal({
                     </nav>
 
                     {/* Global Actions */}
-                    <div className="mt-auto flex flex-col gap-5 pt-12 border-t border-white/5">
+                    <div className="mt-auto flex flex-col gap-8 pt-12 border-t border-white/5">
                         <button
                             onClick={saveSettings}
                             className="flex items-center justify-center gap-5 py-9 bg-gradient-to-br from-emerald-400 to-emerald-600 text-black rounded-[3rem] font-black text-2xl uppercase tracking-[0.2em] hover:brightness-110 hover:scale-[1.02] transition-all active:scale-95 shadow-[0_20px_60px_rgba(16,185,129,0.3)] group"
@@ -108,11 +108,20 @@ export default function SettingsModal({
                             <HiCheckCircle className="text-4xl group-hover:scale-110 transition-transform" />
                             Ruaj
                         </button>
+
+                        <div className="mt-auto flex flex-col items-center py-6 border-t border-white/20 pt-10">
+                            <span className="text-zinc-300 text-xl font-black uppercase tracking-[0.4em] mb-3">Mosque Screen TV Edition</span>
+                            <div className="flex flex-col items-center gap-2">
+                                <span className="text-zinc-500 text-sm font-bold uppercase tracking-[0.2em]">Developed by</span>
+                                <span className="text-emerald-400 text-3xl font-black uppercase tracking-tight shadow-emerald-500/20 drop-shadow-xl">Rilind Kycyku</span>
+                                <span className="text-zinc-600 text-base uppercase font-black tracking-widest mt-2 underline decoration-emerald-500/30">rilindkycyku.dev</span>
+                            </div>
+                        </div>
                     </div>
                 </aside>
 
                 {/* --- MAIN CONTENT --- */}
-                <main className="flex-1 p-16 pb-48 overflow-y-auto custom-scrollbar relative bg-zinc-950">
+                <main className="flex-1 p-10 pb-32 overflow-y-auto custom-scrollbar relative bg-zinc-950">
                     <div className="animate-slide-up">
                         {activeTab === 'identity' && (
                             <IdentitySection
@@ -157,14 +166,14 @@ export default function SettingsModal({
 
 function SectionHeader({ icon: Icon, title, description, onReset, resetLabel = "Reset" }) {
     return (
-        <div className="flex items-center justify-between mb-20 border-b border-white/5 pb-12">
-            <div className="flex items-center gap-10">
-                <div className="p-10 bg-emerald-500 shadow-[0_0_40px_rgba(16,185,129,0.2)] rounded-[3rem]">
-                    <Icon className="text-7xl text-black" />
+        <div className="flex items-center justify-between mb-12 border-b border-white/5 pb-8">
+            <div className="flex items-center gap-8">
+                <div className="p-6 bg-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.2)] rounded-[2rem]">
+                    <Icon className="text-5xl text-black" />
                 </div>
                 <div>
-                    <h3 className="text-7xl font-black text-white tracking-tighter uppercase leading-tight">{title}</h3>
-                    <p className="text-3xl text-zinc-500 font-medium mt-4 leading-relaxed">{description}</p>
+                    <h3 className="text-5xl font-black text-white tracking-tighter uppercase leading-tight">{title}</h3>
+                    <p className="text-xl text-zinc-500 font-medium mt-2 leading-relaxed">{description}</p>
                 </div>
             </div>
             {onReset && (
@@ -211,6 +220,22 @@ function IdentitySection({ settings, setSettings, triggerConfirm, onReset }) {
                     onChange={val => setSettings(p => ({ ...p, imamName: val }))}
                 />
                 <div className="space-y-6">
+                    <label className="text-emerald-500 font-black uppercase text-xl tracking-[0.2em] px-4">Sabahu (Minuta para Lindjes)</label>
+                    <div className="relative group">
+                        <input
+                            type="number"
+                            min="0"
+                            max="60"
+                            value={settings.durations?.sabahuOffset ?? 35}
+                            onChange={(e) => setSettings(p => ({
+                                ...p,
+                                durations: { ...p.durations, sabahuOffset: Math.max(0, parseInt(e.target.value) || 0) }
+                            }))}
+                            className="w-full glass-input py-9 px-10 text-emerald-400 text-4xl font-black outline-none font-mono tracking-tight"
+                        />
+                    </div>
+                </div>
+                <div className="space-y-6 col-span-2">
                     <label className="text-emerald-500 font-black uppercase text-xl tracking-[0.2em] px-4">Linku i QR Kodit</label>
                     <div className="relative group">
                         <HiGlobeAlt className="absolute left-8 top-1/2 -translate-y-1/2 text-5xl text-zinc-600 group-focus-within:text-emerald-500 transition-colors" />
@@ -221,6 +246,19 @@ function IdentitySection({ settings, setSettings, triggerConfirm, onReset }) {
                             className="w-full glass-input py-9 pl-24 pr-10 text-emerald-400 text-3xl font-bold outline-none font-mono tracking-tight"
                         />
                     </div>
+                </div>
+
+                <div className="col-span-2 p-10 bg-white/5 rounded-[3rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex items-center justify-between mt-4">
+                    <div>
+                        <h4 className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight">Shfaq QR Kodin</h4>
+                        <p className="text-xl text-zinc-500 mt-1 font-medium italic opacity-70">Aktivizoni ose çaktivizoni shfaqjen e QR Kodit në ekran.</p>
+                    </div>
+                    <button
+                        onClick={() => setSettings(p => ({ ...p, showQr: !p.showQr }))}
+                        className={`w-32 h-14 rounded-full relative transition-all duration-500 shadow-2xl ${settings.showQr !== false ? 'bg-emerald-500 ring-8 ring-emerald-500/20' : 'bg-zinc-800'}`}
+                    >
+                        <div className={`absolute top-1.5 w-11 h-11 rounded-full bg-white transition-all duration-500 shadow-lg ${settings.showQr !== false ? 'translate-x-[4.5rem] shadow-emerald-900/40' : 'translate-x-0'}`} style={{ left: '0.4rem' }} />
+                    </button>
                 </div>
             </div>
         </div>
@@ -258,10 +296,10 @@ function DurationsSection({ settings, setSettings, triggerConfirm, onReset }) {
                                 <input
                                     type="number"
                                     min="0"
-                                    value={Math.round(settings.durations[f.id] / 60000)}
+                                    value={settings.durations[f.id] > 1000 ? Math.round(settings.durations[f.id] / 60000) : (settings.durations[f.id] || 0)}
                                     onChange={(e) => setSettings(p => ({
                                         ...p,
-                                        durations: { ...p.durations, [f.id]: Math.max(0, Number(e.target.value)) * 60000 }
+                                        durations: { ...p.durations, [f.id]: Math.max(0, Number(e.target.value)) }
                                     }))}
                                     className="w-28 bg-black/60 text-center border-b-4 border-zinc-800 text-5xl font-black text-emerald-400 py-4 focus:border-emerald-500 outline-none transition-all font-mono"
                                 />
@@ -329,34 +367,44 @@ function RamazanSection({ settings, setSettings, triggerConfirm, onReset }) {
             />
 
             <div className="grid grid-cols-2 gap-12">
-                <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex items-center justify-between">
-                    <div>
-                        <h4 className="text-4xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight">Statusi i Ramazanit</h4>
-                        <p className="text-2xl text-zinc-500 mt-2 font-medium">Ndryshoni emërtimet në Syfyr, Iftar dhe Teravi.</p>
+                <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex flex-col gap-12">
+                    <div className="text-center">
+                        <h4 className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight">Statusi i Ramazanit</h4>
+                        <p className="text-xl text-zinc-500 mt-2 font-medium italic opacity-70">Zgjidhni gjendjen aktuale të shfaqjes për muajin Ramazan.</p>
                     </div>
-                    <button
-                        onClick={() => setSettings(p => ({
-                            ...p,
-                            ramazan: { ...(p.ramazan || {}), active: !(p.ramazan?.active) }
-                        }))}
-                        className={`w-36 h-16 rounded-full relative transition-all duration-500 shadow-2xl ${settings.ramazan?.active ? 'bg-emerald-500 ring-8 ring-emerald-500/20' : 'bg-zinc-800'}`}
-                    >
-                        <div className={`absolute top-2 w-12 h-12 rounded-full bg-white transition-all duration-500 shadow-lg ${settings.ramazan?.active ? 'translate-x-[5rem] shadow-emerald-900/40' : 'translate-x-0'}`} style={{ left: '0.5rem' }} />
-                    </button>
+                    <div className="flex bg-zinc-900 p-3 rounded-[3rem] border border-white/10 shadow-2xl relative overflow-hidden">
+                        <div className="absolute inset-0 bg-emerald-500/5 opacity-50" />
+                        <button
+                            onClick={() => setSettings(p => ({ ...p, ramazan: { ...(p.ramazan || {}), active: false } }))}
+                            className={`flex-1 py-10 rounded-[2.5rem] font-black text-3xl uppercase tracking-widest transition-all duration-500 relative z-10 ${!settings.ramazan?.active ? 'bg-zinc-800 text-white shadow-premium scale-[1.02] border border-white/10' : 'text-zinc-600 hover:text-zinc-400'}`}
+                        >
+                            Jo Aktiv
+                        </button>
+                        <button
+                            onClick={() => setSettings(p => ({ ...p, ramazan: { ...(p.ramazan || {}), active: true } }))}
+                            className={`flex-1 py-10 rounded-[2.5rem] font-black text-3xl uppercase tracking-widest transition-all duration-500 relative z-10 ${settings.ramazan?.active ? 'bg-emerald-500 text-black shadow-[0_0_60px_rgba(16,185,129,0.5)] scale-[1.02]' : 'text-zinc-600 hover:text-emerald-500/50'}`}
+                        >
+                            Aktiv
+                        </button>
+                    </div>
                 </div>
 
                 <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group">
-                    <h4 className="text-4xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight mb-8 text-center">Namazit i Faljes së Teravisë</h4>
+                    <h4 className="text-4xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight mb-8 text-center">Koha e Faljes së Teravisë</h4>
                     <div className="flex items-center justify-center gap-6">
                         <div className="flex flex-col items-center gap-4">
                             <input
                                 ref={hourRef}
-                                type="text"
+                                type="number"
+                                min="0"
+                                max="23"
                                 placeholder="00"
                                 value={h}
                                 onChange={(e) => {
-                                    let val = e.target.value.replace(/[^0-9]/g, '').slice(0, 2);
-                                    if (parseInt(val) > 23) val = "23";
+                                    let val = e.target.value;
+                                    if (val.length > 2) val = val.slice(0, 2);
+                                    const num = parseInt(val);
+                                    if (num > 23) val = "23";
                                     handleTimeUpdate(val, m);
                                     if (val.length === 2 || (val.length === 1 && parseInt(val) > 2)) minRef.current?.focus();
                                 }}
@@ -370,12 +418,16 @@ function RamazanSection({ settings, setSettings, triggerConfirm, onReset }) {
                         <div className="flex flex-col items-center gap-4">
                             <input
                                 ref={minRef}
-                                type="text"
+                                type="number"
+                                min="0"
+                                max="59"
                                 placeholder="00"
                                 value={m}
                                 onChange={(e) => {
-                                    let val = e.target.value.replace(/[^0-9]/g, '').slice(0, 2);
-                                    if (parseInt(val) > 59) val = "59";
+                                    let val = e.target.value;
+                                    if (val.length > 2) val = val.slice(0, 2);
+                                    const num = parseInt(val) || 0;
+                                    if (num > 59) val = "59";
                                     handleTimeUpdate(h, val);
                                 }}
                                 onKeyDown={(e) => {
@@ -424,13 +476,13 @@ function MessageSection({ settings, setSettings, triggerConfirm, onReset }) {
 
 function InputField({ label, value, onChange }) {
     return (
-        <div className="space-y-6">
-            <label className="text-emerald-500 font-black uppercase text-xl tracking-[0.2em] px-4">{label}</label>
+        <div className="space-y-4">
+            <label className="text-emerald-500 font-black uppercase text-sm tracking-[0.2em] px-4">{label}</label>
             <input
                 type="text"
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                className="w-full glass-input py-9 px-10 text-white text-4xl font-black outline-none hover:border-emerald-500/30 transition-all"
+                className="w-full glass-input py-6 px-8 text-white text-3xl font-black outline-none hover:border-emerald-500/30 transition-all rounded-[1.5rem]"
             />
         </div>
     );

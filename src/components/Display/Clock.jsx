@@ -1,6 +1,6 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, memo } from 'react';
 
-export default function Clock() {
+const Clock = memo(function Clock() {
     const [currentTime, setCurrentTime] = useState(new Date());
 
     useEffect(() => {
@@ -18,7 +18,7 @@ export default function Clock() {
         const days = ['E Diele', 'E Hëne', 'E Marte', 'E Mërkure', 'E Enjte', 'E Premte', 'E Shtune'];
         const months = ['Janar', 'Shkurt', 'Mars', 'Prill', 'Maj', 'Qershor', 'Korrik', 'Gusht', 'Shtator', 'Tetor', 'Nëntor', 'Dhjetor'];
         return `${days[currentTime.getDay()]}, ${currentTime.getDate()} ${months[currentTime.getMonth()]} ${currentTime.getFullYear()}`;
-    }, [currentTime.getDate(), currentTime.getMonth(), currentTime.getFullYear()]); // Only recalculate when date changes
+    }, [currentTime.getDay(), currentTime.getDate(), currentTime.getMonth(), currentTime.getFullYear()]);
 
     const hijriDate = useMemo(() => {
         try {
@@ -36,21 +36,22 @@ export default function Clock() {
             const monthNames = ["Muharrem", "Safer", "Rebiul Evel", "Rebiul Ahir", "Xhumadel Ula", "Xhumadel Ahire", "Rexhep", "Shaban", "Ramazan", "Sheval", "Dhul Kade", "Dhul Hixhe"];
             return `${d} ${monthNames[parseInt(m) - 1]} ${y}`;
         } catch (e) { return ""; }
-    }, [currentTime.getDate(), currentTime.getMonth(), currentTime.getFullYear()]); // Only recalculate when date changes
+    }, [currentTime.getDate(), currentTime.getMonth(), currentTime.getFullYear()]);
 
     return (
-        <div className="text-right flex flex-col items-end">
-            <div className="flex items-baseline text-7xl font-black tabular-nums tracking-tight leading-none mb-1 text-white">
+        <div className="text-right flex flex-col items-end" style={{ isolation: 'isolate', contain: 'layout paint' }}>
+            <div className="flex items-baseline text-6xl font-black tabular-nums tracking-tight leading-none mb-1 text-white">
                 <span>{timeFormatter.format(currentTime)}</span>
                 <span className="text-4xl text-zinc-500 font-bold w-[70px] text-center inline-block border-l-2 border-zinc-800/50 ml-4 font-mono">
                     {currentTime.getSeconds().toString().padStart(2, '0')}
                 </span>
             </div>
-            <div className="text-emerald-400 text-2xl font-medium tracking-wide uppercase">
+            <div className="text-emerald-400 text-2xl font-black tracking-wide uppercase" style={{ textShadow: '0 2px 5px rgba(0,0,0,0.3)' }}>
                 {dateInfo}
             </div>
-            <div className="text-emerald-600 text-xl font-medium tracking-wider uppercase mt-1">{hijriDate}</div>
+            <div className="text-emerald-600 text-xl font-bold tracking-wider uppercase mt-1 opacity-80">{hijriDate}</div>
         </div>
     );
-}
+});
 
+export default Clock;
