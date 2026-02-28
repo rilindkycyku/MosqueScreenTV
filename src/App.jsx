@@ -347,8 +347,15 @@ export default function App() {
                 mbetur: neMinuta(moments[0].kohe) - nowMin
             };
         } else {
+            let tani = { ...moments[nextIdx - 1], label: getLabel(moments[nextIdx - 1].id, moments[nextIdx - 1].isXh) };
+
+            // If it's past Sunrise (Lindja), Sabahu is no longer "current"
+            if (tani.id === "Sabahu" && vaktiSot.Lindja && nowMin >= neMinuta(vaktiSot.Lindja)) {
+                tani = { id: "Lindja", label: "Lindja e Diellit", kohe: vaktiSot.Lindja };
+            }
+
             nextInfo = {
-                tani: { ...moments[nextIdx - 1], label: getLabel(moments[nextIdx - 1].id, moments[nextIdx - 1].isXh) },
+                tani: tani,
                 ardhshëm: { ...moments[nextIdx], label: getLabel(moments[nextIdx].id, moments[nextIdx].isXh) },
                 mbetur: neMinuta(moments[nextIdx].kohe) - nowMin
             };

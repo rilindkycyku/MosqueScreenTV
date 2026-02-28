@@ -15,7 +15,7 @@
         }
     },
     "ramazan": {
-        "active": true,
+        "active": false,
         "kohaTeravise": "00:00"
     }
 }

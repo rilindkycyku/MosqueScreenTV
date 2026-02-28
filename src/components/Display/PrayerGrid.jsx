@@ -27,10 +27,10 @@ const PrayerGrid = memo(function PrayerGrid({ listaNamazeve, vaktiSot, infoTani,
                                     </div>
                                 </div>
                                 {id === 'Sabahu' && !isRamazan && vaktiSot.Lindja && (
-                                    <div className="w-full px-4 mt-2">
-                                        <div className="bg-white/5 border border-white/10 py-3 rounded-2xl flex flex-col items-center scale-90">
-                                            <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest leading-none mb-1">Lindja e Diellit</span>
-                                            <span className="text-3xl font-black font-mono text-emerald-400 leading-none">{ne24hFn(vaktiSot.Lindja)}</span>
+                                    <div className="w-full px-2 mt-2">
+                                        <div className={`py-4 rounded-3xl flex flex-col items-center border transition-all duration-500 ${isCurrent ? 'bg-black/30 border-white/20 shadow-inner' : 'bg-white/5 border-white/10'}`}>
+                                            <span className={`text-[12px] font-black uppercase tracking-[0.2em] leading-none mb-2 ${isCurrent ? 'text-emerald-200' : 'text-zinc-500'}`}>Lindja e Diellit</span>
+                                            <span className={`text-4xl font-black font-mono leading-none ${isCurrent ? 'text-white' : 'text-emerald-400'}`}>{ne24hFn(vaktiSot.Lindja)}</span>
                                         </div>
                                     </div>
                                 )}
