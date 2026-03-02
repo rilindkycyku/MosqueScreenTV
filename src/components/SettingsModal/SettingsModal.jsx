@@ -29,6 +29,7 @@ export default function SettingsModal({
 
     const tabs = [
         { id: 'identity', label: 'Të dhënat', icon: HiIdentification, subtitle: 'Të dhënat e xhamisë' },
+        { id: 'display', label: 'Ekrani', icon: HiGlobeAlt, subtitle: 'Konfigurimi i shfaqjes' },
         { id: 'durations', label: 'Kohëzgjatja', icon: HiClock, subtitle: 'Ciklet e shfaqjes' },
         { id: 'ramazan', label: 'Ramazani', icon: HiClock, subtitle: 'Konfigurimi i muajit të ramazanit' },
         { id: 'message', label: 'Njoftimet', icon: HiSpeakerphone, subtitle: 'Mesazh i shpejtë' }
@@ -110,11 +111,11 @@ export default function SettingsModal({
                         </button>
 
                         <div className="mt-auto flex flex-col items-center py-6 border-t border-white/20 pt-10">
-                            <span className="text-zinc-300 text-xl font-black uppercase tracking-[0.4em] mb-3">Mosque Screen TV Edition</span>
+                            <span className="text-zinc-300 text-xl font-black uppercase tracking-[0.4em] mb-3">Mosque Screen TV</span>
                             <div className="flex flex-col items-center gap-2">
-                                <span className="text-zinc-500 text-sm font-bold uppercase tracking-[0.2em]">Developed by</span>
-                                <span className="text-emerald-400 text-3xl font-black uppercase tracking-tight shadow-emerald-500/20 drop-shadow-xl">Rilind Kycyku</span>
-                                <span className="text-zinc-600 text-base uppercase font-black tracking-widest mt-2 underline decoration-emerald-500/30">rilindkycyku.dev</span>
+                                <span className="text-zinc-500 text-sm font-bold uppercase tracking-[0.2em]">Zhvilluar nga</span>
+                                <span className="text-emerald-400 text-3xl font-black uppercase tracking-tight shadow-emerald-500/20 drop-shadow-xl">Rilind Kyçyku</span>
+                                <span className="text-zinc-600 text-base uppercase font-black tracking-widest mt-2 underline decoration-emerald-500/30">www.rilindkycyku.dev</span>
                             </div>
                         </div>
                     </div>
@@ -125,6 +126,14 @@ export default function SettingsModal({
                     <div className="animate-slide-up">
                         {activeTab === 'identity' && (
                             <IdentitySection
+                                settings={tempSettings}
+                                setSettings={setTempSettings}
+                                triggerConfirm={triggerConfirm}
+                                onReset={() => resetCategory('identity')}
+                            />
+                        )}
+                        {activeTab === 'display' && (
+                            <DisplaySection
                                 settings={tempSettings}
                                 setSettings={setTempSettings}
                                 triggerConfirm={triggerConfirm}
@@ -203,7 +212,7 @@ function IdentitySection({ settings, setSettings, triggerConfirm, onReset }) {
                 )}
             />
 
-            <div className="grid grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 gap-12">
                 <InputField
                     label="Emri i Xhamisë"
                     value={settings.name}
@@ -219,9 +228,30 @@ function IdentitySection({ settings, setSettings, triggerConfirm, onReset }) {
                     value={settings.imamName}
                     onChange={val => setSettings(p => ({ ...p, imamName: val }))}
                 />
-                <div className="space-y-6">
-                    <label className="text-emerald-500 font-black uppercase text-xl tracking-[0.2em] px-4">Sabahu (Minuta para Lindjes)</label>
-                    <div className="relative group">
+            </div>
+        </div>
+    );
+}
+
+function DisplaySection({ settings, setSettings, triggerConfirm, onReset }) {
+    return (
+        <div className="space-y-16">
+            <SectionHeader
+                icon={HiGlobeAlt}
+                title="Ekrani"
+                description="Konfiguroni elementet vizuale dhe njoftimet automatike të ekranit."
+                onReset={() => triggerConfirm(
+                    "Rikthe Opsionet",
+                    "A dëshironi t'i ktheni opsionet e ekranit në vlerat fillestare?",
+                    onReset
+                )}
+            />
+
+            <div className="grid grid-cols-2 gap-12">
+                {/* Sabahu Offset - Large UI */}
+                <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex flex-col items-center">
+                    <h4 className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight mb-8">Sabahu (Offset)</h4>
+                    <div className="flex items-center gap-6">
                         <input
                             type="number"
                             min="0"
@@ -231,34 +261,69 @@ function IdentitySection({ settings, setSettings, triggerConfirm, onReset }) {
                                 ...p,
                                 durations: { ...p.durations, sabahuOffset: Math.max(0, parseInt(e.target.value) || 0) }
                             }))}
-                            className="w-full glass-input py-9 px-10 text-emerald-400 text-4xl font-black outline-none font-mono tracking-tight"
+                            className="w-32 bg-black/40 border-b-4 border-zinc-800 py-8 text-white text-6xl font-black outline-none font-mono text-center tracking-tighter focus:border-emerald-500 transition-all rounded-2xl"
                         />
+                        <span className="text-zinc-500 font-black uppercase text-2xl tracking-[0.2em]">min</span>
                     </div>
+                    <p className="text-xl text-zinc-500 mt-6 text-center italic font-medium opacity-60">Minuta para Lindjes së Diellit.</p>
                 </div>
-                <div className="space-y-6 col-span-2">
-                    <label className="text-emerald-500 font-black uppercase text-xl tracking-[0.2em] px-4">Linku i QR Kodit</label>
-                    <div className="relative group">
-                        <HiGlobeAlt className="absolute left-8 top-1/2 -translate-y-1/2 text-5xl text-zinc-600 group-focus-within:text-emerald-500 transition-colors" />
+
+                {/* QR URL */}
+                <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex flex-col justify-center">
+                    <label className="text-emerald-500 font-black uppercase text-2xl tracking-[0.2em] px-4 mb-6">Linku i QR Kodit</label>
+                    <div className="relative group/input">
+                        <HiGlobeAlt className="absolute left-8 top-1/2 -translate-y-1/2 text-5xl text-zinc-600 group-focus-within/input:text-emerald-500 transition-colors" />
                         <input
                             type="text"
                             value={settings.qrUrl}
                             onChange={(e) => setSettings(p => ({ ...p, qrUrl: e.target.value }))}
-                            className="w-full glass-input py-9 pl-24 pr-10 text-emerald-400 text-3xl font-bold outline-none font-mono tracking-tight"
+                            className="w-full bg-black/40 border-2 border-white/5 py-9 pl-24 pr-10 text-emerald-400 text-xl font-bold outline-none font-mono tracking-tight rounded-3xl"
                         />
                     </div>
                 </div>
 
-                <div className="col-span-2 p-10 bg-white/5 rounded-[3rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex items-center justify-between mt-4">
-                    <div>
+                {/* showQr Segmented UI */}
+                <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex flex-col gap-8">
+                    <div className="text-center">
                         <h4 className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight">Shfaq QR Kodin</h4>
-                        <p className="text-xl text-zinc-500 mt-1 font-medium italic opacity-70">Aktivizoni ose çaktivizoni shfaqjen e QR Kodit në ekran.</p>
+                        <p className="text-xl text-zinc-500 mt-2 font-medium italic opacity-70">Aktivizoni ose çaktivizoni kodin në cikël.</p>
                     </div>
-                    <button
-                        onClick={() => setSettings(p => ({ ...p, showQr: !p.showQr }))}
-                        className={`w-32 h-14 rounded-full relative transition-all duration-500 shadow-2xl ${settings.showQr !== false ? 'bg-emerald-500 ring-8 ring-emerald-500/20' : 'bg-zinc-800'}`}
-                    >
-                        <div className={`absolute top-1.5 w-11 h-11 rounded-full bg-white transition-all duration-500 shadow-lg ${settings.showQr !== false ? 'translate-x-[4.5rem] shadow-emerald-900/40' : 'translate-x-0'}`} style={{ left: '0.4rem' }} />
-                    </button>
+                    <div className="flex bg-zinc-900 p-3 rounded-[3rem] border border-white/10 shadow-2xl relative overflow-hidden">
+                        <button
+                            onClick={() => setSettings(p => ({ ...p, showQr: false }))}
+                            className={`flex-1 py-8 rounded-[2.5rem] font-black text-2xl uppercase tracking-widest transition-all duration-500 relative z-10 ${settings.showQr === false ? 'bg-zinc-800 text-white shadow-premium' : 'text-zinc-600'}`}
+                        >
+                            Jo Aktiv
+                        </button>
+                        <button
+                            onClick={() => setSettings(p => ({ ...p, showQr: true }))}
+                            className={`flex-1 py-8 rounded-[2.5rem] font-black text-2xl uppercase tracking-widest transition-all duration-500 relative z-10 ${settings.showQr !== false ? 'bg-emerald-500 text-black shadow-lg scale-[1.02]' : 'text-zinc-600'}`}
+                        >
+                            Aktiv
+                        </button>
+                    </div>
+                </div>
+
+                {/* showSilenceWarning Segmented UI */}
+                <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex flex-col gap-8">
+                    <div className="text-center">
+                        <h4 className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight">Vërejtja e Heshtjes</h4>
+                        <p className="text-xl text-zinc-500 mt-2 font-medium italic opacity-70">Thirrja "FIKNI TELEFONAT" në ekran.</p>
+                    </div>
+                    <div className="flex bg-zinc-900 p-3 rounded-[3rem] border border-white/10 shadow-2xl relative overflow-hidden">
+                        <button
+                            onClick={() => setSettings(p => ({ ...p, showSilenceWarning: false }))}
+                            className={`flex-1 py-8 rounded-[2.5rem] font-black text-2xl uppercase tracking-widest transition-all duration-500 relative z-10 ${settings.showSilenceWarning === false ? 'bg-zinc-800 text-white shadow-premium' : 'text-zinc-600'}`}
+                        >
+                            Jo Aktiv
+                        </button>
+                        <button
+                            onClick={() => setSettings(p => ({ ...p, showSilenceWarning: true }))}
+                            className={`flex-1 py-8 rounded-[2.5rem] font-black text-2xl uppercase tracking-widest transition-all duration-500 relative z-10 ${settings.showSilenceWarning !== false ? 'bg-emerald-500 text-black shadow-lg scale-[1.02]' : 'text-zinc-600'}`}
+                        >
+                            Aktiv
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -476,13 +541,13 @@ function MessageSection({ settings, setSettings, triggerConfirm, onReset }) {
 
 function InputField({ label, value, onChange }) {
     return (
-        <div className="space-y-4">
-            <label className="text-emerald-500 font-black uppercase text-sm tracking-[0.2em] px-4">{label}</label>
+        <div className="space-y-6">
+            <label className="text-emerald-500 font-black uppercase text-2xl tracking-[0.2em] px-4 leading-none">{label}</label>
             <input
                 type="text"
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                className="w-full glass-input py-6 px-8 text-white text-3xl font-black outline-none hover:border-emerald-500/30 transition-all rounded-[1.5rem]"
+                className="w-full glass-input py-9 px-10 text-white text-4xl font-black outline-none hover:border-emerald-500/30 transition-all rounded-[2.5rem]"
             />
         </div>
     );

@@ -5,6 +5,7 @@
         "imamName": "Emri i Imamit",
         "qrUrl": "https://rilindkycyku.dev",
         "showQr": false,
+        "showSilenceWarning": true,
         "durations": {
             "hadith": 10,
             "qr": 1,

@@ -120,6 +120,7 @@ export default function App() {
             if (key === 's' || key === 'm' || key === 'enter' || key === 'select') {
                 setShowSettings(true);
             }
+            if (key === 'r') window.location.reload();
             if (e.key === 'Escape') setShowSettings(false);
         };
         window.addEventListener('keydown', handleKeyDown);
@@ -142,7 +143,7 @@ export default function App() {
         requestWakeLock();
 
         const handleVisibilityChange = () => {
-            if (wakeLock !== null && document.visibilityState === 'visible') {
+            if (document.visibilityState === 'visible') {
                 requestWakeLock();
             }
         };
@@ -178,7 +179,8 @@ export default function App() {
                     ...newSettings.durations,
                     sabahuOffset: config.tvOptions.durations.sabahuOffset
                 },
-                showQr: config.tvOptions.showQr
+                showQr: config.tvOptions.showQr,
+                showSilenceWarning: config.tvOptions.showSilenceWarning
             };
         } else if (category === 'durations') {
             newSettings = { ...newSettings, durations: config.tvOptions.durations };
@@ -200,7 +202,8 @@ export default function App() {
             ramazan: { ...config.ramazan },
             durations: { ...config.tvOptions.durations },
             customMsg: "",
-            showQr: config.tvOptions.showQr
+            showQr: config.tvOptions.showQr,
+            showSilenceWarning: config.tvOptions.showSilenceWarning
         };
         setSettings(defaults);
         setTempSettings(defaults);
@@ -262,7 +265,8 @@ export default function App() {
                 return Number(d) === dite && m === muajiSot;
             }) ?? vaktet[0];
 
-            setVaktiSot(prev => (prev?.Date === rreshti.Date ? prev : rreshti));
+            // Update state if data has changed (even on the same day)
+            setVaktiSot(prev => (JSON.stringify(prev) === JSON.stringify(rreshti) ? prev : rreshti));
         };
         perditeso();
         const interval = setInterval(perditeso, 10000);
@@ -362,7 +366,14 @@ export default function App() {
         }
 
         setInfoTani(prev => {
-            const updated = { ...nextInfo, isSilenceMode: nextInfo.mbetur <= 5 && nextInfo.mbetur >= -2 };
+            // Fix Silence Mode logic:
+            // 1. Up to 5 minutes BEFORE the next prayer
+            // 2. Up to 2 minutes AFTER the current/past prayer (tani)
+            const diffA = nextInfo.ardhshëm ? neMinuta(nextInfo.ardhshëm.kohe) - nowMin : 999;
+            const diffT = nextInfo.tani?.kohe ? nowMin - neMinuta(nextInfo.tani.kohe) : 999;
+            const isSilenceMode = (diffA <= 5 && diffA >= 0) || (diffT >= 0 && diffT <= 2);
+
+            const updated = { ...nextInfo, isSilenceMode };
             return JSON.stringify(prev) === JSON.stringify(updated) ? prev : updated;
         });
     }, [vaktiSot, settings, xhemati]);
@@ -444,26 +455,28 @@ export default function App() {
 
                 <header className="grid grid-cols-3 items-center mb-8 shrink-0" style={{ contain: 'layout style' }}>
                     <div className="flex flex-col gap-2">
-                        <p className="text-zinc-400 text-3xl font-black tracking-widest uppercase truncate">{settings.address}</p>
-                        <p className="text-zinc-500 text-2xl font-bold tracking-wide">Imami: <span className="text-zinc-300">{settings.imamName}</span></p>
+                        <p className="text-zinc-400 text-4xl font-black tracking-widest uppercase truncate">{settings.address}</p>
+                        <p className="text-zinc-500 text-3xl font-bold tracking-wide">Imami: <span className="text-zinc-300">{settings.imamName}</span></p>
                     </div>
-                    <div className="text-center flex flex-col items-center justify-center">
-                        <h1 className="text-6xl font-black text-emerald-400 tracking-tighter uppercase whitespace-nowrap">{settings.name}</h1>
+                    <div className="text-center">
+                        <h1 className="text-7xl font-black text-emerald-400 tracking-tighter uppercase whitespace-nowrap">{settings.name}</h1>
                     </div>
                     <Clock />
                 </header>
 
                 <main className="flex-1 flex flex-col gap-6 min-h-0" style={{ contain: 'layout style paint' }}>
                     <div className="flex-[1.2] grid grid-cols-2 gap-8 relative z-10 min-h-0">
-                        <NextPrayer infoTani={infoTani} ne24hFn={ne24h} formatDallimFn={formatDallim} />
+                        <NextPrayer infoTani={infoTani} ne24hFn={ne24h} formatDallimFn={formatDallim} settings={settings} />
                         <ActivityBox displayMode={displayMode} settings={settings} currentHadith={currentHadith} vaktiSot={vaktiSot} infoTani={infoTani} />
                     </div>
                     <PrayerGrid listaNamazeve={listaNamazeve} vaktiSot={vaktiSot} infoTani={infoTani} xhematiFn={xhemati} ne24hFn={ne24h} isRamazan={settings.ramazan?.active} />
                 </main>
 
-                <footer className="mt-4 flex justify-start items-center opacity-30 pl-6">
-                    <div className="bg-white/5 px-4 py-2 rounded-full border border-white/5 text-zinc-500 text-[10px] font-bold uppercase tracking-[0.3em]">
-                        Developed by <span className="text-emerald-500">Rilind Kycyku</span> • <span className="text-zinc-600">rilindkycyku.dev</span>
+                <footer className="mt-4 flex justify-center items-center opacity-60 px-8 shrink-0">
+                    <div className="bg-black/40 px-6 py-2 rounded-full border border-white/10 text-zinc-400 text-[10px] font-bold uppercase tracking-[0.3em] flex items-center gap-4 shadow-sm backdrop-blur-sm">
+                        <span>© {new Date().getFullYear()} - Zhvilluar nga: <span className="text-emerald-500">Rilind Kyçyku</span></span>
+                        <span className="w-1 h-1 bg-white/10 rounded-full" />
+                        <span className="text-zinc-600">www.rilindkycyku.dev</span>
                     </div>
                 </footer>
 

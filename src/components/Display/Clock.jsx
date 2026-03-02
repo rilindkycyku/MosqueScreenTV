@@ -40,7 +40,7 @@ const Clock = memo(function Clock() {
 
     return (
         <div className="text-right flex flex-col items-end" style={{ isolation: 'isolate', contain: 'layout paint' }}>
-            <div className="flex items-baseline text-6xl font-black tabular-nums tracking-tight leading-none mb-1 text-white">
+            <div className="flex items-baseline text-7xl font-black tabular-nums tracking-tight leading-none mb-1 text-white">
                 <span>{timeFormatter.format(currentTime)}</span>
                 <span className="text-4xl text-zinc-500 font-bold w-[70px] text-center inline-block border-l-2 border-zinc-800/50 ml-4 font-mono">
                     {currentTime.getSeconds().toString().padStart(2, '0')}

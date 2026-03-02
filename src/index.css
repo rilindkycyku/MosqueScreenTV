@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Quicksand, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -34,5 +34,10 @@ body {
 @layer utilities {
   .tabular-nums {
     font-variant-numeric: tabular-nums;
+  }
+
+  .font-mono {
+    font-feature-settings: "tnum" 1;   /* Tabular numbers */
+    letter-spacing: 0.05em;           /* Makes the numbers more separate and readable */
   }
 }
