@@ -9,14 +9,14 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
     // 1. SILENCE MODE (Highest Priority)
     if (isSilenceMode && showSilence) {
         return (
-            <div className="bg-zinc-900 border-4 border-amber-500/50 rounded-[3.5rem] p-10 relative overflow-hidden flex flex-col items-center justify-center animate-pulse text-center">
-                <div className="text-amber-500 mb-6">
-                    <svg className="w-32 h-32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-zinc-900 border-4 border-amber-500/50 rounded-[3.5rem] px-10 pt-4 pb-12 relative overflow-hidden flex flex-col items-center justify-center animate-pulse text-center">
+                <div className="text-amber-500 mb-0">
+                    <svg className="w-48 h-48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728A9 9 0 115.636 5.636m12.728 12.728L5.636 5.636" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                     </svg>
                 </div>
-                <h2 className="text-4xl lg:text-[3.2rem] font-black text-white leading-tight uppercase tracking-tight max-w-[95%] mx-auto">
+                <h2 className="text-4xl lg:text-[5rem] font-black text-white leading-[1.05] uppercase tracking-tight max-w-[98%] mx-auto">
                     FIKNI OSE NDALJANI ZËRIN TELEFONAVE!
                 </h2>
                 <div className="mt-6 flex flex-col items-center">

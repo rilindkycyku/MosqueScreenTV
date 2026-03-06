@@ -39,14 +39,14 @@ const Clock = memo(function Clock() {
     }, [currentTime.getDate(), currentTime.getMonth(), currentTime.getFullYear()]);
 
     return (
-        <div className="text-right flex flex-col items-end" style={{ isolation: 'isolate', contain: 'layout paint' }}>
+        <div className="text-right flex flex-col items-end">
             <div className="flex items-baseline text-7xl font-black tabular-nums tracking-tight leading-none mb-1 text-white">
                 <span>{timeFormatter.format(currentTime)}</span>
                 <span className="text-4xl text-zinc-500 font-bold w-[70px] text-center inline-block border-l-2 border-zinc-800/50 ml-4 font-mono">
                     {currentTime.getSeconds().toString().padStart(2, '0')}
                 </span>
             </div>
-            <div className="text-emerald-400 text-2xl font-black tracking-wide uppercase" style={{ textShadow: '0 2px 5px rgba(0,0,0,0.3)' }}>
+            <div className="text-emerald-400 text-2xl font-black tracking-wide uppercase">
                 {dateInfo}
             </div>
             <div className="text-emerald-600 text-xl font-bold tracking-wider uppercase mt-1 opacity-80">{hijriDate}</div>
