@@ -22,7 +22,7 @@ const PrayerGrid = memo(function PrayerGrid({ listaNamazeve, vaktiSot, infoTani,
                                     {label.includes('(') && <div className={`text-base font-bold uppercase tracking-[0.2em] opacity-60 ${isCurrent ? 'text-white' : 'text-zinc-500'}`}>{label.split('(')[1].replace(')', '')}</div>}
                                 </div>
                                 <div className="flex flex-col items-center justify-center flex-1 py-1">
-                                    <div className={`text-5xl lg:text-[5.5rem] font-black font-mono whitespace-nowrap leading-none ${isCurrent ? 'text-white' : isJumuah ? 'text-amber-400' : 'text-white'}`}>
+                                    <div className={`text-5xl lg:text-[5.4rem] font-black font-mono whitespace-nowrap leading-none ${isCurrent ? 'text-white' : isJumuah ? 'text-amber-400' : 'text-white'}`}>
                                         {xh ? ne24hFn(xh) : "—"}
                                     </div>
                                 </div>
