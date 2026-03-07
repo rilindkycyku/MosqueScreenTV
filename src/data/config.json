@@ -7,7 +7,7 @@
         "showQr": false,
         "showSilenceWarning": true,
         "durations": {
-            "hadith": 10,
+            "hadith": 5,
             "qr": 1,
             "notification": 10,
             "announcement": 1,

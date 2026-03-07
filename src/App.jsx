@@ -49,6 +49,9 @@ export default function App() {
     const [showConfirm, setShowConfirm] = useState(false);
     const [confirmConfig, setConfirmConfig] = useState({ title: "", message: "", action: null });
     const [scale, setScale] = useState(1);
+    const [pixelShift, setPixelShift] = useState({ x: 0, y: 0 });
+    const [isNightDimmed, setIsNightDimmed] = useState(false);
+    const [nextHadith, setNextHadith] = useState(null);
 
     // Optimized Scaling Logic to fit any screen
     useEffect(() => {
@@ -86,6 +89,11 @@ export default function App() {
         let timeoutId;
         const showHadith = () => {
             setDisplayMode('hadith');
+            // Seamless Hadith Refresh: If we have a queued hadith, swap it now while rotation is happening
+            if (nextHadith) {
+                setCurrentHadith(nextHadith);
+                setNextHadith(null);
+            }
             const duration = settings.customMsg ? Math.min(durations.hadith, 30000) : durations.hadith;
             if (settings.showQr !== false && durations.qr > 0) timeoutId = setTimeout(showQR, duration);
             else timeoutId = setTimeout(showMsgIfAny, duration);
@@ -214,26 +222,57 @@ export default function App() {
         const pickHadith = () => {
             if (haditheData.a?.length) {
                 const randomIdx = Math.floor(Math.random() * haditheData.a.length);
-                setCurrentHadith(haditheData.a[randomIdx]);
+                const chosen = haditheData.a[randomIdx];
+                // Queue the next hadith to avoid interruption
+                setNextHadith(prev => (!currentHadith ? null : chosen));
+                if (!currentHadith) setCurrentHadith(chosen);
             }
         };
         pickHadith();
         const interval = setInterval(pickHadith, refreshMin * 60000);
         return () => clearInterval(interval);
-    }, [settings.durations.hadithRefresh]);
+    }, [settings.durations.hadithRefresh, currentHadith]);
 
-    // --- MAINTENANCE & STABILITY (STAGGERED) ---
+    // --- BURN-IN PROTECTION & ENERGY SAVING ---
+    useEffect(() => {
+        const updateStability = () => {
+            const now = new Date();
+            const hour = now.getHours();
+
+            setPixelShift({
+                x: Math.floor(Math.random() * 3) - 1,
+                y: Math.floor(Math.random() * 3) - 1
+            });
+
+            setIsNightDimmed(hour >= 23 || hour < 4);
+        };
+
+        updateStability();
+        const interval = setInterval(updateStability, 60000);
+        return () => clearInterval(interval);
+    }, []);
+
+    // --- MAINTENANCE & STABILITY ---
     useEffect(() => {
         let timerId;
         let retryTimerId;
+
         const scheduleReload = () => {
             const now = new Date();
-            const target = new Date();
-            const randomHour = Math.floor(Math.random() * 3) + 1; // 1 AM to 3:59 AM
-            const randomMinute = Math.floor(Math.random() * 60);
-            target.setHours(randomHour, randomMinute, 0, 0);
-            if (now > target) target.setDate(target.getDate() + 1);
-            const msUntilTrigger = target.getTime() - now.getTime();
+            const nightTarget = new Date();
+            const dayTarget = new Date();
+
+            // 1. Night Reload (1 AM - 4 AM)
+            nightTarget.setHours(Math.floor(Math.random() * 3) + 1, Math.floor(Math.random() * 60), 0, 0);
+            if (now > nightTarget) nightTarget.setDate(nightTarget.getDate() + 1);
+
+            // 2. Daytime Reload (10 AM - 5 PM)
+            dayTarget.setHours(Math.floor(Math.random() * 8) + 10, Math.floor(Math.random() * 60), 0, 0);
+            if (now > dayTarget) dayTarget.setDate(dayTarget.getDate() + 1);
+
+            const nextTarget = nightTarget < dayTarget ? nightTarget : dayTarget;
+            const msUntilTrigger = nextTarget.getTime() - now.getTime();
+
             timerId = setTimeout(() => {
                 if (navigator.onLine) window.location.reload();
                 else {
@@ -244,6 +283,7 @@ export default function App() {
                 }
             }, msUntilTrigger);
         };
+
         scheduleReload();
         return () => {
             clearTimeout(timerId);
@@ -317,11 +357,23 @@ export default function App() {
         const PRAYER_KEYS = isR ? ["Imsaku", "Sabahu", "Dreka", "Ikindia", "Akshami", "Jacia"] : ["Sabahu", "Dreka", "Ikindia", "Akshami", "Jacia"];
 
         PRAYER_KEYS.forEach(n => {
-            const xh = xhemati(n);
-            const raw = vaktiSot[n];
-            const displayTime = xh || raw;
-            if (displayTime) {
-                moments.push({ id: n, kohe: displayTime, isXh: !!xh });
+            if (vaktiSot[n]) {
+                const xh = xhemati(n);
+
+                // In Ramazan, skip the raw Jacia (Adhan) time to prioritize Teravia (if configured)
+                const skipRawJacia = (n === "Jacia" && isR && settings.ramazan?.kohaTeravise && settings.ramazan?.kohaTeravise !== "00:00");
+
+                if (!skipRawJacia) {
+                    moments.push({ id: n, kohe: vaktiSot[n], isXh: false });
+                }
+
+                if (xh) {
+                    // Avoid adding duplicate entries if the xhemat time is identical to the vakti time
+                    // unless we skipped the raw time, in which case we definitely need the xhemat entry.
+                    if (xh !== vaktiSot[n] || skipRawJacia) {
+                        moments.push({ id: n, kohe: xh, isXh: true });
+                    }
+                }
             }
         });
 
@@ -425,9 +477,11 @@ export default function App() {
                     position: 'absolute',
                     top: '50%',
                     left: '50%',
-                    transform: `translate(-50%, -50%) scale(${Math.max(0.01, scale)})`,
+                    transform: `translate(-50%, -50%) scale(${Math.max(0.01, scale)}) translate(${pixelShift.x}px, ${pixelShift.y}px)`,
                     transformOrigin: 'center center',
-                    flexShrink: 0
+                    flexShrink: 0,
+                    transition: 'transform 0.5s ease-out',
+                    contain: 'strict'
                 }}>
                 <style>
                     {`
@@ -438,10 +492,14 @@ export default function App() {
                         .glass-input { background: rgba(0, 0, 0, 0.4); border: 2px solid rgba(255, 255, 255, 0.05); border-radius: 1.25rem; }
                         /* Optimized for TV performance: Static visuals are safer than infinite filters */
                         * { text-rendering: auto; transform: translateZ(0); backface-visibility: hidden; }
-                        .tv-container { -webkit-font-smoothing: antialiased; }
+                        .tv-container { -webkit-font-smoothing: antialiased; transform: translateZ(0); backface-visibility: hidden; will-change: transform, opacity; }
+                        .next-prayer-box, .activity-box, .prayer-grid { will-change: transform; transform: translateZ(0); }
+                        .dimmed-overlay { pointer-events: none; position: fixed; inset: 0; background: black; transition: opacity 2s ease; z-index: 9999; }
                         .shadow-premium { box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
                     `}
                 </style>
+
+                {isNightDimmed && <div className="dimmed-overlay" style={{ opacity: 0.6 }} />}
 
                 <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-15">
                     <div className="absolute -top-[20%] -left-[20%] w-[60%] h-[60%] rounded-full" style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%)', willChange: 'transform' }} />
@@ -458,7 +516,12 @@ export default function App() {
                         <p className="text-zinc-500 text-3xl font-bold tracking-wide">Imami: <span className="text-zinc-300">{settings.imamName}</span></p>
                     </div>
                     <div className="text-center">
-                        <h1 className="text-7xl font-black text-emerald-400 tracking-tighter uppercase whitespace-nowrap">{settings.name}</h1>
+                        <h1 className={`font-black text-emerald-400 tracking-tighter uppercase whitespace-nowrap relative -left-8 ${(settings.name || "").length > 25 ? 'text-5xl' :
+                                (settings.name || "").length > 18 ? 'text-6xl' :
+                                    'text-7xl'
+                            }`}>
+                            {settings.name}
+                        </h1>
                     </div>
                     <Clock />
                 </header>
@@ -473,11 +536,11 @@ export default function App() {
 
                 <footer className="mt-2 px-8 shrink-0">
                     <div className="w-full h-12 flex justify-between items-center bg-black/40 px-12 rounded-full border border-white/10 text-zinc-400 font-bold uppercase tracking-[0.2em] shadow-sm backdrop-blur-sm">
-                        <div className="flex items-center gap-2 text-sm font-black">
+                        <div className="flex items-center gap-2 text-lg font-black">
                             © {new Date().getFullYear()} - Zhvilluar nga: <span className="text-emerald-500">Rilind Kyçyku</span>
                         </div>
-                        <div className="flex items-center gap-4 text-sm opacity-80 font-black">
-                            <span>www.rilindkycyku.dev</span>
+                        <div className="flex items-center gap-4 text-lg font-black">
+                            <span className="text-emerald-500 uppercase tracking-wider">WWW.RILINDKYCYKU.DEV</span>
                         </div>
                     </div>
                 </footer>

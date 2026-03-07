@@ -90,7 +90,12 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
                 ) : currentHadith ? (
                     <div className="flex-1 flex flex-col justify-center items-center overflow-hidden">
                         {currentHadith.entryText && <p className="text-zinc-500 text-xl mb-2 italic font-medium opacity-60">{currentHadith.entryText}</p>}
-                        <h3 className="text-2xl lg:text-4xl leading-tight italic font-bold text-white mb-6 line-clamp-6 px-4">"{currentHadith.textContent}"</h3>
+                        <h3 className={`leading-tight italic font-bold text-white mb-6 px-4 ${currentHadith.textContent?.length > 350 ? 'text-xl lg:text-2xl' :
+                                currentHadith.textContent?.length > 250 ? 'text-2xl lg:text-3xl' :
+                                    'text-2xl lg:text-4xl'
+                            }`}>
+                            "{currentHadith.textContent}"
+                        </h3>
                         <div className="w-12 h-1 bg-emerald-500 rounded-full mb-4 shrink-0" />
                         <p className="text-emerald-400 font-black text-2xl lg:text-3xl">{currentHadith.reference}</p>
                     </div>
