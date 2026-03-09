@@ -237,20 +237,33 @@ export default function App() {
     useEffect(() => {
         const updateStability = () => {
             const now = new Date();
-            const hour = now.getHours();
+            const minTani = now.getHours() * 60 + now.getMinutes();
 
             setPixelShift({
                 x: Math.floor(Math.random() * 3) - 1,
                 y: Math.floor(Math.random() * 3) - 1
             });
 
-            setIsNightDimmed(hour >= 23 || hour < 4);
+            // Night Dimming: Dims 30 minutes after Jacia/Teravia until 10m before Sabahu
+            let dimStart = 23 * 60;
+            let dimEnd = 4 * 60;
+
+            if (vaktiSot) {
+                const isR = settings.ramazan?.active;
+                const jaciaTime = (isR && settings.ramazan?.kohaTeravise && settings.ramazan?.kohaTeravise !== "00:00")
+                    ? settings.ramazan.kohaTeravise
+                    : vaktiSot.Jacia;
+                if (jaciaTime) dimStart = neMinuta(jaciaTime) + 30;
+                if (vaktiSot.Sabahu) dimEnd = neMinuta(vaktiSot.Sabahu) - 10;
+            }
+
+            setIsNightDimmed(minTani >= dimStart || minTani < dimEnd);
         };
 
         updateStability();
         const interval = setInterval(updateStability, 60000);
         return () => clearInterval(interval);
-    }, []);
+    }, [vaktiSot, settings]);
 
     // --- MAINTENANCE & STABILITY ---
     useEffect(() => {
@@ -517,8 +530,8 @@ export default function App() {
                     </div>
                     <div className="text-center">
                         <h1 className={`font-black text-emerald-400 tracking-tighter uppercase whitespace-nowrap relative -left-8 ${(settings.name || "").length > 25 ? 'text-5xl' :
-                                (settings.name || "").length > 18 ? 'text-6xl' :
-                                    'text-7xl'
+                            (settings.name || "").length > 18 ? 'text-6xl' :
+                                'text-7xl'
                             }`}>
                             {settings.name}
                         </h1>
@@ -536,11 +549,16 @@ export default function App() {
 
                 <footer className="mt-2 px-8 shrink-0">
                     <div className="w-full h-12 flex justify-between items-center bg-black/40 px-12 rounded-full border border-white/10 text-zinc-400 font-bold uppercase tracking-[0.2em] shadow-sm backdrop-blur-sm">
-                        <div className="flex items-center gap-2 text-lg font-black">
-                            © {new Date().getFullYear()} - Zhvilluar nga: <span className="text-emerald-500">Rilind Kyçyku</span>
+                        <div className="flex items-center gap-2 text-2xl font-black">
+                            © {new Date().getFullYear()} - <span className="text-emerald-500">Rilind Kyçyku</span>
                         </div>
-                        <div className="flex items-center gap-4 text-lg font-black">
-                            <span className="text-emerald-500 uppercase tracking-wider">WWW.RILINDKYCYKU.DEV</span>
+                        <div className="flex items-center gap-2 text-2xl font-black whitespace-nowrap">
+                            <span className="text-emerald-500">Mosque Screen TV</span>
+                            <span className="text-zinc-600 mx-4">•</span>
+                            <span className="text-emerald-500 tracking-wider">www.tv.rilindkycyku.dev</span>
+                        </div>
+                        <div className="flex items-center gap-4 text-2xl font-black">
+                            <span className="text-emerald-500 uppercase tracking-wider">www.rilindkycyku.dev</span>
                         </div>
                     </div>
                 </footer>
