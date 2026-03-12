@@ -12,6 +12,8 @@ import Clock from './components/Display/Clock';
 import PrayerGrid from './components/Display/PrayerGrid';
 import NextPrayer from './components/Display/NextPrayer';
 import ActivityBox from './components/Display/ActivityBox';
+// Vercel Analytics
+import { Analytics } from '@vercel/analytics/react';
 
 const PRAYERS = ["Sabahu", "Dreka", "Ikindia", "Akshami", "Jacia"];
 const neMinuta = (ora) => {
@@ -653,6 +655,8 @@ export default function App() {
                     config={confirmConfig}
                     onCancel={() => setShowConfirm(false)}
                 />
+
+                <Analytics />
             </div>
         </div>
     );
