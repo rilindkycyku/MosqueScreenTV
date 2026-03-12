@@ -25,8 +25,8 @@ const NextPrayer = memo(function NextPrayer({ infoTani, ne24hFn, formatDallimFn,
                                 Vakti i radhës
                             </p>
                         </div>
-                        <h2 className="text-7xl lg:text-[7.5rem] font-black text-white tracking-[0.05em] uppercase leading-[0.9] pr-4">
-                            {labelMain.split(' ')[0]}
+                        <h2 className={`font-black text-white tracking-[0.05em] uppercase leading-[0.9] pr-4 ${labelMain.length > 10 ? 'text-5xl lg:text-[5.5rem]' : 'text-7xl lg:text-[7.5rem]'}`}>
+                            {labelMain.split(' (')[0]}
                         </h2>
                         {labelMain.includes('(') && (
                             <p className="text-3xl text-emerald-500/80 font-black mt-2 uppercase tracking-[0.3em] opacity-80 leading-tight">

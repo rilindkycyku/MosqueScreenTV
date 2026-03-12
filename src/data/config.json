@@ -6,6 +6,9 @@
         "qrUrl": "https://rilindkycyku.dev",
         "showQr": false,
         "showSilenceWarning": true,
+        "appMode": "mosque",
+        "location": "ks",
+        "showQuranRadio": false,
         "durations": {
             "hadith": 5,
             "qr": 1,
@@ -17,6 +20,10 @@
     },
     "ramazan": {
         "active": false,
-        "kohaTeravise": "00:00"
+        "kohaTeravise": "00:00",
+        "namazNate": {
+            "active": false,
+            "koha": "00:30"
+        }
     }
 }

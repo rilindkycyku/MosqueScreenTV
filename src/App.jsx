@@ -1,11 +1,13 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { HiCog } from "react-icons/hi";
-import vaktet from './data/vaktet-e-namazit.json';
+import vaktetKS from './data/vaktet-e-namazit.json';
+import vaktetAL from './data/vaktet-e-namazit-al.json';
 import config from './data/config.json';
 import haditheData from './data/hadithe.json';
 // Components
 import SettingsModal from './components/SettingsModal/SettingsModal';
 import ConfirmDialog from './components/ConfirmDialog/ConfirmDialog';
+import QuranRadio from './components/Display/QuranRadio';
 import Clock from './components/Display/Clock';
 import PrayerGrid from './components/Display/PrayerGrid';
 import NextPrayer from './components/Display/NextPrayer';
@@ -208,7 +210,8 @@ export default function App() {
             durations: { ...config.tvOptions.durations },
             customMsg: "",
             showQr: config.tvOptions.showQr,
-            showSilenceWarning: config.tvOptions.showSilenceWarning
+            showSilenceWarning: config.tvOptions.showSilenceWarning,
+            appMode: config.tvOptions.appMode
         };
         setSettings(defaults);
         setTempSettings(defaults);
@@ -304,6 +307,11 @@ export default function App() {
         };
     }, []);
 
+    // Compute the active prayer dataset based on location
+    const vaktet = useMemo(() => {
+        return settings.location === 'al' ? vaktetAL : vaktetKS;
+    }, [settings.location]);
+
     useEffect(() => {
         if (!Array.isArray(vaktet) || vaktet.length === 0) return;
         const perditeso = () => {
@@ -321,10 +329,12 @@ export default function App() {
         perditeso();
         const interval = setInterval(perditeso, 10000);
         return () => clearInterval(interval);
-    }, []);
+    }, [vaktet]);
 
     const xhemati = useCallback((name) => {
         if (!vaktiSot) return null;
+        if (settings.appMode === 'home' && name !== "NamazNate") return vaktiSot[name];
+
         const isR = settings.ramazan?.active;
         if (name === "Sabahu") {
             if (isR) return vaktiSot.Sabahu;
@@ -346,6 +356,9 @@ export default function App() {
             if (isR && settings.ramazan?.kohaTeravise && settings.ramazan?.kohaTeravise !== "00:00") return settings.ramazan.kohaTeravise;
             return vaktiSot.Jacia;
         }
+        if (name === "NamazNate") {
+            return (isR && settings.appMode !== 'home' && settings.ramazan?.namazNate?.active) ? (settings.ramazan?.namazNate?.koha || "00:30") : null;
+        }
         return vaktiSot?.[name] ?? null;
     }, [vaktiSot, settings]);
 
@@ -355,35 +368,43 @@ export default function App() {
         const now = new Date();
         const nowMin = now.getHours() * 60 + now.getMinutes();
         const isR = settings.ramazan?.active;
+        const isHome = settings.appMode === 'home';
 
         const getLabel = (id, xh) => {
             const isF = now.getDay() === 5;
-            let base = id;
-            if (id === 'Imsaku' && isR) base = "Syfyri (Imsaku)";
-            else if (id === 'Dreka' && isF) base = "Xhumaja";
-            else if (id === 'Akshami' && isR) base = "Iftari (Akshami)";
-            else if (id === 'Jacia' && isR) base = "Teravia (Jacia)";
-            return base;
+            const isHome = settings.appMode === 'home';
+
+            if (id === 'Imsaku') return (isR && isHome) ? "Syfyri" : (isR ? "Syfyri (Imsaku)" : "Imsaku");
+            if (id === 'Akshami') return (isR && isHome) ? "Iftari" : (isR ? "Iftari (Akshami)" : "Akshami");
+            if (id === 'Jacia' && isR) return isHome ? "Jacia" : "Teravia (Jacia)";
+            if (id === 'Dreka' && isF) return "Xhumaja";
+            if (id === 'NamazNate') return "Namaz i Natës";
+            return id;
         };
 
         const moments = [];
-        const PRAYER_KEYS = isR ? ["Imsaku", "Sabahu", "Dreka", "Ikindia", "Akshami", "Jacia"] : ["Sabahu", "Dreka", "Ikindia", "Akshami", "Jacia"];
+        let prayerKeys = ["Sabahu", "Dreka", "Ikindia", "Akshami", "Jacia"];
+        if (isR) prayerKeys.unshift("Imsaku");
 
-        PRAYER_KEYS.forEach(n => {
-            if (vaktiSot[n]) {
+        // NamazNate only for Mosque mode if active
+        if (isR && settings.appMode !== 'home' && settings.ramazan?.namazNate?.active) {
+            prayerKeys.unshift("NamazNate");
+        }
+
+        prayerKeys.forEach(n => {
+            const kohaPajisjes = n === "NamazNate" ? (settings.ramazan?.namazNate?.koha || "00:30") : vaktiSot[n];
+            if (kohaPajisjes) {
                 const xh = xhemati(n);
 
-                // In Ramazan, skip the raw Jacia (Adhan) time to prioritize Teravia (if configured)
-                const skipRawJacia = (n === "Jacia" && isR && settings.ramazan?.kohaTeravise && settings.ramazan?.kohaTeravise !== "00:00");
+                // Teravia/Jacia skip logic: home mode always shows Jacia
+                const skipRawJacia = (n === "Jacia" && isR && settings.appMode !== 'home' && settings.ramazan?.kohaTeravise && settings.ramazan?.kohaTeravise !== "00:00");
 
                 if (!skipRawJacia) {
                     moments.push({ id: n, kohe: vaktiSot[n], isXh: false });
                 }
 
                 if (xh) {
-                    // Avoid adding duplicate entries if the xhemat time is identical to the vakti time
-                    // unless we skipped the raw time, in which case we definitely need the xhemat entry.
-                    if (xh !== vaktiSot[n] || skipRawJacia) {
+                    if (xh !== kohaPajisjes || skipRawJacia) {
                         moments.push({ id: n, kohe: xh, isXh: true });
                     }
                 }
@@ -394,17 +415,23 @@ export default function App() {
         let nextInfo;
 
         if (nextIdx === -1) {
-            const tomorrowRow = vaktet[vaktet.findIndex(v => v.Date === vaktiSot.Date) + 1] || vaktet[0];
+            const tomIdx = vaktet.findIndex(v => v.Date === vaktiSot.Date) + 1;
+            const tomorrowRow = vaktet[tomIdx] || vaktet[0];
             const tomXh = isR ? tomorrowRow.Sabahu : (tomorrowRow.Lindja ? (() => {
                 const [h, m] = tomorrowRow.Lindja.split(":").map(Number);
                 const total = h * 60 + m - (settings.durations?.sabahuOffset || 35);
                 return `${String(Math.floor(total / 60)).padStart(2, "0")}:${String(((total % 60) + 60) % 60).padStart(2, "0")}`;
             })() : tomorrowRow.Sabahu);
 
+            const isHome = settings.appMode === 'home';
+            const hasNN = isR && settings.ramazan?.namazNate?.active && !isHome;
+            const tomId = hasNN ? "NamazNate" : (isR ? "Imsaku" : "Sabahu");
+            const tomK = hasNN ? (settings.ramazan?.namazNate?.koha || "00:30") : (isR ? tomorrowRow.Imsaku : tomXh);
+
             nextInfo = {
                 tani: { id: "Jacia", label: getLabel("Jacia", true) },
-                ardhshëm: { id: isR ? "Imsaku" : "Sabahu", label: getLabel(isR ? "Imsaku" : "Sabahu", true), kohe: isR ? tomorrowRow.Imsaku : tomXh, isXh: true },
-                mbetur: (24 * 60 - nowMin) + neMinuta(isR ? tomorrowRow.Imsaku : tomXh)
+                ardhshëm: { id: tomId, label: getLabel(tomId, true), kohe: tomK, isXh: true },
+                mbetur: (24 * 60 - nowMin) + neMinuta(tomK)
             };
         } else if (nextIdx === 0) {
             const idxS = vaktet.findIndex(v => v.Date === vaktiSot.Date);
@@ -417,7 +444,6 @@ export default function App() {
         } else {
             let tani = { ...moments[nextIdx - 1], label: getLabel(moments[nextIdx - 1].id, moments[nextIdx - 1].isXh) };
 
-            // If it's past Sunrise (Lindja), Sabahu is no longer "current"
             if (tani.id === "Sabahu" && vaktiSot.Lindja && nowMin >= neMinuta(vaktiSot.Lindja)) {
                 tani = { id: "Lindja", label: "Lindja e Diellit", kohe: vaktiSot.Lindja };
             }
@@ -430,14 +456,11 @@ export default function App() {
         }
 
         setInfoTani(prev => {
-            // Fix Silence Mode logic:
-            // 1. Up to 5 minutes BEFORE the next prayer
-            // 2. Up to 2 minutes AFTER the current/past prayer (tani)
             const diffA = nextInfo.ardhshëm ? neMinuta(nextInfo.ardhshëm.kohe) - nowMin : 999;
             const diffT = nextInfo.tani?.kohe ? nowMin - neMinuta(nextInfo.tani.kohe) : 999;
             const isSilenceMode = (diffA <= 5 && diffA >= 0) || (diffT >= 0 && diffT <= 2);
 
-            const updated = { ...nextInfo, isSilenceMode };
+            const updated = { ...nextInfo, isSilenceMode, nowMin };
             return JSON.stringify(prev) === JSON.stringify(updated) ? prev : updated;
         });
     }, [vaktiSot, settings, xhemati]);
@@ -467,16 +490,30 @@ export default function App() {
     const listaNamazeve = useMemo(() => {
         const isR = settings.ramazan?.active;
         const isF = new Date().getDay() === 5;
-        const list = [
-            { id: "Sabahu", label: "Sabahu" },
-            { id: "Dreka", label: isF ? "Xhumaja" : "Dreka" },
-            { id: "Ikindia", label: "Ikindia" },
-            { id: "Akshami", label: isR ? "Iftari (Akshami)" : "Akshami" },
-            { id: "Jacia", label: isR ? "Teravia (Jacia)" : "Jacia" },
+        const isHome = settings.appMode === 'home';
+
+        const getPrayerLabel = (id) => {
+            if (id === 'Imsaku') return (isR && isHome) ? "Syfyri" : (isR ? "Syfyri (Imsaku)" : "Imsaku");
+            if (id === 'Akshami') return (isR && isHome) ? "Iftari" : (isR ? "Iftari (Akshami)" : "Akshami");
+            if (id === 'Jacia' && isR) return isHome ? "Jacia" : "Teravia (Jacia)";
+            if (id === 'Dreka' && isF) return "Xhumaja";
+            if (id === 'NamazNate') return "Namaz i Natës";
+            return id;
+        };
+
+        let list = [
+            { id: "Sabahu", label: getPrayerLabel("Sabahu") },
+            { id: "Dreka", label: getPrayerLabel("Dreka") },
+            { id: "Ikindia", label: getPrayerLabel("Ikindia") },
+            { id: "Akshami", label: getPrayerLabel("Akshami") },
+            { id: "Jacia", label: getPrayerLabel("Jacia") },
         ];
-        if (isR) list.unshift({ id: "Imsaku", label: "Syfyri (Imsaku)" });
+
+        if (isR) {
+            list.unshift({ id: "Imsaku", label: getPrayerLabel("Imsaku") });
+        }
         return list;
-    }, [settings.ramazan]);
+    }, [settings.ramazan?.active, settings.appMode, settings.ramazan?.namazNate?.active]);
 
 
     if (!vaktiSot) return <div className="h-screen bg-black flex items-center justify-center text-white text-3xl font-bold animate-pulse">Duke ngarkuar...</div>;
@@ -519,24 +556,57 @@ export default function App() {
                     <div className="absolute -bottom-[20%] -right-[20%] w-[60%] h-[60%] rounded-full" style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%)', willChange: 'transform' }} />
                 </div>
 
-                <button onClick={() => setShowSettings(true)} className="absolute top-0 right-0 w-32 h-32 flex items-start justify-end p-6 bg-transparent opacity-0 hover:opacity-100 transition-opacity z-[100] cursor-pointer">
-                    <div className="p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-zinc-400"><HiCog className="text-2xl" /></div>
-                </button>
+                <header className="mb-4 shrink-0 relative z-20">
+                    {settings.appMode === 'mosque' ? (
+                        <div className="flex justify-between items-center w-full px-2">
+                            {/* Left Column: Location & Personnel */}
+                            <div className="flex flex-col gap-0 flex-1 min-w-0">
+                                <p className="text-zinc-500 text-4xl font-black tracking-wider uppercase whitespace-nowrap overflow-visible">{settings.address}</p>
+                                <p className="text-zinc-600 text-2xl font-bold tracking-tight uppercase">
+                                    Imami: <span className="text-zinc-400 font-black">{settings.imamName}</span>
+                                </p>
 
-                <header className="grid grid-cols-3 items-center mb-2 shrink-0" style={{ contain: 'layout style' }}>
-                    <div className="flex flex-col gap-2">
-                        <p className="text-zinc-400 text-4xl font-black tracking-widest uppercase truncate">{settings.address}</p>
-                        <p className="text-zinc-500 text-3xl font-bold tracking-wide">Imami: <span className="text-zinc-300">{settings.imamName}</span></p>
-                    </div>
-                    <div className="text-center">
-                        <h1 className={`font-black text-emerald-400 tracking-tighter uppercase whitespace-nowrap relative -left-8 ${(settings.name || "").length > 25 ? 'text-5xl' :
-                            (settings.name || "").length > 18 ? 'text-6xl' :
-                                'text-7xl'
-                            }`}>
-                            {settings.name}
-                        </h1>
-                    </div>
-                    <Clock />
+                                <button
+                                    onClick={() => setShowSettings(true)}
+                                    className="flex items-center gap-4 px-8 py-3 w-fit rounded-[1.5rem] bg-white/5 hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/30 transition-all duration-500 group mt-4 shadow-2xl backdrop-blur-xl"
+                                >
+                                    <HiCog className="text-4xl text-zinc-600 group-hover:text-emerald-400 group-hover:rotate-180 transition-all duration-700" />
+                                    <span className="text-xl font-black uppercase tracking-[0.2em] text-zinc-500 group-hover:text-emerald-400">Konfiguro</span>
+                                </button>
+                            </div>
+
+                            {/* Center Column: Mosque Brand */}
+                            <div className="flex-[2] flex justify-center px-4">
+                                <h1 className={`font-black text-emerald-500 tracking-tighter uppercase text-center leading-[0.8] whitespace-nowrap ${(settings.name || "").length > 20 ? 'text-5xl' : 'text-7xl'
+                                    }`}>
+                                    {settings.name}
+                                </h1>
+                            </div>
+
+                            {/* Right Column: Time & Calendar */}
+                            <div className="flex-1 flex justify-end">
+                                <Clock />
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="w-full relative px-10 py-6 flex justify-between items-start">
+                            <div className="flex flex-col gap-4">
+                                <Clock mode="home_left" />
+                                <div className="flex items-center gap-4">
+                                    <button
+                                        onClick={() => setShowSettings(true)}
+                                        className="flex items-center gap-4 px-8 py-3 w-fit rounded-[1.5rem] bg-white/5 hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/30 transition-all duration-500 group z-30 shadow-2xl backdrop-blur-xl"
+                                    >
+                                        <HiCog className="text-4xl text-zinc-600 group-hover:text-emerald-400 group-hover:rotate-180 transition-all duration-700" />
+                                        <span className="text-xl font-black uppercase tracking-[0.2em] text-zinc-500 group-hover:text-emerald-400">Konfiguro</span>
+                                    </button>
+
+                                    {settings.showQuranRadio && <QuranRadio />}
+                                </div>
+                            </div>
+                            <Clock mode="home_right" /> 
+                        </div>
+                    )}
                 </header>
 
                 <main className="flex-1 flex flex-col gap-4 min-h-0" style={{ contain: 'layout style paint' }}>
@@ -544,24 +614,26 @@ export default function App() {
                         <NextPrayer infoTani={infoTani} ne24hFn={ne24h} formatDallimFn={formatDallim} settings={settings} />
                         <ActivityBox displayMode={displayMode} settings={settings} currentHadith={currentHadith} vaktiSot={vaktiSot} infoTani={infoTani} />
                     </div>
-                    <PrayerGrid listaNamazeve={listaNamazeve} vaktiSot={vaktiSot} infoTani={infoTani} xhematiFn={xhemati} ne24hFn={ne24h} isRamazan={settings.ramazan?.active} />
+                    <PrayerGrid listaNamazeve={listaNamazeve} vaktiSot={vaktiSot} infoTani={infoTani} xhematiFn={xhemati} ne24hFn={ne24h} isRamazan={settings.ramazan?.active} settings={settings} />
                 </main>
 
-                <footer className="mt-2 px-8 shrink-0">
-                    <div className="w-full h-12 flex justify-between items-center bg-black/40 px-12 rounded-full border border-white/10 text-zinc-400 font-bold uppercase tracking-[0.2em] shadow-sm backdrop-blur-sm">
-                        <div className="flex items-center gap-2 text-2xl font-black">
-                            © {new Date().getFullYear()} - <span className="text-emerald-500">Rilind Kyçyku</span>
+                {settings.appMode === 'mosque' && (
+                    <footer className="mt-2 px-8 shrink-0">
+                        <div className="w-full h-12 flex justify-between items-center bg-black/40 px-12 rounded-full border border-white/10 text-zinc-400 font-bold uppercase tracking-[0.2em] shadow-sm backdrop-blur-sm">
+                            <div className="flex items-center gap-2 text-2xl font-black">
+                                © {new Date().getFullYear()} - <span className="text-emerald-500">Rilind Kyçyku</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-2xl font-black whitespace-nowrap">
+                                <span className="text-emerald-500">Mosque Screen TV</span>
+                                <span className="text-zinc-600 mx-4">•</span>
+                                <span className="text-emerald-500 tracking-wider">www.tv.rilindkycyku.dev</span>
+                            </div>
+                            <div className="flex items-center gap-4 text-2xl font-black">
+                                <span className="text-emerald-500 uppercase tracking-wider">www.rilindkycyku.dev</span>
+                            </div>
                         </div>
-                        <div className="flex items-center gap-2 text-2xl font-black whitespace-nowrap">
-                            <span className="text-emerald-500">Mosque Screen TV</span>
-                            <span className="text-zinc-600 mx-4">•</span>
-                            <span className="text-emerald-500 tracking-wider">www.tv.rilindkycyku.dev</span>
-                        </div>
-                        <div className="flex items-center gap-4 text-2xl font-black">
-                            <span className="text-emerald-500 uppercase tracking-wider">www.rilindkycyku.dev</span>
-                        </div>
-                    </div>
-                </footer>
+                    </footer>
+                )}
 
                 <SettingsModal
                     show={showSettings}

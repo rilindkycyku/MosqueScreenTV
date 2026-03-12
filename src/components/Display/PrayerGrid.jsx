@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-const PrayerGrid = memo(function PrayerGrid({ listaNamazeve, vaktiSot, infoTani, xhematiFn, ne24hFn, isRamazan }) {
+const PrayerGrid = memo(function PrayerGrid({ listaNamazeve, vaktiSot, infoTani, xhematiFn, ne24hFn, isRamazan, settings }) {
     return (
         <div className="flex-1 min-h-0 relative z-10">
             <div className="bg-zinc-900 rounded-[3.5rem] p-6 border border-white/5 shadow-premium h-full flex flex-col justify-center">
@@ -34,6 +34,28 @@ const PrayerGrid = memo(function PrayerGrid({ listaNamazeve, vaktiSot, infoTani,
                                         </div>
                                     </div>
                                 )}
+                                {isRamazan && settings?.ramazan?.namazNate?.active && settings.appMode !== 'home' && id === 'Jacia' && (() => {
+                                    const kohaNN = settings.ramazan.namazNate.koha || "00:30";
+                                    const [h, m] = kohaNN.split(":").map(Number);
+                                    const minNN = h * 60 + m;
+                                    const nowM = infoTani?.nowMin || 0;
+                                    
+                                    // For Jacia, ALWAYS show if active. 
+                                    // For Imsaku, only show until the time passes (standard logic).
+                                    const shouldShow = id === 'Jacia' || (nowM > 1000 || nowM < minNN);
+
+                                    if (shouldShow) {
+                                        return (
+                                            <div className="w-full px-2 mt-2">
+                                                <div className={`py-2 rounded-3xl flex flex-col items-center border transition-all duration-500 ${isCurrent ? 'bg-black/30 border-white/20 shadow-inner' : 'bg-white/5 border-white/10'}`}>
+                                                    <span className={`text-[11px] font-black uppercase tracking-[0.2em] leading-none mb-2 ${isCurrent ? 'text-emerald-200' : 'text-zinc-500'}`}>Namazi i Natës</span>
+                                                    <span className={`text-3xl font-black font-mono leading-none ${isCurrent ? 'text-white' : 'text-emerald-400'}`}>{ne24hFn(kohaNN)}</span>
+                                                </div>
+                                            </div>
+                                        );
+                                    }
+                                    return null;
+                                })()}
                             </div>
                         );
                     })}

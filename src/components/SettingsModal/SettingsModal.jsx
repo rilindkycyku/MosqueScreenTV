@@ -6,7 +6,9 @@ import {
     HiSpeakerphone,
     HiGlobeAlt,
     HiRefresh,
-    HiCheckCircle
+    HiCheckCircle,
+    HiVolumeUp,
+    HiVolumeOff
 } from "react-icons/hi";
 
 /**
@@ -28,12 +30,20 @@ export default function SettingsModal({
     if (!show) return null;
 
     const tabs = [
-        { id: 'identity', label: 'Të dhënat', icon: HiIdentification, subtitle: 'Të dhënat e xhamisë' },
+        { id: 'identity', label: 'Të dhënat', icon: HiIdentification, subtitle: 'Të dhënat e xhamisë', mosqueOnly: true },
         { id: 'display', label: 'Ekrani', icon: HiGlobeAlt, subtitle: 'Konfigurimi i shfaqjes' },
-        { id: 'durations', label: 'Kohëzgjatja', icon: HiClock, subtitle: 'Ciklet e shfaqjes' },
+        { id: 'durations', label: 'Kohëzgjatja', icon: HiClock, subtitle: 'Ciklet e shfaqjes', mosqueOnly: true },
         { id: 'ramazan', label: 'Ramazani', icon: HiClock, subtitle: 'Konfigurimi i muajit të ramazanit' },
-        { id: 'message', label: 'Njoftimet', icon: HiSpeakerphone, subtitle: 'Mesazh i shpejtë' }
-    ];
+        { id: 'message', label: 'Njoftimet', icon: HiSpeakerphone, subtitle: 'Mesazh i shpejtë', mosqueOnly: true }
+    ].filter(tab => !tab.mosqueOnly || tempSettings.appMode === 'mosque');
+
+    // Auto-switch tab if current one becomes hidden (e.g. toggling Home mode)
+    useEffect(() => {
+        const isCurrentTabVisible = tabs.some(t => t.id === activeTab);
+        if (!isCurrentTabVisible) {
+            setActiveTab('display');
+        }
+    }, [tempSettings.appMode, activeTab, tabs]);
 
     return (
         <div className="fixed inset-0 z-[200] bg-black animate-in fade-in duration-500">
@@ -200,35 +210,66 @@ function SectionHeader({ icon: Icon, title, description, onReset, resetLabel = "
 
 function IdentitySection({ settings, setSettings, triggerConfirm, onReset }) {
     return (
-        <div className="space-y-16">
+        <div className="space-y-16 animate-in fade-in slide-in-from-bottom-10 duration-1000">
             <SectionHeader
                 icon={HiIdentification}
                 title="Identiteti"
-                description="Informacionet kryesore të xhamisë që shfaqen në krye të ekranit."
+                description="Informacionet kryesore të ekranit."
                 onReset={() => triggerConfirm(
                     "Rikthe Identitetin",
-                    "A dëshironi t'i ktheni të dhënat e xhamisë (Emri, Adresa, Imami) në vlerat fillestare?",
+                    "A dëshironi t'i ktheni të dhënat në vlerat fillestare?",
                     onReset
                 )}
             />
 
-            <div className="grid grid-cols-1 gap-12">
-                <InputField
-                    label="Emri i Xhamisë"
-                    value={settings.name}
-                    onChange={val => setSettings(p => ({ ...p, name: val }))}
-                />
-                <InputField
-                    label="Vendndodhja / Adresa"
-                    value={settings.address}
-                    onChange={val => setSettings(p => ({ ...p, address: val }))}
-                />
-                <InputField
-                    label="Emri i Imamit"
-                    value={settings.imamName}
-                    onChange={val => setSettings(p => ({ ...p, imamName: val }))}
-                />
-            </div>
+            {settings.appMode === 'mosque' ? (
+                <div className="grid grid-cols-1 gap-12">
+                    <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex flex-col gap-12">
+                        <div className="text-center">
+                            <h4 className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight">Vaktia (Shteti)</h4>
+                            <p className="text-xl text-zinc-500 mt-2 font-medium italic opacity-70">Zgjidhni kalendarin e vaktive për shtetin tuaj.</p>
+                        </div>
+                        <div className="flex bg-zinc-900 p-3 rounded-[3rem] border border-white/10 shadow-2xl relative overflow-hidden">
+                            <button
+                                onClick={() => setSettings(p => ({ ...p, location: 'ks' }))}
+                                className={`flex-1 py-10 rounded-[2.5rem] font-black text-3xl uppercase tracking-widest transition-all duration-500 relative z-10 ${settings.location !== 'al' ? 'bg-emerald-500 text-black shadow-[0_0_60px_rgba(16,185,129,0.5)] scale-[1.02]' : 'text-zinc-600 hover:text-emerald-500/50'}`}
+                            >
+                                Kosovë
+                            </button>
+                            <button
+                                onClick={() => setSettings(p => ({ ...p, location: 'al' }))}
+                                className={`flex-1 py-10 rounded-[2.5rem] font-black text-3xl uppercase tracking-widest transition-all duration-500 relative z-10 ${settings.location === 'al' ? 'bg-red-500 text-white shadow-[0_0_60px_rgba(239,68,68,0.5)] scale-[1.02]' : 'text-zinc-600 hover:text-red-500/50'}`}
+                            >
+                                Shqipëri
+                            </button>
+                        </div>
+                    </div>
+
+                    <InputField
+                        label="Emri i Xhamisë"
+                        value={settings.name}
+                        onChange={val => setSettings(p => ({ ...p, name: val }))}
+                    />
+                    <InputField
+                        label="Vendndodhja / Adresa"
+                        value={settings.address}
+                        onChange={val => setSettings(p => ({ ...p, address: val }))}
+                    />
+                    <InputField
+                        label="Emri i Imamit"
+                        value={settings.imamName}
+                        onChange={val => setSettings(p => ({ ...p, imamName: val }))}
+                    />
+                </div>
+            ) : (
+                <div className="p-16 bg-emerald-500/10 rounded-[4rem] border-2 border-emerald-500/20 flex flex-col items-center text-center gap-6">
+                    <div className="w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(16,185,129,0.4)]">
+                        <HiCheckCircle className="text-5xl text-black" />
+                    </div>
+                    <h3 className="text-5xl font-black text-white uppercase tracking-tight">Mënyra Shtëpi Aktive</h3>
+                    <p className="text-2xl text-zinc-400 font-medium max-w-2xl italic">Në këtë mënyrë, vaktet merren direkt siç janë në kalendar pa vonesa dhe emrat e xhamisë fshihen automatikisht.</p>
+                </div>
+            )}
         </div>
     );
 }
@@ -239,7 +280,7 @@ function DisplaySection({ settings, setSettings, triggerConfirm, onReset }) {
             <SectionHeader
                 icon={HiGlobeAlt}
                 title="Ekrani"
-                description="Konfiguroni elementet vizuale dhe njoftimet automatike të ekranit."
+                description="Konfiguroni elementet vizuale të ekranit."
                 onReset={() => triggerConfirm(
                     "Rikthe Opsionet",
                     "A dëshironi t'i ktheni opsionet e ekranit në vlerat fillestare?",
@@ -248,84 +289,130 @@ function DisplaySection({ settings, setSettings, triggerConfirm, onReset }) {
             />
 
             <div className="grid grid-cols-2 gap-12">
-                {/* Sabahu Offset - Large UI */}
-                <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex flex-col items-center">
-                    <h4 className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight mb-8">Sabahu (Offset)</h4>
-                    <div className="flex items-center gap-6">
-                        <input
-                            type="number"
-                            min="0"
-                            max="60"
-                            value={settings.durations?.sabahuOffset ?? 35}
-                            onChange={(e) => setSettings(p => ({
-                                ...p,
-                                durations: { ...p.durations, sabahuOffset: Math.max(0, parseInt(e.target.value) || 0) }
-                            }))}
-                            className="w-32 bg-black/40 border-b-4 border-zinc-800 py-8 text-white text-6xl font-black outline-none font-mono text-center tracking-tighter focus:border-emerald-500 transition-all rounded-2xl"
-                        />
-                        <span className="text-zinc-500 font-black uppercase text-2xl tracking-[0.2em]">min</span>
+                {/* App Mode Selector */}
+                <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex flex-col gap-12">
+                    <div className="text-center">
+                        <h4 className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight">Mënyra e Përdorimit</h4>
+                        <p className="text-xl text-zinc-500 mt-2 font-medium italic opacity-70">Xhami apo Shtëpi (Personal).</p>
                     </div>
-                    <p className="text-xl text-zinc-500 mt-6 text-center italic font-medium opacity-60">Minuta para Lindjes së Diellit.</p>
+                    <div className="flex bg-zinc-900 p-3 rounded-[3rem] border border-white/10 shadow-2xl relative overflow-hidden">
+                        <button
+                            onClick={() => setSettings(p => ({ ...p, appMode: 'mosque' }))}
+                            className={`flex-1 py-10 rounded-[2.5rem] font-black text-3xl uppercase tracking-widest transition-all duration-500 relative z-10 ${settings.appMode === 'mosque' ? 'bg-emerald-500 text-black shadow-[0_0_60px_rgba(16,185,129,0.5)] scale-[1.02]' : 'text-zinc-600 hover:text-emerald-500/50'}`}
+                        >
+                            Xhami
+                        </button>
+                        <button
+                            onClick={() => setSettings(p => ({ ...p, appMode: 'home' }))}
+                            className={`flex-1 py-10 rounded-[2.5rem] font-black text-3xl uppercase tracking-widest transition-all duration-500 relative z-10 ${settings.appMode === 'home' ? 'bg-amber-500 text-black shadow-[0_0_60px_rgba(245,158,11,0.5)] scale-[1.02]' : 'text-zinc-600 hover:text-amber-500/50'}`}
+                        >
+                            Shtëpi
+                        </button>
+                    </div>
                 </div>
 
-                {/* QR URL */}
-                <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex flex-col justify-center">
-                    <label className="text-emerald-500 font-black uppercase text-2xl tracking-[0.2em] px-4 mb-6">Linku i QR Kodit</label>
-                    <div className="relative group/input">
-                        <HiGlobeAlt className="absolute left-8 top-1/2 -translate-y-1/2 text-5xl text-zinc-600 group-focus-within/input:text-emerald-500 transition-colors" />
+                {/* Radio Quran (Home Only) */}
+                {settings.appMode === 'home' && (
+                    <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex flex-col items-center justify-between text-center min-h-[400px]">
+                        <div>
+                            <h4 className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight">Radio Kurani (LIVE)</h4>
+                            <p className="text-xl text-zinc-500 mt-2 font-medium italic opacity-70 px-4">Dëgjoni Kuran (Yasser Al-Dosari) në shtëpi.</p>
+                        </div>
+                        <button
+                            onClick={() => setSettings(p => ({ ...p, showQuranRadio: !p.showQuranRadio }))}
+                            className={`flex items-center gap-6 px-12 py-8 rounded-[3.5rem] font-black text-3xl uppercase tracking-widest transition-all duration-700 relative z-10 w-full justify-center ${settings.showQuranRadio ? 'bg-emerald-500 text-black shadow-[0_0_60px_rgba(16,185,129,0.5)] scale-[1.05]' : 'bg-zinc-900 text-zinc-600 hover:text-emerald-400/50'}`}
+                        >
+                            {settings.showQuranRadio ? <HiVolumeUp size={40} /> : <HiVolumeOff size={40} />}
+                            <span>{settings.showQuranRadio ? "AKTIVE" : "JO AKTIVE"}</span>
+                        </button>
+                    </div>
+                )}
+
+                {settings.appMode === 'mosque' && (
+                    <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex flex-col items-center">
+                        <h4 className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight mb-8">Sabahu (Offset)</h4>
+                        <div className="flex items-center gap-6">
+                            <input
+                                type="number"
+                                min="0"
+                                max="60"
+                                value={settings.durations?.sabahuOffset ?? 35}
+                                onChange={(e) => setSettings(p => ({
+                                    ...p,
+                                    durations: { ...p.durations, sabahuOffset: Math.max(0, parseInt(e.target.value) || 0) }
+                                }))}
+                                className="w-32 bg-black/40 border-b-4 border-zinc-800 py-8 text-white text-6xl font-black outline-none font-mono text-center tracking-tighter focus:border-emerald-500 transition-all rounded-2xl"
+                            />
+                            <span className="text-zinc-500 font-black uppercase text-2xl tracking-[0.2em]">min</span>
+                        </div>
+                        <p className="text-xl text-zinc-500 mt-6 text-center italic font-medium opacity-60">Minuta para Lindjes së Diellit.</p>
+                    </div>
+                )}
+            </div>
+
+            {settings.appMode === 'mosque' && (
+                <div className="space-y-16 pt-16 border-t border-white/5">
+                    <SectionHeader
+                        icon={HiGlobeAlt}
+                        title="QR Code & Opsionet"
+                        description="Konfigurimet shtesë për xhami."
+                    />
+
+                    <div className="grid grid-cols-2 gap-12">
+                        <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex flex-col gap-12">
+                            <div className="text-center">
+                                <h4 className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight">Vërejtja e Heshtjes</h4>
+                                <p className="text-xl text-zinc-500 mt-2 font-medium italic opacity-70">Thirrja "FIKNI TELEFONAT" në ekran.</p>
+                            </div>
+                            <div className="flex bg-zinc-900 p-3 rounded-[3rem] border border-white/10 shadow-2xl relative overflow-hidden">
+                                <button
+                                    onClick={() => setSettings(p => ({ ...p, showSilenceWarning: false }))}
+                                    className={`flex-1 py-10 rounded-[2.5rem] font-black text-3xl uppercase tracking-widest transition-all duration-500 relative z-10 ${!settings.showSilenceWarning ? 'bg-zinc-800 text-white shadow-premium scale-[1.02] border border-white/10' : 'text-zinc-600 hover:text-zinc-400'}`}
+                                >
+                                    Jo Aktiv
+                                </button>
+                                <button
+                                    onClick={() => setSettings(p => ({ ...p, showSilenceWarning: true }))}
+                                    className={`flex-1 py-10 rounded-[2.5rem] font-black text-3xl uppercase tracking-widest transition-all duration-500 relative z-10 ${settings.showSilenceWarning ? 'bg-emerald-500 text-black shadow-[0_0_60px_rgba(16,185,129,0.5)] scale-[1.02]' : 'text-zinc-600 hover:text-emerald-500/50'}`}
+                                >
+                                    Aktiv
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex flex-col gap-12">
+                            <div className="text-center">
+                                <h4 className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight">QR Code</h4>
+                                <p className="text-xl text-zinc-500 mt-2 font-medium italic opacity-70">Shfaqni kodin QR.</p>
+                            </div>
+                            <div className="flex bg-zinc-900 p-3 rounded-[3rem] border border-white/10 shadow-2xl relative overflow-hidden">
+                                <button
+                                    onClick={() => setSettings(p => ({ ...p, showQr: false }))}
+                                    className={`flex-1 py-10 rounded-[2.5rem] font-black text-3xl uppercase tracking-widest transition-all duration-500 relative z-10 ${!settings.showQr ? 'bg-zinc-800 text-white shadow-premium scale-[1.02] border border-white/10' : 'text-zinc-600 hover:text-zinc-400'}`}
+                                >
+                                    Jo Aktiv
+                                </button>
+                                <button
+                                    onClick={() => setSettings(p => ({ ...p, showQr: true }))}
+                                    className={`flex-1 py-10 rounded-[2.5rem] font-black text-3xl uppercase tracking-widest transition-all duration-500 relative z-10 ${settings.showQr ? 'bg-emerald-500 text-black shadow-[0_0_60px_rgba(16,185,129,0.5)] scale-[1.02]' : 'text-zinc-600 hover:text-emerald-500/50'}`}
+                                >
+                                    Aktiv
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className={`mt-12 p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group ${!settings.showQr ? 'opacity-40 pointer-events-none' : ''}`}>
+                        <h4 className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight mb-8 text-center">URL e QR Kodit</h4>
                         <input
                             type="text"
                             value={settings.qrUrl}
                             onChange={(e) => setSettings(p => ({ ...p, qrUrl: e.target.value }))}
-                            className="w-full bg-black/40 border-2 border-white/5 py-9 pl-24 pr-10 text-emerald-400 text-xl font-bold outline-none font-mono tracking-tight rounded-3xl"
+                            className="w-full bg-black/40 border-b-4 border-zinc-800 py-8 px-8 text-white text-3xl font-black outline-none focus:border-emerald-500 transition-all rounded-3xl"
                         />
                     </div>
                 </div>
-
-                {/* showQr Segmented UI */}
-                <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex flex-col gap-8">
-                    <div className="text-center">
-                        <h4 className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight">Shfaq QR Kodin</h4>
-                        <p className="text-xl text-zinc-500 mt-2 font-medium italic opacity-70">Aktivizoni ose çaktivizoni kodin në cikël.</p>
-                    </div>
-                    <div className="flex bg-zinc-900 p-3 rounded-[3rem] border border-white/10 shadow-2xl relative overflow-hidden">
-                        <button
-                            onClick={() => setSettings(p => ({ ...p, showQr: false }))}
-                            className={`flex-1 py-8 rounded-[2.5rem] font-black text-2xl uppercase tracking-widest transition-all duration-500 relative z-10 ${settings.showQr === false ? 'bg-zinc-800 text-white shadow-premium' : 'text-zinc-600'}`}
-                        >
-                            Jo Aktiv
-                        </button>
-                        <button
-                            onClick={() => setSettings(p => ({ ...p, showQr: true }))}
-                            className={`flex-1 py-8 rounded-[2.5rem] font-black text-2xl uppercase tracking-widest transition-all duration-500 relative z-10 ${settings.showQr !== false ? 'bg-emerald-500 text-black shadow-lg scale-[1.02]' : 'text-zinc-600'}`}
-                        >
-                            Aktiv
-                        </button>
-                    </div>
-                </div>
-
-                {/* showSilenceWarning Segmented UI */}
-                <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex flex-col gap-8">
-                    <div className="text-center">
-                        <h4 className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight">Vërejtja e Heshtjes</h4>
-                        <p className="text-xl text-zinc-500 mt-2 font-medium italic opacity-70">Thirrja "FIKNI TELEFONAT" në ekran.</p>
-                    </div>
-                    <div className="flex bg-zinc-900 p-3 rounded-[3rem] border border-white/10 shadow-2xl relative overflow-hidden">
-                        <button
-                            onClick={() => setSettings(p => ({ ...p, showSilenceWarning: false }))}
-                            className={`flex-1 py-8 rounded-[2.5rem] font-black text-2xl uppercase tracking-widest transition-all duration-500 relative z-10 ${settings.showSilenceWarning === false ? 'bg-zinc-800 text-white shadow-premium' : 'text-zinc-600'}`}
-                        >
-                            Jo Aktiv
-                        </button>
-                        <button
-                            onClick={() => setSettings(p => ({ ...p, showSilenceWarning: true }))}
-                            className={`flex-1 py-8 rounded-[2.5rem] font-black text-2xl uppercase tracking-widest transition-all duration-500 relative z-10 ${settings.showSilenceWarning !== false ? 'bg-emerald-500 text-black shadow-lg scale-[1.02]' : 'text-zinc-600'}`}
-                        >
-                            Aktiv
-                        </button>
-                    </div>
-                </div>
-            </div>
+            )}
         </div>
     );
 }
@@ -334,10 +421,10 @@ function DurationsSection({ settings, setSettings, triggerConfirm, onReset }) {
     const fields = [
         { id: 'hadithRefresh', label: 'Rifreskimi i Hadithit / Ajetit', desc: 'Koha për përditësimin automatik të Hadithit / Ajetit.' },
         { id: 'hadith', label: 'Hadithi / Ajeti', desc: 'Sa kohë të qëndrojë Hadithi / Ajeti i shfaqur.' },
-        { id: 'qr', label: 'QR Kodi', desc: 'Koha e shfaqjes së QR Code për skanim.' },
-        { id: 'notification', label: 'Njoftimi Special', desc: 'Sa kohë të shfaqet mesazhi juaj i lënë.' },
+        { id: 'qr', label: 'QR Kodi', desc: 'Koha e shfaqjes së QR Code për skanim.', mosqueOnly: true },
+        { id: 'notification', label: 'Njoftimi Special', desc: 'Sa kohë të shfaqet mesazhi juaj i lënë.', mosqueOnly: true },
         { id: 'announcement', label: 'Festat / Shënimet', desc: 'Koha për shfaqjen e festave dhe shënimeve nga kalendari.' }
-    ];
+    ].filter(f => !f.mosqueOnly || settings.appMode === 'mosque');
 
     return (
         <div className="space-y-16">
@@ -431,7 +518,7 @@ function RamazanSection({ settings, setSettings, triggerConfirm, onReset }) {
                 )}
             />
 
-            <div className="grid grid-cols-2 gap-12">
+            <div className={`grid ${(!settings.ramazan?.active || settings.appMode === 'home') ? 'grid-cols-1 max-w-2xl mx-auto' : 'grid-cols-2'} gap-12`}>
                 <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex flex-col gap-12">
                     <div className="text-center">
                         <h4 className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight">Statusi i Ramazanit</h4>
@@ -454,58 +541,165 @@ function RamazanSection({ settings, setSettings, triggerConfirm, onReset }) {
                     </div>
                 </div>
 
-                <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group">
-                    <h4 className="text-4xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight mb-8 text-center">Koha e Faljes së Teravisë</h4>
-                    <div className="flex items-center justify-center gap-6">
-                        <div className="flex flex-col items-center gap-4">
-                            <input
-                                ref={hourRef}
-                                type="number"
-                                min="0"
-                                max="23"
-                                placeholder="00"
-                                value={h}
-                                onChange={(e) => {
-                                    let val = e.target.value;
-                                    if (val.length > 2) val = val.slice(0, 2);
-                                    const num = parseInt(val);
-                                    if (num > 23) val = "23";
-                                    handleTimeUpdate(val, m);
-                                    if (val.length === 2 || (val.length === 1 && parseInt(val) > 2)) minRef.current?.focus();
-                                }}
-                                className="w-32 bg-black/40 border-b-4 border-zinc-800 py-8 text-white text-6xl font-black outline-none font-mono text-center tracking-tighter focus:border-emerald-500 transition-all rounded-2xl"
-                            />
-                            <span className="text-zinc-500 font-bold uppercase text-sm tracking-widest">Ora</span>
+                {settings.ramazan?.active && settings.appMode !== 'home' && (
+                    <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group animate-in zoom-in-95 duration-500">
+                        <h4 className="text-4xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight mb-8 text-center">Koha e Faljes së Teravisë</h4>
+                        <div className="flex items-center justify-center gap-6">
+                            <div className="flex flex-col items-center gap-4">
+                                <input
+                                    ref={hourRef}
+                                    type="number"
+                                    min="0"
+                                    max="23"
+                                    placeholder="00"
+                                    value={h}
+                                    onChange={(e) => {
+                                        let val = e.target.value;
+                                        if (val.length > 2) val = val.slice(0, 2);
+                                        const num = parseInt(val);
+                                        if (num > 23) val = "23";
+                                        handleTimeUpdate(val, m);
+                                        if (val.length === 2 || (val.length === 1 && parseInt(val) > 2)) minRef.current?.focus();
+                                    }}
+                                    className="w-32 bg-black/40 border-b-4 border-zinc-800 py-8 text-white text-6xl font-black outline-none font-mono text-center tracking-tighter focus:border-emerald-500 transition-all rounded-2xl"
+                                />
+                                <span className="text-zinc-500 font-bold uppercase text-sm tracking-widest">Ora</span>
+                            </div>
+
+                            <span className="text-6xl font-black text-white/20 pb-8">:</span>
+
+                            <div className="flex flex-col items-center gap-4">
+                                <input
+                                    ref={minRef}
+                                    type="number"
+                                    min="0"
+                                    max="59"
+                                    placeholder="00"
+                                    value={m}
+                                    onChange={(e) => {
+                                        let val = e.target.value;
+                                        if (val.length > 2) val = val.slice(0, 2);
+                                        const num = parseInt(val) || 0;
+                                        if (num > 59) val = "59";
+                                        handleTimeUpdate(h, val);
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Backspace' && !m) hourRef.current?.focus();
+                                    }}
+                                    className="w-32 bg-black/40 border-b-4 border-zinc-800 py-8 text-white text-6xl font-black outline-none font-mono text-center tracking-tighter focus:border-emerald-500 transition-all rounded-2xl"
+                                />
+                                <span className="text-zinc-500 font-bold uppercase text-sm tracking-widest">Minuta</span>
+                            </div>
+                        </div>
+                        <p className="text-xl text-zinc-500 mt-6 text-center italic font-medium opacity-60">Lëreni 00:00 për ta ndjekur Jacinë.</p>
+                    </div>
+                )}
+            </div>
+
+            {/* Namaz Nate Section - Only visible if Ramazan is active and NOT in Home mode */}
+            {settings.ramazan?.active && settings.appMode !== 'home' && (
+                <div className="mt-16 pt-16 border-t border-white/5 animate-in slide-in-from-bottom-5 duration-700">
+                    <SectionHeader
+                        icon={HiClock}
+                        title="Namaz i Natës"
+                        description="Konfigurimi i namazit të natës (Tahajjud) gjatë muajit të Ramazanit."
+                    />
+
+                    <div className="grid grid-cols-2 gap-12">
+                        <div className="p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex flex-col gap-12">
+                            <div className="text-center">
+                                <h4 className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight">Statusi i Namazit të Natës</h4>
+                                <p className="text-xl text-zinc-500 mt-2 font-medium italic opacity-70">Aktivizoni shfaqjen e namazit të natës në tabelë.</p>
+                            </div>
+                            <div className="flex bg-zinc-900 p-3 rounded-[3rem] border border-white/10 shadow-2xl relative overflow-hidden">
+                                <button
+                                    onClick={() => setSettings(p => ({
+                                        ...p,
+                                        ramazan: {
+                                            ...(p.ramazan || {}),
+                                            namazNate: { ...(p.ramazan?.namazNate || {}), active: false }
+                                        }
+                                    }))}
+                                    className={`flex-1 py-10 rounded-[2.5rem] font-black text-3xl uppercase tracking-widest transition-all duration-500 relative z-10 ${!settings.ramazan?.namazNate?.active ? 'bg-zinc-800 text-white shadow-premium scale-[1.02] border border-white/10' : 'text-zinc-600 hover:text-zinc-400'}`}
+                                >
+                                    Jo Aktiv
+                                </button>
+                                <button
+                                    onClick={() => setSettings(p => ({
+                                        ...p,
+                                        ramazan: {
+                                            ...(p.ramazan || {}),
+                                            namazNate: { ...(p.ramazan?.namazNate || {}), active: true }
+                                        }
+                                    }))}
+                                    className={`flex-1 py-10 rounded-[2.5rem] font-black text-3xl uppercase tracking-widest transition-all duration-500 relative z-10 ${settings.ramazan?.active ? 'bg-emerald-500 text-black shadow-[0_0_60px_rgba(16,185,129,0.5)] scale-[1.02]' : 'text-zinc-600 hover:text-emerald-500/50'}`}
+                                >
+                                    Aktiv
+                                </button>
+                            </div>
                         </div>
 
-                        <span className="text-6xl font-black text-white/20 pb-8">:</span>
+                        <div className={`p-12 bg-white/5 rounded-[4rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group ${!settings.ramazan?.namazNate?.active ? 'opacity-40 pointer-events-none' : ''}`}>
+                            <h4 className="text-4xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight mb-8 text-center">Koha e Namazit të Natës</h4>
+                            <div className="flex items-center justify-center gap-6">
+                                <div className="flex flex-col items-center gap-4">
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        max="23"
+                                        placeholder="00"
+                                        value={settings.ramazan?.namazNate?.koha?.split(':')[0] || "00"}
+                                        onChange={(e) => {
+                                            let val = e.target.value;
+                                            if (val.length > 2) val = val.slice(0, 2);
+                                            const num = parseInt(val);
+                                            if (num > 23) val = "23";
+                                            const mPart = settings.ramazan?.namazNate?.koha?.split(':')[1] || "30";
+                                            setSettings(p => ({
+                                                ...p,
+                                                ramazan: {
+                                                    ...(p.ramazan || {}),
+                                                    namazNate: { ...(p.ramazan?.namazNate || {}), koha: `${val.padStart(2, '0')}:${mPart}` }
+                                                }
+                                            }));
+                                        }}
+                                        className="w-32 bg-black/40 border-b-4 border-zinc-800 py-8 text-white text-6xl font-black outline-none font-mono text-center tracking-tighter focus:border-emerald-500 transition-all rounded-2xl"
+                                    />
+                                    <span className="text-zinc-500 font-bold uppercase text-sm tracking-widest">Ora</span>
+                                </div>
 
-                        <div className="flex flex-col items-center gap-4">
-                            <input
-                                ref={minRef}
-                                type="number"
-                                min="0"
-                                max="59"
-                                placeholder="00"
-                                value={m}
-                                onChange={(e) => {
-                                    let val = e.target.value;
-                                    if (val.length > 2) val = val.slice(0, 2);
-                                    const num = parseInt(val) || 0;
-                                    if (num > 59) val = "59";
-                                    handleTimeUpdate(h, val);
-                                }}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Backspace' && !m) hourRef.current?.focus();
-                                }}
-                                className="w-32 bg-black/40 border-b-4 border-zinc-800 py-8 text-white text-6xl font-black outline-none font-mono text-center tracking-tighter focus:border-emerald-500 transition-all rounded-2xl"
-                            />
-                            <span className="text-zinc-500 font-bold uppercase text-sm tracking-widest">Minuta</span>
+                                <span className="text-6xl font-black text-white/20 pb-8">:</span>
+
+                                <div className="flex flex-col items-center gap-4">
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        max="59"
+                                        placeholder="30"
+                                        value={settings.ramazan?.namazNate?.koha?.split(':')[1] || "30"}
+                                        onChange={(e) => {
+                                            let val = e.target.value;
+                                            if (val.length > 2) val = val.slice(0, 2);
+                                            const num = parseInt(val) || 0;
+                                            if (num > 59) val = "59";
+                                            const hPart = settings.ramazan?.namazNate?.koha?.split(':')[0] || "00";
+                                            setSettings(p => ({
+                                                ...p,
+                                                ramazan: {
+                                                    ...(p.ramazan || {}),
+                                                    namazNate: { ...(p.ramazan?.namazNate || {}), koha: `${hPart}:${val.padStart(2, '0')}` }
+                                                }
+                                            }));
+                                        }}
+                                        className="w-32 bg-black/40 border-b-4 border-zinc-800 py-8 text-white text-6xl font-black outline-none font-mono text-center tracking-tighter focus:border-emerald-500 transition-all rounded-2xl"
+                                    />
+                                    <span className="text-zinc-500 font-bold uppercase text-sm tracking-widest">Minuta</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <p className="text-xl text-zinc-500 mt-6 text-center italic font-medium opacity-60">Lëreni 00:00 për ta ndjekur Jacinë.</p>
                 </div>
-            </div>
+            )}
         </div>
     );
 }
