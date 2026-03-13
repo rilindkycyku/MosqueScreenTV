@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { HiCog } from "react-icons/hi";
 import vaktetKS from './data/vaktet-e-namazit.json';
 import vaktetAL from './data/vaktet-e-namazit-al.json';
@@ -15,11 +15,37 @@ import ActivityBox from './components/Display/ActivityBox';
 // Vercel Analytics
 import { Analytics } from '@vercel/analytics/react';
 
-const PRAYERS = ["Sabahu", "Dreka", "Ikindia", "Akshami", "Jacia"];
+// Module-level pure utilities (never re-created)
 const neMinuta = (ora) => {
     if (!ora) return 0;
     const [h, m] = ora.split(":").map(Number);
     return h * 60 + m;
+};
+
+const ne24h = (ora) => {
+    if (!ora) return "—";
+    const [h, m] = ora.split(":").map(Number);
+    return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+};
+
+const formatDallim = (min) => {
+    if (min <= 0) return "0m";
+    const o = Math.floor(min / 60);
+    const m = min % 60;
+    let res = "";
+    if (o > 0) res += `${o}h `;
+    if (m > 0 || o === 0) res += `${m}m`;
+    return res.trim();
+};
+
+// Shared prayer label helper used by both updateNextPrayer and listaNamazeve
+const getPrayerLabel = (id, { isR, isHome, isFriday }) => {
+    if (id === 'Imsaku') return (isR && isHome) ? "Syfyri" : (isR ? "Syfyri (Imsaku)" : "Imsaku");
+    if (id === 'Akshami') return (isR && isHome) ? "Iftari" : (isR ? "Iftari (Akshami)" : "Akshami");
+    if (id === 'Jacia' && isR) return isHome ? "Jacia" : "Teravia (Jacia)";
+    if (id === 'Dreka' && isFriday && !isHome) return "Xhumaja";
+    if (id === 'NamazNate') return "Namaz i Natës";
+    return id;
 };
 
 export default function App() {
@@ -53,9 +79,11 @@ export default function App() {
     const [showConfirm, setShowConfirm] = useState(false);
     const [confirmConfig, setConfirmConfig] = useState({ title: "", message: "", action: null });
     const [scale, setScale] = useState(1);
-    const [pixelShift, setPixelShift] = useState({ x: 0, y: 0 });
     const [isNightDimmed, setIsNightDimmed] = useState(false);
+    // nextHadith queues a new hadith to swap in at the next cycle start (seamless swap)
     const [nextHadith, setNextHadith] = useState(null);
+    // Ref mirrors currentHadith so the refresh timer can read it without being a dep
+    const currentHadithRef = useRef(null);
 
     // Optimized Scaling Logic to fit any screen
     useEffect(() => {
@@ -170,6 +198,12 @@ export default function App() {
         setShowSettings(false);
     };
 
+    // Cancel: discard unsaved changes by resetting tempSettings to last-saved settings
+    const handleCloseSettings = () => {
+        setTempSettings(settings);
+        setShowSettings(false);
+    };
+
     const triggerConfirm = (title, message, action) => {
         setConfirmConfig({ title, message, action });
         setShowConfirm(true);
@@ -228,28 +262,29 @@ export default function App() {
             if (haditheData.a?.length) {
                 const randomIdx = Math.floor(Math.random() * haditheData.a.length);
                 const chosen = haditheData.a[randomIdx];
-                // Queue the next hadith to avoid interruption
-                setNextHadith(prev => (!currentHadith ? null : chosen));
-                if (!currentHadith) setCurrentHadith(chosen);
+                if (!currentHadithRef.current) {
+                    // First load: set immediately
+                    currentHadithRef.current = chosen;
+                    setCurrentHadith(chosen);
+                } else {
+                    // Queue for seamless swap at the start of the next display cycle
+                    setNextHadith(chosen);
+                }
             }
         };
         pickHadith();
         const interval = setInterval(pickHadith, refreshMin * 60000);
         return () => clearInterval(interval);
-    }, [settings.durations.hadithRefresh, currentHadith]);
+    // Only re-run if refresh interval changes, not on every hadith change
+    }, [settings.durations.hadithRefresh]);
 
-    // --- BURN-IN PROTECTION & ENERGY SAVING ---
+    // --- BURN-IN PROTECTION: Night dimming only (pixel shift is a CSS animation in index.css) ---
     useEffect(() => {
-        const updateStability = () => {
+        const checkDim = () => {
             const now = new Date();
             const minTani = now.getHours() * 60 + now.getMinutes();
 
-            setPixelShift({
-                x: Math.floor(Math.random() * 3) - 1,
-                y: Math.floor(Math.random() * 3) - 1
-            });
-
-            // Night Dimming: Dims 30 minutes after Jacia/Teravia until 10m before Sabahu
+            // Night Dimming: dims 30 minutes after Jacia/Teravia until 10m before Sabahu
             let dimStart = 23 * 60;
             let dimEnd = 4 * 60;
 
@@ -265,8 +300,8 @@ export default function App() {
             setIsNightDimmed(minTani >= dimStart || minTani < dimEnd);
         };
 
-        updateStability();
-        const interval = setInterval(updateStability, 60000);
+        checkDim();
+        const interval = setInterval(checkDim, 60000);
         return () => clearInterval(interval);
     }, [vaktiSot, settings]);
 
@@ -372,17 +407,8 @@ export default function App() {
         const isR = settings.ramazan?.active;
         const isHome = settings.appMode === 'home';
 
-        const getLabel = (id, xh) => {
-            const isF = now.getDay() === 5;
-            const isHome = settings.appMode === 'home';
-
-            if (id === 'Imsaku') return (isR && isHome) ? "Syfyri" : (isR ? "Syfyri (Imsaku)" : "Imsaku");
-            if (id === 'Akshami') return (isR && isHome) ? "Iftari" : (isR ? "Iftari (Akshami)" : "Akshami");
-            if (id === 'Jacia' && isR) return isHome ? "Jacia" : "Teravia (Jacia)";
-            if (id === 'Dreka' && isF) return "Xhumaja";
-            if (id === 'NamazNate') return "Namaz i Natës";
-            return id;
-        };
+        const labelCtx = { isR, isHome, isFriday: now.getDay() === 5 };
+        const getLabel = (id) => getPrayerLabel(id, labelCtx);
 
         const moments = [];
         let prayerKeys = ["Sabahu", "Dreka", "Ikindia", "Akshami", "Jacia"];
@@ -425,26 +451,26 @@ export default function App() {
                 return `${String(Math.floor(total / 60)).padStart(2, "0")}:${String(((total % 60) + 60) % 60).padStart(2, "0")}`;
             })() : tomorrowRow.Sabahu);
 
-            const isHome = settings.appMode === 'home';
+            // isHome is already in scope from the outer useCallback
             const hasNN = isR && settings.ramazan?.namazNate?.active && !isHome;
             const tomId = hasNN ? "NamazNate" : (isR ? "Imsaku" : "Sabahu");
             const tomK = hasNN ? (settings.ramazan?.namazNate?.koha || "00:30") : (isR ? tomorrowRow.Imsaku : tomXh);
 
             nextInfo = {
-                tani: { id: "Jacia", label: getLabel("Jacia", true) },
-                ardhshëm: { id: tomId, label: getLabel(tomId, true), kohe: tomK, isXh: true },
+                tani: { id: "Jacia", label: getLabel("Jacia") },
+                ardhshëm: { id: tomId, label: getLabel(tomId), kohe: tomK, isXh: true },
                 mbetur: (24 * 60 - nowMin) + neMinuta(tomK)
             };
         } else if (nextIdx === 0) {
             const idxS = vaktet.findIndex(v => v.Date === vaktiSot.Date);
             const yesterday = idxS > 0 ? vaktet[idxS - 1] : vaktet[vaktet.length - 1];
             nextInfo = {
-                tani: { id: "Jacia", label: getLabel("Jacia", true), kohe: yesterday.Jacia },
-                ardhshëm: { ...moments[0], label: getLabel(moments[0].id, moments[0].isXh) },
+                tani: { id: "Jacia", label: getLabel("Jacia"), kohe: yesterday.Jacia },
+                ardhshëm: { ...moments[0], label: getLabel(moments[0].id) },
                 mbetur: neMinuta(moments[0].kohe) - nowMin
             };
         } else {
-            let tani = { ...moments[nextIdx - 1], label: getLabel(moments[nextIdx - 1].id, moments[nextIdx - 1].isXh) };
+            let tani = { ...moments[nextIdx - 1], label: getLabel(moments[nextIdx - 1].id) };
 
             if (tani.id === "Sabahu" && vaktiSot.Lindja && nowMin >= neMinuta(vaktiSot.Lindja)) {
                 tani = { id: "Lindja", label: "Lindja e Diellit", kohe: vaktiSot.Lindja };
@@ -452,7 +478,7 @@ export default function App() {
 
             nextInfo = {
                 tani: tani,
-                ardhshëm: { ...moments[nextIdx], label: getLabel(moments[nextIdx].id, moments[nextIdx].isXh) },
+                ardhshëm: { ...moments[nextIdx], label: getLabel(moments[nextIdx].id) },
                 mbetur: neMinuta(moments[nextIdx].kohe) - nowMin
             };
         }
@@ -467,55 +493,33 @@ export default function App() {
         });
     }, [vaktiSot, settings, xhemati]);
 
+    // Sync currentHadith state into ref so refresh timer can check it without being a dep
+    useEffect(() => { currentHadithRef.current = currentHadith; }, [currentHadith]);
+
     useEffect(() => {
         updateNextPrayer();
         const interval = setInterval(updateNextPrayer, 10000);
         return () => clearInterval(interval);
     }, [updateNextPrayer]);
 
-    const formatDallim = (min) => {
-        if (min <= 0) return "0m";
-        const o = Math.floor(min / 60);
-        const m = min % 60;
-        let res = "";
-        if (o > 0) res += `${o}h `;
-        if (m > 0 || o === 0) res += `${m}m`;
-        return res.trim();
-    };
-
-    const ne24h = (ora) => {
-        if (!ora) return "—";
-        const [h, m] = ora.split(":").map(Number);
-        return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
-    };
-
     const listaNamazeve = useMemo(() => {
         const isR = settings.ramazan?.active;
-        const isF = new Date().getDay() === 5;
         const isHome = settings.appMode === 'home';
-
-        const getPrayerLabel = (id) => {
-            if (id === 'Imsaku') return (isR && isHome) ? "Syfyri" : (isR ? "Syfyri (Imsaku)" : "Imsaku");
-            if (id === 'Akshami') return (isR && isHome) ? "Iftari" : (isR ? "Iftari (Akshami)" : "Akshami");
-            if (id === 'Jacia' && isR) return isHome ? "Jacia" : "Teravia (Jacia)";
-            if (id === 'Dreka' && isF) return "Xhumaja";
-            if (id === 'NamazNate') return "Namaz i Natës";
-            return id;
-        };
+        const labelCtx = { isR, isHome, isFriday: new Date().getDay() === 5 };
 
         let list = [
-            { id: "Sabahu", label: getPrayerLabel("Sabahu") },
-            { id: "Dreka", label: getPrayerLabel("Dreka") },
-            { id: "Ikindia", label: getPrayerLabel("Ikindia") },
-            { id: "Akshami", label: getPrayerLabel("Akshami") },
-            { id: "Jacia", label: getPrayerLabel("Jacia") },
+            { id: "Sabahu", label: getPrayerLabel("Sabahu", labelCtx) },
+            { id: "Dreka", label: getPrayerLabel("Dreka", labelCtx) },
+            { id: "Ikindia", label: getPrayerLabel("Ikindia", labelCtx) },
+            { id: "Akshami", label: getPrayerLabel("Akshami", labelCtx) },
+            { id: "Jacia", label: getPrayerLabel("Jacia", labelCtx) },
         ];
 
         if (isR) {
-            list.unshift({ id: "Imsaku", label: getPrayerLabel("Imsaku") });
+            list.unshift({ id: "Imsaku", label: getPrayerLabel("Imsaku", labelCtx) });
         }
         return list;
-    }, [settings.ramazan?.active, settings.appMode, settings.ramazan?.namazNate?.active]);
+    }, [settings.ramazan?.active, settings.appMode]);
 
 
     if (!vaktiSot) return <div className="h-screen bg-black flex items-center justify-center text-white text-3xl font-bold animate-pulse">Duke ngarkuar...</div>;
@@ -529,27 +533,12 @@ export default function App() {
                     position: 'absolute',
                     top: '50%',
                     left: '50%',
-                    transform: `translate(-50%, -50%) scale(${Math.max(0.01, scale)}) translate(${pixelShift.x}px, ${pixelShift.y}px)`,
+                    transform: `translate(-50%, -50%) scale(${Math.max(0.01, scale)})`,
                     transformOrigin: 'center center',
                     flexShrink: 0,
-                    transition: 'transform 0.5s ease-out',
                     contain: 'strict'
                 }}>
-                <style>
-                    {`
-                        body::before { display: none !important; }
-                        ::-webkit-scrollbar { display: none; }
-                        @keyframes slide-up { from { transform: translateY(15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-                        .animate-slide-up { animation: slide-up 0.4s ease-out forwards; will-change: transform, opacity; }
-                        .glass-input { background: rgba(0, 0, 0, 0.4); border: 2px solid rgba(255, 255, 255, 0.05); border-radius: 1.25rem; }
-                        /* Optimized for TV performance: Static visuals are safer than infinite filters */
-                        * { text-rendering: auto; transform: translateZ(0); backface-visibility: hidden; }
-                        .tv-container { -webkit-font-smoothing: antialiased; transform: translateZ(0); backface-visibility: hidden; will-change: transform, opacity; }
-                        .next-prayer-box, .activity-box, .prayer-grid { will-change: transform; transform: translateZ(0); }
-                        .dimmed-overlay { pointer-events: none; position: fixed; inset: 0; background: black; transition: opacity 2s ease; z-index: 9999; }
-                        .shadow-premium { box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-                    `}
-                </style>
+                {/* Static CSS is in index.css */}
 
                 {isNightDimmed && <div className="dimmed-overlay" style={{ opacity: 0.6 }} />}
 
@@ -616,7 +605,7 @@ export default function App() {
                         <NextPrayer infoTani={infoTani} ne24hFn={ne24h} formatDallimFn={formatDallim} settings={settings} />
                         <ActivityBox displayMode={displayMode} settings={settings} currentHadith={currentHadith} vaktiSot={vaktiSot} infoTani={infoTani} />
                     </div>
-                    <PrayerGrid listaNamazeve={listaNamazeve} vaktiSot={vaktiSot} infoTani={infoTani} xhematiFn={xhemati} ne24hFn={ne24h} isRamazan={settings.ramazan?.active} settings={settings} />
+                    <PrayerGrid listaNamazeve={listaNamazeve} vaktiSot={vaktiSot} infoTani={infoTani} xhematiFn={xhemati} ne24hFn={ne24h} isRamazan={settings.ramazan?.active} settings={settings} /> 
                 </main>
 
                 {settings.appMode === 'mosque' && (
@@ -639,7 +628,7 @@ export default function App() {
 
                 <SettingsModal
                     show={showSettings}
-                    onClose={() => setShowSettings(false)}
+                    onClose={handleCloseSettings}
                     activeTab={activeTab}
                     setActiveTab={setActiveTab}
                     tempSettings={tempSettings}

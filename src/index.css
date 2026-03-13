@@ -41,3 +41,82 @@ body {
     letter-spacing: 0.05em;           /* Makes the numbers more separate and readable */
   }
 }
+
+/* ── TV Display - Static global styles (previously inline <style> in JSX) ── */
+
+/* Suppress any before pseudo-elements left from Tailwind preflight */
+body::before { display: none !important; }
+
+/* Hide scrollbars on TV – never needed */
+::-webkit-scrollbar { display: none; }
+* { scrollbar-width: none; }
+
+/* Slide-up animation for content cycling */
+@keyframes slide-up {
+  from { transform: translateY(15px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.animate-slide-up {
+  animation: slide-up 0.4s ease-out forwards;
+  will-change: transform, opacity;
+}
+
+/* Glass input used in SettingsModal */
+.glass-input {
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.05);
+  border-radius: 1.25rem;
+}
+
+/* GPU-accelerated layers for smooth TV rendering */
+.tv-container {
+  -webkit-font-smoothing: antialiased;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+  /* Burn-in protection: slowly drifts ±2px with no JS re-renders */
+  animation: tv-pixel-shift 120s ease-in-out infinite alternate;
+}
+@keyframes tv-pixel-shift {
+  0%   { margin-left: 0px;  margin-top: 0px; }
+  25%  { margin-left: 2px;  margin-top: -1px; }
+  50%  { margin-left: -1px; margin-top: 2px; }
+  75%  { margin-left: 1px;  margin-top: -2px; }
+  100% { margin-left: -2px; margin-top: 1px; }
+}
+.next-prayer-box,
+.activity-box,
+.prayer-grid {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Night-dimming overlay */
+.dimmed-overlay {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  background: black;
+  transition: opacity 2s ease;
+  z-index: 9999;
+}
+
+/* Drop-shadow utility used across cards */
+.shadow-premium {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* ── Settings Modal custom scrollbar ── */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(16, 185, 129, 0.3) transparent;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  display: block;
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.3);
+  border-radius: 3px;
+}
