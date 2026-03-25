@@ -9,7 +9,7 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
     // 1. SILENCE MODE (Highest Priority)
     if (isSilenceMode && showSilence) {
         return (
-            <div className="bg-zinc-900 border-4 border-amber-500/50 rounded-[3.5rem] px-10 pt-4 pb-12 relative overflow-hidden flex flex-col items-center justify-center animate-pulse text-center">
+            <div className="bg-zinc-900 border-4 border-amber-500/50 rounded-[3.5rem] p-4 relative overflow-hidden flex flex-col items-center justify-center animate-pulse text-center h-full">
                 <div className="text-amber-500 mb-0">
                     <svg className="w-48 h-48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728A9 9 0 115.636 5.636m12.728 12.728L5.636 5.636" />
@@ -30,7 +30,7 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
     if (displayMode === 'qr') {
         const qrUrl = settings.qrUrl || "https://xhamiaedushkajes.org";
         return (
-            <div className="bg-zinc-900 border-2 border-white/5 rounded-[3.5rem] p-10 relative overflow-hidden flex flex-col items-center justify-center shadow-premium">
+            <div className="bg-zinc-900 border-2 border-white/5 rounded-[3.5rem] p-4 relative overflow-hidden flex flex-col items-center justify-center shadow-premium h-full">
                 <div className="flex flex-row items-center gap-12 w-full h-full justify-center px-6 animate-slide-up">
                     <div className="p-6 bg-white rounded-[2.5rem] shrink-0 shadow-[0_0_50px_rgba(16,185,129,0.2)]">
                         <QRCodeCanvas
@@ -59,53 +59,69 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
     }
 
     return (
-        <div className="bg-zinc-900 border-2 border-white/5 rounded-[3.5rem] p-8 relative overflow-hidden flex flex-col items-center justify-center transition-all duration-700">
-            <div className="w-full mb-2 opacity-40">
-                <p className="text-zinc-400 uppercase tracking-[0.3em] text-lg font-black text-center">
-                    {displayMode === 'message' ? "Shënim / Festë" :
-                        displayMode === 'custom' ? "Njoftim i Rëndësishëm" : "Hadith / Ajet"}
-                </p>
-            </div>
-            <div className="flex-1 flex flex-col justify-center text-center animate-slide-up w-full px-2">
-                {displayMode === 'custom' ? (
-                    <div className="flex-1 flex flex-col justify-center items-center">
-                        <h3 className="text-4xl lg:text-5xl font-black text-emerald-400 leading-tight mb-4 uppercase">Njoftim</h3>
-                        <p className="text-2xl lg:text-4xl text-white font-bold leading-relaxed px-4">{customMsg}</p>
+        <div className="bg-zinc-900 border-2 border-white/5 rounded-[3.5rem] p-2 relative overflow-hidden flex flex-col transition-all duration-700 h-full">
+            <div className="w-full h-full flex flex-col justify-between px-10 pt-4 pb-8 animate-slide-up">
+                {/* 1. Header Label */}
+                <div className="w-full flex flex-col items-center pt-2">
+                    <div className="flex items-center gap-4 mb-2 opacity-80">
+                        <div className="w-3 h-3 rounded-full bg-emerald-800" />
+                        <p className="text-zinc-400 uppercase tracking-[0.4em] text-2xl font-black text-center">
+                            {displayMode === 'message' ? "Shënim / Festë" :
+                                displayMode === 'custom' ? "Njoftim i Rëndësishëm" : "Hadith / Ajet"}
+                        </p>
                     </div>
-                ) : displayMode === 'message' ? (
-                    <div className="flex-1 flex flex-col justify-center items-center">
-                        {vaktiSot.Festat && (
-                            <div className="mb-4">
-                                <div className="text-emerald-400 font-bold uppercase tracking-widest text-base mb-1 opacity-80">Festa</div>
-                                <h3 className="text-3xl lg:text-5xl font-black text-white leading-tight uppercase">{vaktiSot.Festat}</h3>
+                </div>
+
+                {/* 2. Main Content */}
+                <div className="flex-1 flex flex-col justify-center text-center w-full px-2">
+                    {displayMode === 'custom' ? (
+                        <div className="flex flex-col items-center">
+                            <h3 className="text-4xl lg:text-5xl font-black text-emerald-400 leading-tight mb-2 uppercase">Njoftim</h3>
+                            <p className="text-2xl lg:text-4xl text-white font-bold leading-relaxed">{customMsg}</p>
+                        </div>
+                    ) : displayMode === 'message' ? (
+                        <div className="flex flex-col items-center">
+                            {vaktiSot.Festat && (
+                                <div className="mb-2">
+                                    <div className="text-emerald-400 font-bold uppercase tracking-widest text-base mb-1 opacity-80">Festa</div>
+                                    <h3 className="text-3xl lg:text-5xl font-black text-white leading-tight uppercase">{vaktiSot.Festat}</h3>
+                                </div>
+                            )}
+                            {vaktiSot.Shenime && (
+                                <div>
+                                    {vaktiSot.Festat && <div className="w-12 h-px bg-white/10 mx-auto my-4" />}
+                                    <p className="text-2xl lg:text-4xl text-zinc-300 italic leading-relaxed opacity-90">"{vaktiSot.Shenime}"</p>
+                                </div>
+                            )}
+                        </div>
+                    ) : currentHadith ? (
+                        <div className="overflow-hidden flex flex-col items-center justify-center w-full px-2">
+                            {currentHadith.entryText && <p className="text-zinc-500 text-lg mb-2 italic font-medium opacity-60">{currentHadith.entryText}</p>}
+                            <h3 className={`leading-[1.1] italic font-bold text-white mb-2 ${
+                                    currentHadith.textContent?.length > 450 ? 'text-lg lg:text-[1.4rem]' :
+                                    currentHadith.textContent?.length > 350 ? 'text-xl lg:text-[1.8rem]' :
+                                    currentHadith.textContent?.length > 250 ? 'text-2xl lg:text-[2.2rem]' :
+                                    currentHadith.textContent?.length > 180 ? 'text-3xl lg:text-[2.5rem]' :
+                                        'text-4xl lg:text-[3.3rem]'
+                                }`}>
+                                "{currentHadith.textContent}"
+                            </h3>
+                            <div className="mt-2 text-center">
+                                <div className="w-12 h-0.5 bg-emerald-500 rounded-full mb-2 mx-auto opacity-40" />
+                                <p className="text-emerald-400 font-black text-xl lg:text-[1.6rem] leading-none">{currentHadith.reference}</p>
                             </div>
-                        )}
-                        {vaktiSot.Shenime && (
-                            <div>
-                                {vaktiSot.Festat && <div className="w-12 h-px bg-white/10 mx-auto my-4" />}
-                                <p className="text-2xl lg:text-4xl text-zinc-300 italic leading-relaxed px-4 opacity-90">"{vaktiSot.Shenime}"</p>
-                            </div>
-                        )}
-                    </div>
-                ) : currentHadith ? (
-                    <div className="flex-1 flex flex-col justify-center items-center overflow-hidden">
-                        {currentHadith.entryText && <p className="text-zinc-500 text-xl mb-2 italic font-medium opacity-60">{currentHadith.entryText}</p>}
-                        <h3 className={`leading-tight italic font-bold text-white mb-6 px-4 ${currentHadith.textContent?.length > 350 ? 'text-xl lg:text-2xl' :
-                                currentHadith.textContent?.length > 250 ? 'text-2xl lg:text-3xl' :
-                                    'text-2xl lg:text-4xl'
-                            }`}>
-                            "{currentHadith.textContent}"
-                        </h3>
-                        <div className="w-12 h-1 bg-emerald-500 rounded-full mb-4 shrink-0" />
-                        <p className="text-emerald-400 font-black text-2xl lg:text-3xl">{currentHadith.reference}</p>
-                    </div>
-                ) : (
-                    <div className="flex-1 flex flex-col justify-center items-center">
-                        <h3 className="text-4xl font-bold text-white uppercase tracking-tighter opacity-70">
-                            {settings.name}
-                        </h3>
-                    </div>
-                )}
+                        </div>
+                    ) : (
+                        <div className="flex flex-col items-center">
+                            <h3 className="text-4xl font-bold text-white uppercase tracking-tighter opacity-70">
+                                {settings.name}
+                            </h3>
+                        </div>
+                    )}
+                </div>
+
+                {/* 3. Empty Footer for balance */}
+                <div className="h-6 w-full" />
             </div>
         </div>
     );

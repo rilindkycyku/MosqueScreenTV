@@ -49,6 +49,18 @@ export default function SettingsModal({
         if (!isCurrentTabVisible) setActiveTab('display');
     }, [show, tempSettings.appMode, activeTab, tabs]);
 
+    // Handle Escape to trigger auto-save Close
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                e.stopPropagation();
+                onClose();
+            }
+        };
+        if (show) window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [show, onClose]);
+
     if (!show) return null;
 
     return (

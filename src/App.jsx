@@ -161,7 +161,6 @@ export default function App() {
                 setShowSettings(true);
             }
             if (key === 'r') window.location.reload();
-            if (e.key === 'Escape') setShowSettings(false);
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
@@ -198,10 +197,9 @@ export default function App() {
         setShowSettings(false);
     };
 
-    // Cancel: discard unsaved changes by resetting tempSettings to last-saved settings
+    // Auto-save: commit changes when modal closes
     const handleCloseSettings = () => {
-        setTempSettings(settings);
-        setShowSettings(false);
+        saveSettings();
     };
 
     const triggerConfirm = (title, message, action) => {
@@ -275,7 +273,7 @@ export default function App() {
         pickHadith();
         const interval = setInterval(pickHadith, refreshMin * 60000);
         return () => clearInterval(interval);
-    // Only re-run if refresh interval changes, not on every hadith change
+        // Only re-run if refresh interval changes, not on every hadith change
     }, [settings.durations.hadithRefresh]);
 
     // --- BURN-IN PROTECTION: Night dimming only (pixel shift is a CSS animation in index.css) ---
@@ -424,15 +422,16 @@ export default function App() {
             if (kohaPajisjes) {
                 const xh = xhemati(n);
 
-                // Teravia/Jacia skip logic: home mode always shows Jacia
+                // Skip logic for specific prayers
                 const skipRawJacia = (n === "Jacia" && isR && settings.appMode !== 'home' && settings.ramazan?.kohaTeravise && settings.ramazan?.kohaTeravise !== "00:00");
+                const skipJsonDreka = (n === "Dreka" && xh && xh !== kohaPajisjes && !isHome);
 
-                if (!skipRawJacia) {
+                if (!skipRawJacia && !skipJsonDreka) {
                     moments.push({ id: n, kohe: vaktiSot[n], isXh: false });
                 }
 
                 if (xh) {
-                    if (xh !== kohaPajisjes || skipRawJacia) {
+                    if (xh !== kohaPajisjes || skipRawJacia || skipJsonDreka) {
                         moments.push({ id: n, kohe: xh, isXh: true });
                     }
                 }
@@ -526,7 +525,7 @@ export default function App() {
 
     return (
         <div className="fixed top-0 left-0 w-full h-full bg-black z-[50] overflow-hidden">
-            <div className="tv-container bg-black text-white font-sans overflow-hidden flex flex-col pt-1 pb-4 px-8 select-none"
+            <div className="tv-container bg-black text-white font-sans overflow-hidden flex flex-col p-1 select-none"
                 style={{
                     width: '1920px',
                     height: '1080px',
@@ -547,9 +546,9 @@ export default function App() {
                     <div className="absolute -bottom-[20%] -right-[20%] w-[60%] h-[60%] rounded-full" style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%)', willChange: 'transform' }} />
                 </div>
 
-                <header className="mb-4 shrink-0 relative z-20">
+                <header className="mb-2 shrink-0 relative z-20">
                     {settings.appMode === 'mosque' ? (
-                        <div className="flex justify-between items-center w-full px-2">
+                        <div className="flex justify-between items-center w-full px-10">
                             {/* Left Column: Location & Personnel */}
                             <div className="flex flex-col gap-0 flex-1 min-w-0">
                                 <p className="text-zinc-500 text-4xl font-black tracking-wider uppercase whitespace-nowrap overflow-visible">{settings.address}</p>
@@ -559,7 +558,7 @@ export default function App() {
 
                                 <button
                                     onClick={() => setShowSettings(true)}
-                                    className="flex items-center gap-4 px-8 py-3 w-fit rounded-[1.5rem] bg-white/5 hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/30 transition-all duration-500 group mt-4 shadow-2xl backdrop-blur-xl"
+                                    className="flex items-center gap-4 px-8 py-3 w-fit rounded-[1.5rem] bg-white/5 hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/30 transition-all duration-500 group mt-1 shadow-2xl backdrop-blur-xl -ml-2"
                                 >
                                     <HiCog className="text-4xl text-zinc-600 group-hover:text-emerald-400 group-hover:rotate-180 transition-all duration-700" />
                                     <span className="text-xl font-black uppercase tracking-[0.2em] text-zinc-500 group-hover:text-emerald-400">Konfiguro</span>
@@ -567,7 +566,7 @@ export default function App() {
                             </div>
 
                             {/* Center Column: Mosque Brand */}
-                            <div className="flex-[2] flex justify-center px-4">
+                            <div className="flex-[2] flex justify-center px-0">
                                 <h1 className={`font-black text-emerald-500 tracking-tighter uppercase text-center leading-[0.8] whitespace-nowrap ${(settings.name || "").length > 20 ? 'text-5xl' : 'text-7xl'
                                     }`}>
                                     {settings.name}
@@ -595,17 +594,17 @@ export default function App() {
                                     {settings.showQuranRadio && <QuranRadio />}
                                 </div>
                             </div>
-                            <Clock mode="home_right" /> 
+                            <Clock mode="home_right" />
                         </div>
                     )}
                 </header>
 
-                <main className="flex-1 flex flex-col gap-4 min-h-0" style={{ contain: 'layout style paint' }}>
-                    <div className="flex-[1.4] grid grid-cols-2 gap-8 relative z-10 min-h-0">
+                <main className="flex-1 flex flex-col gap-2 min-h-0" style={{ contain: 'layout style paint' }}>
+                    <div className="flex-[1.4] grid grid-cols-2 gap-2 relative z-10 min-h-0">
                         <NextPrayer infoTani={infoTani} ne24hFn={ne24h} formatDallimFn={formatDallim} settings={settings} />
                         <ActivityBox displayMode={displayMode} settings={settings} currentHadith={currentHadith} vaktiSot={vaktiSot} infoTani={infoTani} />
                     </div>
-                    <PrayerGrid listaNamazeve={listaNamazeve} vaktiSot={vaktiSot} infoTani={infoTani} xhematiFn={xhemati} ne24hFn={ne24h} isRamazan={settings.ramazan?.active} settings={settings} /> 
+                    <PrayerGrid listaNamazeve={listaNamazeve} vaktiSot={vaktiSot} infoTani={infoTani} xhematiFn={xhemati} ne24hFn={ne24h} isRamazan={settings.ramazan?.active} settings={settings} />
                 </main>
 
                 {settings.appMode === 'mosque' && (
