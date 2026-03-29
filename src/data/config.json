@@ -9,6 +9,7 @@
         "appMode": "mosque",
         "location": "ks",
         "showQuranRadio": false,
+        "showFooter": false,
         "durations": {
             "hadith": 5,
             "qr": 1,

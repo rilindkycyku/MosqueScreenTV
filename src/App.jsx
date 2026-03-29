@@ -101,7 +101,7 @@ export default function App() {
 
     // Optimized Duration Calculator with Legacy Sanitizer
     const durations = useMemo(() => {
-        const raw = settings.durations || { hadith: 2, qr: 1, notification: 10, announcement: 1 };
+        const raw = settings.durations || config.tvOptions.durations;
         // Detect if value is already in milliseconds (> 1000) or minutes
         const toMs = (v) => {
             const num = Number(v) || 0;
@@ -109,10 +109,10 @@ export default function App() {
             return num * 60000;         // New minutes format
         };
         return {
-            hadith: toMs(raw.hadith || 2),
-            qr: toMs(raw.qr || 1),
-            notification: toMs(raw.notification || 10),
-            announcement: toMs(raw.announcement || 1)
+            hadith: toMs(raw.hadith ?? config.tvOptions.durations.hadith),
+            qr: toMs(raw.qr ?? config.tvOptions.durations.qr),
+            notification: toMs(raw.notification ?? config.tvOptions.durations.notification),
+            announcement: toMs(raw.announcement ?? config.tvOptions.durations.announcement)
         };
     }, [settings.durations]);
 
@@ -221,6 +221,7 @@ export default function App() {
                     sabahuOffset: config.tvOptions.durations.sabahuOffset
                 },
                 showQr: config.tvOptions.showQr,
+                showFooter: config.tvOptions.showFooter,
                 showSilenceWarning: config.tvOptions.showSilenceWarning
             };
         } else if (category === 'durations') {
@@ -244,6 +245,7 @@ export default function App() {
             durations: { ...config.tvOptions.durations },
             customMsg: "",
             showQr: config.tvOptions.showQr,
+            showFooter: config.tvOptions.showFooter,
             showSilenceWarning: config.tvOptions.showSilenceWarning,
             appMode: config.tvOptions.appMode
         };
@@ -255,7 +257,7 @@ export default function App() {
     };
 
     useEffect(() => {
-        const refreshMin = settings.durations.hadithRefresh || 60;
+        const refreshMin = settings.durations.hadithRefresh ?? config.tvOptions.durations.hadithRefresh;
         const pickHadith = () => {
             if (haditheData.a?.length) {
                 const randomIdx = Math.floor(Math.random() * haditheData.a.length);
@@ -607,23 +609,7 @@ export default function App() {
                     <PrayerGrid listaNamazeve={listaNamazeve} vaktiSot={vaktiSot} infoTani={infoTani} xhematiFn={xhemati} ne24hFn={ne24h} isRamazan={settings.ramazan?.active} settings={settings} />
                 </main>
 
-                {settings.appMode === 'mosque' && (
-                    <footer className="mt-2 px-8 shrink-0">
-                        <div className="w-full h-12 flex justify-between items-center bg-black/40 px-12 rounded-full border border-white/10 text-zinc-400 font-bold uppercase tracking-[0.2em] shadow-sm backdrop-blur-sm">
-                            <div className="flex items-center gap-2 text-2xl font-black">
-                                © {new Date().getFullYear()} - <span className="text-emerald-500">Rilind Kyçyku</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-2xl font-black whitespace-nowrap">
-                                <span className="text-emerald-500">Mosque Screen TV</span>
-                                <span className="text-zinc-600 mx-4">•</span>
-                                <span className="text-emerald-500 tracking-wider">www.tv.rilindkycyku.dev</span>
-                            </div>
-                            <div className="flex items-center gap-4 text-2xl font-black">
-                                <span className="text-emerald-500 uppercase tracking-wider">www.rilindkycyku.dev</span>
-                            </div>
-                        </div>
-                    </footer>
-                )}
+
 
                 <SettingsModal
                     show={showSettings}

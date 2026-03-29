@@ -3,7 +3,7 @@ import { SectionHeader, InputField } from "./shared";
 
 export default function IdentitySection({ settings, setSettings, triggerConfirm, onReset }) {
     return (
-        <div className="space-y-16 animate-in fade-in slide-in-from-bottom-10 duration-1000">
+        <div className="space-y-10 animate-in fade-in slide-in-from-bottom-10 duration-1000">
             <SectionHeader
                 icon={HiIdentification}
                 title="Identiteti"
@@ -16,7 +16,7 @@ export default function IdentitySection({ settings, setSettings, triggerConfirm,
             />
 
             {settings.appMode === 'mosque' ? (
-                <div className="grid grid-cols-1 gap-12">
+                <div className="grid grid-cols-1 gap-8">
                     <InputField
                         label="Emri i Xhamisë"
                         value={settings.name}
@@ -34,12 +34,12 @@ export default function IdentitySection({ settings, setSettings, triggerConfirm,
                     />
                 </div>
             ) : (
-                <div className="p-16 bg-emerald-500/10 rounded-[4rem] border-2 border-emerald-500/20 flex flex-col items-center text-center gap-6">
-                    <div className="w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(16,185,129,0.4)]">
-                        <HiCheckCircle className="text-5xl text-black" />
+                <div className="p-10 bg-emerald-500/10 rounded-[2.5rem] border-2 border-emerald-500/20 flex flex-col items-center text-center gap-4">
+                    <div className="w-20 h-20 bg-emerald-500 rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(16,185,129,0.4)]">
+                        <HiCheckCircle className="text-4xl text-black" />
                     </div>
-                    <h3 className="text-5xl font-black text-white uppercase tracking-tight">Mënyra Shtëpi Aktive</h3>
-                    <p className="text-2xl text-zinc-400 font-medium max-w-2xl italic">Në këtë mënyrë, vaktet merren direkt siç janë në kalendar pa vonesa dhe emrat e xhamisë fshihen automatikisht.</p>
+                    <h3 className="text-3xl font-black text-white uppercase tracking-tight">Mënyra Shtëpi Aktive</h3>
+                    <p className="text-lg text-zinc-400 font-medium max-w-2xl italic">Në këtë mënyrë, vaktet merren direkt siç janë në kalendar pa vonesa dhe emrat e xhamisë fshihen automatikusht.</p>
                 </div>
             )}
         </div>
