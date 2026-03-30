@@ -1,5 +1,7 @@
 import { memo } from 'react';
 
+const BN = { fontFamily: "'Bebas Neue', sans-serif" };
+
 const NextPrayer = memo(function NextPrayer({ infoTani, ne24hFn, formatDallimFn, settings }) {
     if (!infoTani?.ardhshëm) {
         return (
@@ -27,7 +29,7 @@ const NextPrayer = memo(function NextPrayer({ infoTani, ne24hFn, formatDallimFn,
             )}
 
             <div className="relative z-10 w-full h-full flex flex-col justify-between px-10 pt-4 pb-8 animate-slide-up">
-                {/* 1. Symmetric Header */}
+                {/* 1. Header — original small style */}
                 <div className="w-full flex flex-col items-center pt-2">
                     <div className="flex items-center gap-4 mb-2 opacity-80">
                         <div className={`w-3 h-3 rounded-full ${isXh ? 'bg-emerald-400 animate-pulse' : 'bg-emerald-600'}`} />
@@ -37,31 +39,45 @@ const NextPrayer = memo(function NextPrayer({ infoTani, ne24hFn, formatDallimFn,
                     </div>
                 </div>
 
-                {/* 2. Scalable Center Content */}
+                {/* 2. Prayer Name — Bebas Neue, maximum size */}
                 <div className="flex-1 flex flex-col justify-center items-center py-4">
-                    <h2 className={`font-black text-white tracking-[0.05em] uppercase leading-[0.85] text-center ${labelMain.length > 10 ? 'text-6xl lg:text-[7rem]' : 'text-7xl lg:text-[8.5rem]'}`}>
-                        {labelMain.split(' (')[0]}
-                    </h2>
+                    {(() => {
+                        const displayName = labelMain.split(' (')[0];
+                        const hasSubLabel = labelMain.includes('(');
+                        const sizeClass = displayName.length > 12 ? 'text-6xl lg:text-[9rem]'
+                            : displayName.length > 8              ? 'text-7xl lg:text-[11rem]'
+                            : hasSubLabel                          ? 'text-7xl lg:text-[12rem]'
+                            :                                        'text-7xl lg:text-[14rem]';
+                        return (
+                            <h2 className={`font-black text-white tracking-[0.05em] uppercase leading-[0.85] text-center whitespace-nowrap ${sizeClass}`} style={BN}>
+                                {displayName}
+                            </h2>
+                        );
+                    })()}
                     {labelMain.includes('(') && (
-                        <p className="text-3xl text-emerald-500/80 font-black mt-2 uppercase tracking-[0.3em] opacity-80 leading-tight text-center">
+                        <p className="text-4xl text-emerald-500/80 font-black mt-2 uppercase tracking-[0.3em] opacity-80 leading-none text-center" style={BN}>
                             {labelMain.split('(')[1].replace(')', '')}
                         </p>
                     )}
                 </div>
 
-                {/* 3. Bottom Info Row */}
+                {/* 3. Bottom Info Row — labels original small, values Bebas Neue big */}
                 <div className="w-full">
                     <div className="h-px w-full bg-gradient-to-r from-zinc-800 via-zinc-800 to-transparent mb-3 opacity-30" />
                     <div className="flex justify-between items-end">
                         <div className="flex-col">
+                            {/* Original tiny label */}
                             <p className="text-zinc-500 text-xs uppercase font-black tracking-[0.2em] mb-1 flex items-center gap-4">Koha e mbetur <span className="w-8 h-px bg-zinc-800/50" /></p>
-                            <div className={`text-6xl lg:text-[5.5rem] font-black tabular-nums italic leading-none whitespace-nowrap ${infoTani.mbetur <= 15 ? 'text-amber-400 animate-pulse' : 'text-emerald-400'}`}>
+                            {/* Big Bebas Neue value */}
+                            <div className={`text-6xl lg:text-[8rem] font-black tabular-nums leading-none whitespace-nowrap ${infoTani.mbetur <= 15 ? 'text-amber-400 animate-pulse' : 'text-emerald-400'}`} style={BN}>
                                 {formatDallimFn(infoTani.mbetur)}
                             </div>
                         </div>
                         <div className="flex flex-col items-end">
+                            {/* Original tiny label */}
                             <p className="text-zinc-500 text-xs uppercase font-black tracking-[0.2em] mb-1">Fillon në</p>
-                            <div className={`${isXh ? 'bg-emerald-400 text-black' : 'bg-zinc-800 text-white'} px-8 py-4 rounded-[2rem] font-mono text-5xl lg:text-[4.5rem] font-black shadow-lg`}>
+                            {/* Big Bebas Neue time badge */}
+                            <div className={`${isXh ? 'bg-emerald-400 text-black' : 'bg-zinc-800 text-white'} px-8 py-4 rounded-[2rem] text-5xl lg:text-[5.5rem] font-black shadow-lg`} style={BN}>
                                 {ne24hFn(infoTani.ardhshëm.kohe)}
                             </div>
                         </div>
