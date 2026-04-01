@@ -155,6 +155,10 @@ export default function App() {
     // Handle Keyboard & Remote Input
     useEffect(() => {
         const handleKeyDown = (e) => {
+            // Ignore hotkeys if user is typing in an input field
+            const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+            if (isInput) return;
+
             const key = e.key.toLowerCase();
             // Opening settings: S, M, or Enter/OK on remote
             if (key === 's' || key === 'm' || key === 'enter' || key === 'select') {
