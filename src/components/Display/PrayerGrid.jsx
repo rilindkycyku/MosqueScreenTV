@@ -13,7 +13,7 @@ const PrayerGrid = memo(function PrayerGrid({ listaNamazeve, vaktiSot, infoTani,
     const cardPx = is6Col ? 'px-6' : 'px-10';
 
     return (
-        <div className="flex-1 min-h-0 relative z-10">
+        <div className="prayer-grid-box flex-1 min-h-0 relative z-10">
             <div className="bg-zinc-900 rounded-[3.5rem] p-2 border border-white/5 shadow-premium h-full flex flex-col justify-center">
                 <div className={`grid gap-2 h-full ${listaNamazeve.length === 5 ? 'grid-cols-5' : 'grid-cols-6'}`}>
                     {listaNamazeve.map(({ id, label }) => {

@@ -17,7 +17,7 @@ const NextPrayer = memo(function NextPrayer({ infoTani, ne24hFn, formatDallimFn,
     const labelMain = infoTani.ardhshëm.label.replace('ME XHEMAT: ', '');
 
     return (
-        <div className={`bg-zinc-900 rounded-[3.5rem] p-2 relative overflow-hidden flex flex-col transition-all duration-500 ${isSilenceMode && showSilence ? 'shadow-[0_0_50px_rgba(245,158,11,0.1)]' : 'shadow-2xl'}`}>
+        <div className={`next-prayer-box bg-zinc-900 rounded-[3.5rem] p-2 relative overflow-hidden flex flex-col transition-all duration-500 h-full ${isSilenceMode && showSilence ? 'shadow-[0_0_50px_rgba(245,158,11,0.1)]' : 'shadow-2xl'}`}>
             {/* Silence Mode Overlay */}
             {showSilence && (
                 <div className={`absolute top-0 right-0 ${isSilenceMode ? 'bg-amber-500 animate-pulse' : 'bg-zinc-800'} w-24 h-24 rounded-bl-[2.5rem] shadow-lg flex items-center justify-center z-20 transition-colors duration-500`}>

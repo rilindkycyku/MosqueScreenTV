@@ -12,7 +12,7 @@
   background-color: #000;
 
   font-synthesis: none;
-  text-rendering: auto; /* optimizeLegibility can be slow on TVs */
+  text-rendering: optimizeSpeed; /* Faster for weak TV processors */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -51,10 +51,10 @@ body::before { display: none !important; }
 ::-webkit-scrollbar { display: none; }
 * { scrollbar-width: none; }
 
-/* Slide-up animation for content cycling */
+/* Slide-up animation for content cycling - GPU Accelerated */
 @keyframes slide-up {
-  from { transform: translateY(15px); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
+  from { transform: translate3d(0, 15px, 0); opacity: 0; }
+  to   { transform: translate3d(0, 0, 0);    opacity: 1; }
 }
 .animate-slide-up {
   animation: slide-up 0.4s ease-out forwards;
@@ -86,9 +86,10 @@ body::before { display: none !important; }
 }
 .next-prayer-box,
 .activity-box,
-.prayer-grid {
-  will-change: transform;
-  transform: translateZ(0);
+.prayer-grid-box {
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+  contain: layout style; /* Massive CPU saving: isolates component updates */
 }
 
 /* Night-dimming overlay */

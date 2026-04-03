@@ -30,9 +30,10 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
     if (displayMode === 'qr') {
         const qrUrl = settings.qrUrl || "https://xhamiaedushkajes.org";
         return (
-            <div className="bg-zinc-900 border-2 border-white/5 rounded-[3.5rem] p-4 relative overflow-hidden flex flex-col items-center justify-center shadow-premium h-full">
+            <div className="activity-box bg-zinc-900 border-2 border-white/5 rounded-[3.5rem] p-4 relative overflow-hidden flex flex-col items-center justify-center shadow-premium h-full">
                 <div className="flex flex-row items-center gap-12 w-full h-full justify-center px-6 animate-slide-up">
                     <div className="p-6 bg-white rounded-[2.5rem] shrink-0 shadow-[0_0_50px_rgba(16,185,129,0.2)]">
+                        {/* Only mount the heavy canvas when truly visible in the cycle */}
                         <QRCodeCanvas
                             value={qrUrl}
                             size={320}
@@ -59,7 +60,7 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
     }
 
     return (
-        <div className="bg-zinc-900 border-2 border-white/5 rounded-[3.5rem] p-2 relative overflow-hidden flex flex-col transition-all duration-700 h-full">
+        <div className="activity-box bg-zinc-900 border-2 border-white/5 rounded-[3.5rem] p-2 relative overflow-hidden flex flex-col transition-all duration-700 h-full">
             <div className="w-full h-full flex flex-col justify-between px-10 pt-4 pb-8 animate-slide-up">
                 {/* 1. Header Label */}
                 <div className="w-full flex flex-col items-center pt-2">

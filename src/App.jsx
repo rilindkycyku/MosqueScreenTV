@@ -5,6 +5,7 @@ import vaktetAL from './data/vaktet-e-namazit-al.json';
 import config from './data/config.json';
 import haditheData from './data/hadithe.json';
 // Components
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import SettingsModal from './components/SettingsModal/SettingsModal';
 import ConfirmDialog from './components/ConfirmDialog/ConfirmDialog';
 import QuranRadio from './components/Display/QuranRadio';
@@ -102,11 +103,9 @@ export default function App() {
     // Optimized Duration Calculator with Legacy Sanitizer
     const durations = useMemo(() => {
         const raw = settings.durations || config.tvOptions.durations;
-        // Detect if value is already in milliseconds (> 1000) or minutes
         const toMs = (v) => {
             const num = Number(v) || 0;
-            if (num > 1000) return num; // Old ms format
-            return num * 60000;         // New minutes format
+            return num > 1000 ? num : num * 60000;
         };
         return {
             hadith: toMs(raw.hadith ?? config.tvOptions.durations.hadith),
@@ -114,14 +113,25 @@ export default function App() {
             notification: toMs(raw.notification ?? config.tvOptions.durations.notification),
             announcement: toMs(raw.announcement ?? config.tvOptions.durations.announcement)
         };
-    }, [settings.durations]);
+    }, [JSON.stringify(settings.durations)]); // Use stringified durations for stable dependency
 
-    // --- DISPLAY CYCLE CONTROL ---
+    // --- RECOVERY & STABILITY: LocalStorage Sync ---
+    // This creates a safety backup of last-known valid state
+    const saveToSafety = (key, data) => {
+        try { localStorage.setItem(`safety_${key}`, JSON.stringify(data)); } catch (e) {}
+    };
+    const getFromSafety = (key) => {
+        try { return JSON.parse(localStorage.getItem(`safety_${key}`)); } catch (e) { return null; }
+    };
+
+    // --- DISPLAY CYCLE CONTROL: Robust Timer Management ---
     useEffect(() => {
         let timeoutId;
+        let isMounted = true;
+
         const showHadith = () => {
+            if (!isMounted) return;
             setDisplayMode('hadith');
-            // Seamless Hadith Refresh: If we have a queued hadith, swap it now while rotation is happening
             if (nextHadith) {
                 setCurrentHadith(nextHadith);
                 setNextHadith(null);
@@ -131,11 +141,13 @@ export default function App() {
             else timeoutId = setTimeout(showMsgIfAny, duration);
         };
         const showQR = () => {
+            if (!isMounted) return;
             setDisplayMode('qr');
             const duration = settings.customMsg ? Math.min(durations.qr, 15000) : durations.qr;
             timeoutId = setTimeout(showMsgIfAny, duration);
         };
         const showMsgIfAny = () => {
+            if (!isMounted) return;
             const hasMsg = vaktiSot?.Festat || vaktiSot?.Shenime;
             if (hasMsg && durations.announcement > 0) {
                 setDisplayMode('message');
@@ -143,55 +155,64 @@ export default function App() {
             } else showCustomIfAny();
         };
         const showCustomIfAny = () => {
+            if (!isMounted) return;
             if (settings.customMsg && durations.notification > 0) {
                 setDisplayMode('custom');
                 timeoutId = setTimeout(showHadith, durations.notification);
             } else showHadith();
         };
         showHadith();
-        return () => clearTimeout(timeoutId);
+        return () => { 
+            isMounted = false;
+            if (timeoutId) clearTimeout(timeoutId); 
+        };
     }, [vaktiSot?.Date, settings.customMsg, settings.showQr, durations]);
 
-    // Handle Keyboard & Remote Input
-    useEffect(() => {
-        const handleKeyDown = (e) => {
-            // Ignore hotkeys if user is typing in an input field
-            const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (isInput) return;
+    // Handle Keyboard & Remote Input (Memoized for stability)
+    const handleKeyDown = useCallback((e) => {
+        // Ignore hotkeys if user is typing in an input field
+        const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+        if (isInput) return;
 
-            const key = e.key.toLowerCase();
-            // Opening settings: S, M, or Enter/OK on remote
-            if (key === 's' || key === 'm' || key === 'enter' || key === 'select') {
-                setShowSettings(true);
-            }
-            if (key === 'r') window.location.reload();
-        };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
+        const key = e.key.toLowerCase();
+        // Opening settings: S, M, or Enter/OK on remote
+        if (key === 's' || key === 'm' || key === 'enter' || key === 'select') {
+            setShowSettings(true);
+        }
+        if (key === 'r') window.location.reload();
     }, []);
+
+    useEffect(() => {
+        window.addEventListener('keydown', handleKeyDown, { passive: true });
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [handleKeyDown]);
 
     // Screen Wake Lock: Prevent TV from going to sleep (Optimized for low-end TVs)
     useEffect(() => {
         let wakeLock = null;
+        let isActive = true;
+
         const requestWakeLock = async () => {
+            if (!isActive || !('wakeLock' in navigator)) return;
             try {
-                if ('wakeLock' in navigator) {
-                    wakeLock = await navigator.wakeLock.request('screen');
-                    wakeLock.addEventListener('release', () => {
-                        if (document.visibilityState === 'visible') requestWakeLock();
-                    });
-                }
-            } catch (err) { }
+                wakeLock = await navigator.wakeLock.request('screen');
+                wakeLock.addEventListener('release', () => {
+                    if (isActive && document.visibilityState === 'visible') requestWakeLock();
+                });
+            } catch (err) { /* Console logs removed for memory efficiency */ }
         };
 
         requestWakeLock();
-
         const handleVisibilityChange = () => { if (document.visibilityState === 'visible') requestWakeLock(); };
         document.addEventListener('visibilitychange', handleVisibilityChange);
 
         return () => {
+            isActive = false;
             document.removeEventListener('visibilitychange', handleVisibilityChange);
-            wakeLock?.release();
+            if (wakeLock) {
+                wakeLock.release().catch(() => {});
+                wakeLock = null;
+            }
         };
     }, []);
 
@@ -262,24 +283,29 @@ export default function App() {
 
     useEffect(() => {
         const refreshMin = settings.durations.hadithRefresh ?? config.tvOptions.durations.hadithRefresh;
+        let isStillCurrent = true;
+        
         const pickHadith = () => {
-            if (haditheData.a?.length) {
+            const select = () => {
+                if (!isStillCurrent || !haditheData.a?.length) return;
                 const randomIdx = Math.floor(Math.random() * haditheData.a.length);
                 const chosen = haditheData.a[randomIdx];
                 if (!currentHadithRef.current) {
-                    // First load: set immediately
                     currentHadithRef.current = chosen;
                     setCurrentHadith(chosen);
                 } else {
-                    // Queue for seamless swap at the start of the next display cycle
                     setNextHadith(chosen);
                 }
-            }
+            };
+            if ('requestIdleCallback' in window) window.requestIdleCallback(select);
+            else setTimeout(select, 0);
         };
         pickHadith();
-        const interval = setInterval(pickHadith, refreshMin * 60000);
-        return () => clearInterval(interval);
-        // Only re-run if refresh interval changes, not on every hadith change
+        const interval = setInterval(() => { if (isStillCurrent) pickHadith(); }, refreshMin * 60000);
+        return () => { 
+            isStillCurrent = false;
+            clearInterval(interval);
+        };
     }, [settings.durations.hadithRefresh]);
 
     // --- BURN-IN PROTECTION: Night dimming only (pixel shift is a CSS animation in index.css) ---
@@ -309,44 +335,55 @@ export default function App() {
         return () => clearInterval(interval);
     }, [vaktiSot, settings]);
 
-    // --- MAINTENANCE & STABILITY ---
+    // --- MAINTENANCE & STABILITY: Smart Reload (4 times a day) ---
     useEffect(() => {
         let timerId;
-        let retryTimerId;
-
-        const scheduleReload = () => {
+        const checkReload = () => {
             const now = new Date();
-            const nightTarget = new Date();
-            const dayTarget = new Date();
-
-            // 1. Night Reload (1 AM - 4 AM)
-            nightTarget.setHours(Math.floor(Math.random() * 3) + 1, Math.floor(Math.random() * 60), 0, 0);
-            if (now > nightTarget) nightTarget.setDate(nightTarget.getDate() + 1);
-
-            // 2. Daytime Reload (10 AM - 5 PM)
-            dayTarget.setHours(Math.floor(Math.random() * 8) + 10, Math.floor(Math.random() * 60), 0, 0);
-            if (now > dayTarget) dayTarget.setDate(dayTarget.getDate() + 1);
-
-            const nextTarget = nightTarget < dayTarget ? nightTarget : dayTarget;
-            const msUntilTrigger = nextTarget.getTime() - now.getTime();
-
+            const currentPeriod = Math.floor(now.getHours() / 6);
+            const nextPeriodHour = (currentPeriod + 1) * 6;
+            const nextPeriodDate = new Date();
+            nextPeriodDate.setHours(nextPeriodHour, Math.floor(Math.random() * 15), 0, 0); 
+            
+            const msUntilCheck = nextPeriodDate.getTime() - now.getTime();
             timerId = setTimeout(() => {
-                if (navigator.onLine) window.location.reload();
-                else {
-                    retryTimerId = setTimeout(() => {
-                        if (navigator.onLine) window.location.reload();
-                        else scheduleReload();
-                    }, 30 * 60000);
-                }
-            }, msUntilTrigger);
+                const isNearPrayer = infoTani && infoTani.mbetur < 15;
+                const isIdleMode = displayMode === 'hadith';
+                if (isIdleMode && !isNearPrayer && navigator.onLine && !showSettings) window.location.reload();
+                else setTimeout(checkReload, 5 * 60000);
+            }, msUntilCheck);
         };
+        checkReload();
+        return () => { if (timerId) clearTimeout(timerId); };
+    }, [displayMode, !!infoTani, showSettings]);
 
-        scheduleReload();
-        return () => {
-            clearTimeout(timerId);
-            clearTimeout(retryTimerId);
+    // --- RECOVERY & STABILITY: Performance Monitoring (Self-Healing) ---
+    // If the TV's performance drops significantly for 15s, it triggers a safe reload
+    useEffect(() => {
+        let lastTime = performance.now();
+        let frames = 0;
+        let warningTicks = 0;
+        let pTimer;
+
+        const monitor = (time) => {
+            frames++;
+            if (time >= lastTime + 1000) {
+                const fps = Math.round((frames * 1000) / (time - lastTime));
+                if (fps < 25 && !showSettings) { // If bogged down below 25FPS
+                    warningTicks++;
+                    if (warningTicks > 15) { // 15 consecutive seconds of lag
+                        const isNearPrayer = infoTani && infoTani.mbetur < 12;
+                        if (!isNearPrayer && navigator.onLine) window.location.reload();
+                    }
+                } else { warningTicks = 0; }
+                frames = 0;
+                lastTime = time;
+            }
+            pTimer = requestAnimationFrame(monitor);
         };
-    }, []);
+        pTimer = requestAnimationFrame(monitor);
+        return () => cancelAnimationFrame(pTimer);
+    }, [!!infoTani, showSettings]);
 
     // Compute the active prayer dataset based on location
     const vaktet = useMemo(() => {
@@ -364,11 +401,20 @@ export default function App() {
                 return Number(d) === dite && m === muajiSot;
             }) ?? vaktet[0];
 
-            // Update state if data has changed (even on the same day)
-            setVaktiSot(prev => (JSON.stringify(prev) === JSON.stringify(rreshti) ? prev : rreshti));
+            // Update state ONLY if data has actually changed (prevents unnecessary re-renders)
+            setVaktiSot(prev => {
+                const isSame = prev && 
+                    prev.Date === rreshti.Date && 
+                    prev.Sabahu === rreshti.Sabahu && 
+                    prev.Festat === rreshti.Festat &&
+                    prev.Shenime === rreshti.Shenime;
+                
+                if (!isSame) saveToSafety('vaktiSot', rreshti);
+                return isSame ? prev : rreshti;
+            });
         };
         perditeso();
-        const interval = setInterval(perditeso, 10000);
+        const interval = setInterval(perditeso, 10 * 60000); // 10 minutes is enough to check for date transitions
         return () => clearInterval(interval);
     }, [vaktet]);
 
@@ -493,10 +539,15 @@ export default function App() {
             const diffT = nextInfo.tani?.kohe ? nowMin - neMinuta(nextInfo.tani.kohe) : 999;
             const isSilenceMode = (diffA <= 5 && diffA >= 0) || (diffT >= 0 && diffT <= 2);
 
-            const updated = { ...nextInfo, isSilenceMode, nowMin };
-            return JSON.stringify(prev) === JSON.stringify(updated) ? prev : updated;
+            // Detailed equality check to avoid object churn
+            const isUnchanged = prev && 
+                prev.ardhshëm?.id === nextInfo.ardhshëm?.id && 
+                prev.mbetur === nextInfo.mbetur && 
+                prev.isSilenceMode === isSilenceMode;
+            
+            return isUnchanged ? prev : { ...nextInfo, isSilenceMode, nowMin };
         });
-    }, [vaktiSot, settings, xhemati]);
+    }, [vaktiSot, settings.appMode, settings.ramazan?.active, xhemati]);
 
     // Sync currentHadith state into ref so refresh timer can check it without being a dep
     useEffect(() => { currentHadithRef.current = currentHadith; }, [currentHadith]);
@@ -552,66 +603,70 @@ export default function App() {
                     <div className="absolute -bottom-[20%] -right-[20%] w-[60%] h-[60%] rounded-full" style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%)', willChange: 'transform' }} />
                 </div>
 
-                <header className="mb-2 shrink-0 relative z-20">
-                    {settings.appMode === 'mosque' ? (
-                        <div className="flex justify-between items-center w-full px-10">
-                            {/* Left Column: Location & Personnel */}
-                            <div className="flex flex-col gap-0 flex-1 min-w-0">
-                                <p className="text-zinc-500 text-4xl font-black tracking-wider uppercase whitespace-nowrap overflow-visible">{settings.address}</p>
-                                <p className="text-zinc-600 text-2xl font-bold tracking-tight uppercase">
-                                    Imami: <span className="text-zinc-400 font-black">{settings.imamName}</span>
-                                </p>
+                <ErrorBoundary fallback={<div className="h-20 bg-red-900/10 flex items-center justify-center text-zinc-500 uppercase font-black">Gabim në ngarkimin e Headerit</div>}>
+                    <header className="mb-2 shrink-0 relative z-20">
+                        {settings.appMode === 'mosque' ? (
+                            <div className="flex justify-between items-center w-full px-10">
+                                {/* Left Column: Location & Personnel */}
+                                <div className="flex flex-col gap-0 flex-1 min-w-0">
+                                    <p className="text-zinc-500 text-4xl font-black tracking-wider uppercase whitespace-nowrap overflow-visible">{settings.address}</p>
+                                    <p className="text-zinc-600 text-2xl font-bold tracking-tight uppercase">
+                                        Imami: <span className="text-zinc-400 font-black">{settings.imamName}</span>
+                                    </p>
 
-                                <button
-                                    onClick={() => setShowSettings(true)}
-                                    className="flex items-center gap-4 px-8 py-3 w-fit rounded-[1.5rem] bg-white/5 hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/30 transition-all duration-500 group mt-1 shadow-2xl backdrop-blur-xl -ml-2"
-                                >
-                                    <HiCog className="text-4xl text-zinc-600 group-hover:text-emerald-400 group-hover:rotate-180 transition-all duration-700" />
-                                    <span className="text-xl font-black uppercase tracking-[0.2em] text-zinc-500 group-hover:text-emerald-400">Konfiguro</span>
-                                </button>
-                            </div>
-
-                            {/* Center Column: Mosque Brand */}
-                            <div className="flex-[2] flex justify-center px-0">
-                                <h1 className={`font-black text-emerald-500 tracking-tighter uppercase text-center leading-[0.8] whitespace-nowrap ${(settings.name || "").length > 20 ? 'text-5xl' : 'text-7xl'
-                                    }`}>
-                                    {settings.name}
-                                </h1>
-                            </div>
-
-                            {/* Right Column: Time & Calendar */}
-                            <div className="flex-1 flex justify-end">
-                                <Clock />
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="w-full relative px-10 py-6 flex justify-between items-start">
-                            <div className="flex flex-col gap-4">
-                                <Clock mode="home_left" />
-                                <div className="flex items-center gap-4">
                                     <button
                                         onClick={() => setShowSettings(true)}
-                                        className="flex items-center gap-4 px-8 py-3 w-fit rounded-[1.5rem] bg-white/5 hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/30 transition-all duration-500 group z-30 shadow-2xl backdrop-blur-xl"
+                                        className="flex items-center gap-4 px-8 py-3 w-fit rounded-[1.5rem] bg-white/5 hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/30 transition-all duration-500 group mt-1 shadow-2xl backdrop-blur-xl -ml-2"
                                     >
                                         <HiCog className="text-4xl text-zinc-600 group-hover:text-emerald-400 group-hover:rotate-180 transition-all duration-700" />
                                         <span className="text-xl font-black uppercase tracking-[0.2em] text-zinc-500 group-hover:text-emerald-400">Konfiguro</span>
                                     </button>
+                                </div>
 
-                                    {settings.showQuranRadio && <QuranRadio />}
+                                {/* Center Column: Mosque Brand */}
+                                <div className="flex-[2] flex justify-center px-0">
+                                    <h1 className={`font-black text-emerald-500 tracking-tighter uppercase text-center leading-[0.8] whitespace-nowrap ${(settings.name || "").length > 20 ? 'text-5xl' : 'text-7xl'
+                                        }`}>
+                                        {settings.name}
+                                    </h1>
+                                </div>
+
+                                {/* Right Column: Time & Calendar */}
+                                <div className="flex-1 flex justify-end">
+                                    <Clock />
                                 </div>
                             </div>
-                            <Clock mode="home_right" />
-                        </div>
-                    )}
-                </header>
+                        ) : (
+                            <div className="w-full relative px-10 py-6 flex justify-between items-start">
+                                <div className="flex flex-col gap-4">
+                                    <Clock mode="home_left" />
+                                    <div className="flex items-center gap-4">
+                                        <button
+                                            onClick={() => setShowSettings(true)}
+                                            className="flex items-center gap-4 px-8 py-3 w-fit rounded-[1.5rem] bg-white/5 hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/30 transition-all duration-500 group z-30 shadow-2xl backdrop-blur-xl"
+                                        >
+                                            <HiCog className="text-4xl text-zinc-600 group-hover:text-emerald-400 group-hover:rotate-180 transition-all duration-700" />
+                                            <span className="text-xl font-black uppercase tracking-[0.2em] text-zinc-500 group-hover:text-emerald-400">Konfiguro</span>
+                                        </button>
 
-                <main className="flex-1 flex flex-col gap-2 min-h-0" style={{ contain: 'layout style paint' }}>
-                    <div className="flex-[1.4] grid grid-cols-2 gap-2 relative z-10 min-h-0">
-                        <NextPrayer infoTani={infoTani} ne24hFn={ne24h} formatDallimFn={formatDallim} settings={settings} />
-                        <ActivityBox displayMode={displayMode} settings={settings} currentHadith={currentHadith} vaktiSot={vaktiSot} infoTani={infoTani} />
-                    </div>
-                    <PrayerGrid listaNamazeve={listaNamazeve} vaktiSot={vaktiSot} infoTani={infoTani} xhematiFn={xhemati} ne24hFn={ne24h} isRamazan={settings.ramazan?.active} settings={settings} />
-                </main>
+                                        {settings.showQuranRadio && <QuranRadio />}
+                                    </div>
+                                </div>
+                                <Clock mode="home_right" />
+                            </div>
+                        )}
+                    </header>
+                </ErrorBoundary>
+
+                <ErrorBoundary fallback={<div className="flex-1 bg-black/40 flex items-center justify-center text-zinc-500 font-black uppercase">Gabim në shfaqjen e vaktisë</div>}>
+                    <main className="flex-1 flex flex-col gap-2 min-h-0" style={{ contain: 'layout style paint' }}>
+                        <div className="flex-[1.4] grid grid-cols-2 gap-2 relative z-10 min-h-0">
+                            <NextPrayer infoTani={infoTani} ne24hFn={ne24h} formatDallimFn={formatDallim} settings={settings} />
+                            <ActivityBox displayMode={displayMode} settings={settings} currentHadith={currentHadith} vaktiSot={vaktiSot} infoTani={infoTani} />
+                        </div>
+                        <PrayerGrid listaNamazeve={listaNamazeve} vaktiSot={vaktiSot} infoTani={infoTani} xhematiFn={xhemati} ne24hFn={ne24h} isRamazan={settings.ramazan?.active} settings={settings} />
+                    </main>
+                </ErrorBoundary>
 
 
 
