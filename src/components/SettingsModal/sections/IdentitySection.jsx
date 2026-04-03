@@ -7,16 +7,16 @@ export default function IdentitySection({ settings, setSettings, triggerConfirm,
             <SectionHeader
                 icon={HiIdentification}
                 title="Identiteti"
-                description="Informacionet kryesore të ekranit."
+                description="Informacionet kryesore të xhamisë dhe imamit."
                 onReset={() => triggerConfirm(
                     "Rikthe Identitetin",
-                    "A dëshironi t'i ktheni të dhënat në vlerat fillestare?",
+                    "A dëshironi t'i ktheni të dhënat e identitetit në vlerat fillestare?",
                     onReset
                 )}
             />
 
             {settings.appMode === 'mosque' ? (
-                <div className="grid grid-cols-1 gap-8">
+                <div className="grid grid-cols-1 gap-12">
                     <InputField
                         label="Emri i Xhamisë"
                         value={settings.name}

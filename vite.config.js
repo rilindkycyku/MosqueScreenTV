@@ -19,19 +19,21 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
+      includeAssets: ['favicon.png', 'logo.png', 'og-image.png'],
       workbox: {
         cleanupOutdatedCaches: true,
         skipWaiting: true,
         clientsClaim: true,
+        navigateFallback: '/index.html', // Ensures SPA works offline for any URL
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json,ttf,woff,woff2}'],
-        maximumFileSizeToCacheInBytes: 8000000, // Reduced slightly for memory safety (8MB)
+        maximumFileSizeToCacheInBytes: 8000000, 
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: 'CacheFirst',
             options: {
               cacheName: 'google-fonts-cache',
-              expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 365 },
               cacheableResponse: { statuses: [0, 200] }
             }
           },
@@ -40,7 +42,7 @@ export default defineConfig({
             handler: 'CacheFirst',
             options: {
               cacheName: 'gstatic-fonts-cache',
-              expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 365 },
               cacheableResponse: { statuses: [0, 200] }
             }
           }
@@ -48,11 +50,12 @@ export default defineConfig({
       },
       manifest: {
         name: 'Mosque Screen TV',
-        short_name: 'Mosque Screen TV',
+        short_name: 'Mosque TV',
         description: 'Sistemi modern për shfaqjen e kohëve të namazit',
         theme_color: '#10b981',
         background_color: '#000000',
         display: 'standalone',
+        orientation: 'landscape', // Lock to landscape for TV
         icons: [
           {
             src: '/favicon.png',

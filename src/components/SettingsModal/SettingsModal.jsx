@@ -29,7 +29,7 @@ export default function SettingsModal({
     const tabs = [
         { id: 'identity',  label: 'Të dhënat',    icon: HiIdentification, subtitle: 'Të dhënat e xhamisë',                mosqueOnly: true },
         { id: 'display',   label: 'Ekrani',        icon: HiGlobeAlt,       subtitle: 'Konfigurimi i shfaqjes' },
-        { id: 'location',  label: 'Vaktia',        icon: HiGlobeAlt,       subtitle: 'Kosovë / Shqipëri' },
+        { id: 'location',  label: 'Vaktet',        icon: HiGlobeAlt,       subtitle: 'Shteti dhe Namazet' },
         { id: 'durations', label: 'Kohëzgjatja',   icon: HiClock,          subtitle: 'Ciklet e shfaqjes',                   mosqueOnly: true },
         { id: 'ramazan',   label: 'Ramazani',      icon: HiClock,          subtitle: 'Konfigurimi i muajit të ramazanit' },
         { id: 'message',   label: 'Njoftimet',     icon: HiSpeakerphone,   subtitle: 'Mesazh i shpejtë',                    mosqueOnly: true }
@@ -149,8 +149,8 @@ export default function SettingsModal({
                 <main className="flex-1 p-10 pb-32 overflow-y-auto custom-scrollbar relative bg-zinc-950">
                     <div className="animate-slide-up">
                         {activeTab === 'identity'  && <IdentitySection  settings={tempSettings} setSettings={setTempSettings} triggerConfirm={triggerConfirm} onReset={() => resetCategory('identity')} />}
-                        {activeTab === 'display'   && <DisplaySection   settings={tempSettings} setSettings={setTempSettings} triggerConfirm={triggerConfirm} onReset={() => resetCategory('identity')} />}
-                        {activeTab === 'location'  && <LocationSection  settings={tempSettings} setSettings={setTempSettings} />}
+                        {activeTab === 'display'   && <DisplaySection   settings={tempSettings} setSettings={setTempSettings} triggerConfirm={triggerConfirm} onReset={() => resetCategory('display')} />}
+                        {activeTab === 'location'  && <LocationSection  settings={tempSettings} setSettings={setTempSettings} triggerConfirm={triggerConfirm} onReset={() => resetCategory('location')} />}
                         {activeTab === 'durations' && <DurationsSection settings={tempSettings} setSettings={setTempSettings} triggerConfirm={triggerConfirm} onReset={() => resetCategory('durations')} />}
                         {activeTab === 'ramazan'   && <RamazanSection   settings={tempSettings} setSettings={setTempSettings} triggerConfirm={triggerConfirm} onReset={() => resetCategory('ramazan')} />}
                         {activeTab === 'message'   && <MessageSection   settings={tempSettings} setSettings={setTempSettings} triggerConfirm={triggerConfirm} onReset={() => resetCategory('message')} />}

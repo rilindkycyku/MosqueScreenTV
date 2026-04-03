@@ -10,6 +10,10 @@
         "location": "ks",
         "showQuranRadio": false,
         "showFooter": false,
+        "manualDreka": "",
+        "manualXhuma1": "",
+        "manualXhuma2": "",
+        "xhuma2Active": false,
         "durations": {
             "hadith": 5,
             "qr": 1,

@@ -41,10 +41,13 @@ const formatDallim = (min) => {
 
 // Shared prayer label helper used by both updateNextPrayer and listaNamazeve
 const getPrayerLabel = (id, { isR, isHome, isFriday }) => {
-    if (id === 'Imsaku') return (isR && isHome) ? "Syfyri" : (isR ? "Syfyri (Imsaku)" : "Imsaku");
-    if (id === 'Akshami') return (isR && isHome) ? "Iftari" : (isR ? "Iftari (Akshami)" : "Akshami");
-    if (id === 'Jacia' && isR) return isHome ? "Jacia" : "Teravia (Jacia)";
+    if (id === 'Imsaku') return isR ? (isHome ? "Syfyri" : "Syfyri (Imsaku)") : "Imsaku";
+    if (id === 'Akshami') return isR ? (isHome ? "Iftari" : "Iftari (Akshami)") : "Akshami";
+    if (id === 'Jacia') return isR ? (isHome ? "Jacia" : "Teravia (Jacia)") : "Jacia";
+    if (id === 'Sabahu' && isR && !isHome) return "Sabahu (Vakti)";
     if (id === 'Dreka' && isFriday && !isHome) return "Xhumaja";
+    if (id === 'Xhuma1') return "Xhumaja";
+    if (id === 'Xhuma2') return "Xhumaja II";
     if (id === 'NamazNate') return "Namaz i Natës";
     return id;
 };
@@ -220,6 +223,8 @@ export default function App() {
         setSettings(tempSettings);
         localStorage.setItem('tv_settings', JSON.stringify(tempSettings));
         setShowSettings(false);
+        // Explicitly trigger update to next prayer to catch logic changes immediately
+        setTimeout(updateNextPrayer, 0);
     };
 
     // Auto-save: commit changes when modal closes
@@ -239,20 +244,35 @@ export default function App() {
                 ...newSettings,
                 name: config.tvOptions.name,
                 address: config.tvOptions.address,
-                imamName: config.tvOptions.imamName,
-                qrUrl: config.tvOptions.qrUrl,
-                durations: {
-                    ...newSettings.durations,
-                    sabahuOffset: config.tvOptions.durations.sabahuOffset
-                },
+                imamName: config.tvOptions.imamName
+            };
+        } else if (category === 'display') {
+            newSettings = {
+                ...newSettings,
+                appMode: config.tvOptions.appMode,
                 showQr: config.tvOptions.showQr,
+                qrUrl: config.tvOptions.qrUrl,
+                showSilenceWarning: config.tvOptions.showSilenceWarning,
                 showFooter: config.tvOptions.showFooter,
-                showSilenceWarning: config.tvOptions.showSilenceWarning
+                showQuranRadio: config.tvOptions.showQuranRadio
             };
         } else if (category === 'durations') {
             newSettings = { ...newSettings, durations: config.tvOptions.durations };
         } else if (category === 'ramazan') {
             newSettings = { ...newSettings, ramazan: config.ramazan };
+        } else if (category === 'location') {
+            newSettings = { 
+                ...newSettings, 
+                location: config.tvOptions.location,
+                manualDreka: config.tvOptions.manualDreka,
+                manualXhuma1: config.tvOptions.manualXhuma1,
+                manualXhuma2: config.tvOptions.manualXhuma2,
+                xhuma2Active: config.tvOptions.xhuma2Active,
+                durations: {
+                    ...newSettings.durations,
+                    sabahuOffset: config.tvOptions.durations.sabahuOffset
+                }
+            };
         } else if (category === 'message') {
             newSettings = { ...newSettings, customMsg: "" };
         }
@@ -420,7 +440,7 @@ export default function App() {
 
     const xhemati = useCallback((name) => {
         if (!vaktiSot) return null;
-        if (settings.appMode === 'home' && name !== "NamazNate") return vaktiSot[name];
+        if (settings.appMode === 'home') return vaktiSot[name] || null;
 
         const isR = settings.ramazan?.active;
         if (name === "Sabahu") {
@@ -434,11 +454,12 @@ export default function App() {
             }
         }
         if (name === "Dreka" && vaktiSot?.Dreka) {
-            const now = new Date();
-            // Automatically switch between 12:55 (DST) and 11:55 (Standard Time)
-            const isDST = now.getTimezoneOffset() < new Date(now.getFullYear(), 0, 1).getTimezoneOffset();
-            return isDST ? "12:55" : "11:55";
+            if (settings.manualDreka && settings.manualDreka !== "00:00") return settings.manualDreka;
+            const [h] = vaktiSot.Dreka.split(":").map(Number);
+            return h < 12 ? "11:55" : "12:55";
         }
+        if (name === "Xhuma1") return (settings.manualXhuma1 && settings.manualXhuma1 !== "00:00") ? settings.manualXhuma1 : xhemati("Dreka");
+        if (name === "Xhuma2") return settings.manualXhuma2 === "00:00" ? null : settings.manualXhuma2;
         if (name === "Jacia" && vaktiSot?.Jacia) {
             if (isR && settings.ramazan?.kohaTeravise && settings.ramazan?.kohaTeravise !== "00:00") return settings.ramazan.kohaTeravise;
             return vaktiSot.Jacia;
@@ -447,107 +468,103 @@ export default function App() {
             return (isR && settings.appMode !== 'home' && settings.ramazan?.namazNate?.active) ? (settings.ramazan?.namazNate?.koha || "00:30") : null;
         }
         return vaktiSot?.[name] ?? null;
-    }, [vaktiSot, settings]);
+    }, [vaktiSot?.Date, settings.manualDreka, settings.manualXhuma1, settings.manualXhuma2, settings.ramazan?.active, settings.ramazan?.kohaTeravise, settings.ramazan?.namazNate?.active, settings.ramazan?.namazNate?.koha, settings.appMode, settings.durations?.sabahuOffset]);
 
     const updateNextPrayer = useCallback(() => {
-        if (!vaktiSot || !vaktet.length) return;
+        // Optimization: Don't run expensive calculations if page is hidden
+        if (document.visibilityState === 'hidden' || !vaktiSot || !vaktet.length) return;
 
         const now = new Date();
         const nowMin = now.getHours() * 60 + now.getMinutes();
         const isR = settings.ramazan?.active;
         const isHome = settings.appMode === 'home';
+        const isFriday = now.getDay() === 5;
 
-        const labelCtx = { isR, isHome, isFriday: now.getDay() === 5 };
-        const getLabel = (id) => getPrayerLabel(id, labelCtx);
-
+        const labelCtx = { isR, isHome, isFriday };
+        
         const moments = [];
-        let prayerKeys = ["Sabahu", "Dreka", "Ikindia", "Akshami", "Jacia"];
-        if (isR) prayerKeys.unshift("Imsaku");
+        let prayerKeys = isR ? ["Imsaku", "Sabahu", "Dreka", "Ikindia", "Akshami", "Jacia"] : ["Sabahu", "Dreka", "Ikindia", "Akshami", "Jacia"];
 
-        // NamazNate only for Mosque mode if active
-        if (isR && settings.appMode !== 'home' && settings.ramazan?.namazNate?.active) {
+        if (isR && !isHome && settings.ramazan?.namazNate?.active) {
             prayerKeys.unshift("NamazNate");
         }
 
-        prayerKeys.forEach(n => {
-            const kohaPajisjes = n === "NamazNate" ? (settings.ramazan?.namazNate?.koha || "00:30") : vaktiSot[n];
-            if (kohaPajisjes) {
-                const xh = xhemati(n);
-
-                // Skip logic for specific prayers
-                const skipRawJacia = (n === "Jacia" && isR && settings.appMode !== 'home' && settings.ramazan?.kohaTeravise && settings.ramazan?.kohaTeravise !== "00:00");
-                const skipJsonDreka = (n === "Dreka" && xh && xh !== kohaPajisjes && !isHome);
-
-                if (!skipRawJacia && !skipJsonDreka) {
-                    moments.push({ id: n, kohe: vaktiSot[n], isXh: false });
-                }
-
-                if (xh) {
-                    if (xh !== kohaPajisjes || skipRawJacia || skipJsonDreka) {
-                        moments.push({ id: n, kohe: xh, isXh: true });
-                    }
-                }
+        if (isFriday && !isHome) {
+            prayerKeys = prayerKeys.filter(k => k !== "Dreka");
+            const sabIdx = prayerKeys.indexOf("Sabahu");
+            prayerKeys.splice(sabIdx + 1, 0, "Xhuma1");
+            if (settings.xhuma2Active) {
+                prayerKeys.splice(sabIdx + 2, 0, "Xhuma2");
             }
+        }
+
+        prayerKeys.forEach(n => {
+            const xh = xhemati(n);
+            if (!xh) return;
+
+            const isManualOrRamazanJacia = (n === "Jacia" && isR && !isHome && settings.ramazan?.kohaTeravise && settings.ramazan?.kohaTeravise !== "00:00");
+            const isModifiedDreka = (n === "Dreka" && !isHome);
+            const isSpecial = n === "Xhuma1" || n === "Xhuma2" || n === "NamazNate" || isManualOrRamazanJacia || isModifiedDreka;
+
+            if (vaktiSot[n] && !isSpecial) moments.push({ id: n, kohe: vaktiSot[n], isXh: false });
+            moments.push({ id: n, kohe: xh, isXh: true });
         });
 
-        let nextIdx = moments.findIndex(m => neMinuta(m.kohe) > nowMin);
+        // Filter out duplicates (if JSON time and Xhemat time are identical)
+        const uniqueMoments = moments.filter((m, i, self) => 
+            i === self.findIndex(t => t.id === m.id && t.kohe === m.kohe)
+        );
+
+        let nextIdx = uniqueMoments.findIndex(m => neMinuta(m.kohe) > nowMin);
         let nextInfo;
 
         if (nextIdx === -1) {
             const tomIdx = vaktet.findIndex(v => v.Date === vaktiSot.Date) + 1;
             const tomorrowRow = vaktet[tomIdx] || vaktet[0];
-            const tomXh = isR ? tomorrowRow.Sabahu : (tomorrowRow.Lindja ? (() => {
-                const [h, m] = tomorrowRow.Lindja.split(":").map(Number);
-                const total = h * 60 + m - (settings.durations?.sabahuOffset || 35);
-                return `${String(Math.floor(total / 60)).padStart(2, "0")}:${String(((total % 60) + 60) % 60).padStart(2, "0")}`;
-            })() : tomorrowRow.Sabahu);
-
-            // isHome is already in scope from the outer useCallback
             const hasNN = isR && settings.ramazan?.namazNate?.active && !isHome;
             const tomId = hasNN ? "NamazNate" : (isR ? "Imsaku" : "Sabahu");
-            const tomK = hasNN ? (settings.ramazan?.namazNate?.koha || "00:30") : (isR ? tomorrowRow.Imsaku : tomXh);
+            
+            // Calculate tomorrow's start time
+            let tomK;
+            if (hasNN) tomK = settings.ramazan.namazNate.koha || "00:30";
+            else if (isR) tomK = tomorrowRow.Imsaku;
+            else {
+                const [h, m] = tomorrowRow.Lindja.split(":").map(Number);
+                const total = h * 60 + m - (settings.durations?.sabahuOffset || 35);
+                tomK = `${String(Math.floor(total / 60)).padStart(2, "0")}:${String(((total % 60) + 60) % 60).padStart(2, "0")}`;
+            }
 
             nextInfo = {
-                tani: { id: "Jacia", label: getLabel("Jacia") },
-                ardhshëm: { id: tomId, label: getLabel(tomId), kohe: tomK, isXh: true },
+                tani: { id: "Jacia", label: getPrayerLabel("Jacia", labelCtx) },
+                ardhshëm: { id: tomId, label: getPrayerLabel(tomId, labelCtx), kohe: tomK, isXh: true },
                 mbetur: (24 * 60 - nowMin) + neMinuta(tomK)
             };
-        } else if (nextIdx === 0) {
-            const idxS = vaktet.findIndex(v => v.Date === vaktiSot.Date);
-            const yesterday = idxS > 0 ? vaktet[idxS - 1] : vaktet[vaktet.length - 1];
-            nextInfo = {
-                tani: { id: "Jacia", label: getLabel("Jacia"), kohe: yesterday.Jacia },
-                ardhshëm: { ...moments[0], label: getLabel(moments[0].id) },
-                mbetur: neMinuta(moments[0].kohe) - nowMin
-            };
         } else {
-            let tani = { ...moments[nextIdx - 1], label: getLabel(moments[nextIdx - 1].id) };
-
+            const currentMoment = nextIdx === 0 ? uniqueMoments[uniqueMoments.length - 1] : uniqueMoments[nextIdx - 1];
+            let tani = { ...currentMoment, label: getPrayerLabel(currentMoment.id, labelCtx) };
+            
             if (tani.id === "Sabahu" && vaktiSot.Lindja && nowMin >= neMinuta(vaktiSot.Lindja)) {
                 tani = { id: "Lindja", label: "Lindja e Diellit", kohe: vaktiSot.Lindja };
             }
 
             nextInfo = {
                 tani: tani,
-                ardhshëm: { ...moments[nextIdx], label: getLabel(moments[nextIdx].id) },
-                mbetur: neMinuta(moments[nextIdx].kohe) - nowMin
+                ardhshëm: { ...uniqueMoments[nextIdx], label: getPrayerLabel(uniqueMoments[nextIdx].id, labelCtx) },
+                mbetur: neMinuta(uniqueMoments[nextIdx].kohe) - nowMin
             };
         }
 
         setInfoTani(prev => {
-            const diffA = nextInfo.ardhshëm ? neMinuta(nextInfo.ardhshëm.kohe) - nowMin : 999;
+            const diffA = nextInfo.mbetur;
             const diffT = nextInfo.tani?.kohe ? nowMin - neMinuta(nextInfo.tani.kohe) : 999;
             const isSilenceMode = (diffA <= 5 && diffA >= 0) || (diffT >= 0 && diffT <= 2);
 
-            // Detailed equality check to avoid object churn
-            const isUnchanged = prev && 
-                prev.ardhshëm?.id === nextInfo.ardhshëm?.id && 
-                prev.mbetur === nextInfo.mbetur && 
-                prev.isSilenceMode === isSilenceMode;
-            
-            return isUnchanged ? prev : { ...nextInfo, isSilenceMode, nowMin };
+            if (prev && prev.mbetur === nextInfo.mbetur && prev.isSilenceMode === isSilenceMode && prev.ardhshëm?.id === nextInfo.ardhshëm?.id) {
+                return prev;
+            }
+            return { ...nextInfo, isSilenceMode, nowMin };
         });
-    }, [vaktiSot, settings.appMode, settings.ramazan?.active, xhemati]);
+    }, [vaktiSot, vaktet, settings.appMode, settings.ramazan, settings.xhuma2Active, xhemati]);
 
     // Sync currentHadith state into ref so refresh timer can check it without being a dep
     useEffect(() => { currentHadithRef.current = currentHadith; }, [currentHadith]);
@@ -571,11 +588,22 @@ export default function App() {
             { id: "Jacia", label: getPrayerLabel("Jacia", labelCtx) },
         ];
 
+        // On Friday in Mosque mode, Xhuma I replaces Dreka. Xhuma II is optional.
+        if (labelCtx.isFriday && !isHome) {
+            // Replace Dreka (index 1) with Xhuma 1
+            list[1] = { id: "Xhuma1", label: getPrayerLabel("Xhuma1", labelCtx) };
+            
+            // If Xhuma 2 is ACTIVE, insert it right after
+            if (settings.xhuma2Active) {
+                list.splice(2, 0, { id: "Xhuma2", label: getPrayerLabel("Xhuma2", labelCtx) });
+            }
+        }
+
         if (isR) {
             list.unshift({ id: "Imsaku", label: getPrayerLabel("Imsaku", labelCtx) });
         }
         return list;
-    }, [settings.ramazan?.active, settings.appMode]);
+    }, [settings.ramazan, settings.appMode, settings.xhuma2Active, settings.manualXhuma1, settings.manualXhuma2, settings.manualDreka]);
 
 
     if (!vaktiSot) return <div className="h-screen bg-black flex items-center justify-center text-white text-3xl font-bold animate-pulse">Duke ngarkuar...</div>;
@@ -592,7 +620,7 @@ export default function App() {
                     transform: `translate(-50%, -50%) scale(${Math.max(0.01, scale)})`,
                     transformOrigin: 'center center',
                     flexShrink: 0,
-                    contain: 'strict'
+                    contain: 'layout style paint'
                 }}>
                 {/* Static CSS is in index.css */}
 

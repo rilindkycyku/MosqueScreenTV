@@ -1,5 +1,7 @@
-import { memo } from 'react';
-import { QRCodeCanvas } from 'qrcode.react';
+import { memo, lazy, Suspense } from 'react';
+
+// Lazy load the heavy QR library - only loaded when needed in the display cycle
+const QRCodeCanvas = lazy(() => import('qrcode.react').then(mod => ({ default: mod.QRCodeCanvas })));
 
 const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHadith, vaktiSot, infoTani }) {
     const { isSilenceMode } = infoTani || {};
@@ -9,7 +11,7 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
     // 1. SILENCE MODE (Highest Priority)
     if (isSilenceMode && showSilence) {
         return (
-            <div className="bg-zinc-900 border-4 border-amber-500/50 rounded-[3.5rem] p-4 relative overflow-hidden flex flex-col items-center justify-center animate-pulse text-center h-full">
+            <div className="bg-zinc-900 border-4 border-amber-500/50 rounded-[3.5rem] p-4 relative overflow-hidden flex flex-col items-center justify-center animate-pulse text-center h-full shadow-[0_0_60px_rgba(245,158,11,0.15)]">
                 <div className="text-amber-500 mb-0">
                     <svg className="w-48 h-48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728A9 9 0 115.636 5.636m12.728 12.728L5.636 5.636" />
@@ -33,14 +35,16 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
             <div className="activity-box bg-zinc-900 border-2 border-white/5 rounded-[3.5rem] p-4 relative overflow-hidden flex flex-col items-center justify-center shadow-premium h-full">
                 <div className="flex flex-row items-center gap-12 w-full h-full justify-center px-6 animate-slide-up">
                     <div className="p-6 bg-white rounded-[2.5rem] shrink-0 shadow-[0_0_50px_rgba(16,185,129,0.2)]">
-                        {/* Only mount the heavy canvas when truly visible in the cycle */}
-                        <QRCodeCanvas
-                            value={qrUrl}
-                            size={320}
-                            level="H"
-                            fgColor="#000000"
-                            includeMargin={false}
-                        />
+                        {/* Suspense handles the lazy loading of the heavy canvas component */}
+                        <Suspense fallback={<div className="w-[320px] h-[320px] bg-zinc-100 rounded-2xl animate-pulse" />}>
+                            <QRCodeCanvas
+                                value={qrUrl}
+                                size={320}
+                                level="H"
+                                fgColor="#000000"
+                                includeMargin={false}
+                            />
+                        </Suspense>
                     </div>
                     <div className="flex flex-col items-start gap-4 text-left">
                         <div className="flex flex-col gap-1">
@@ -61,7 +65,7 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
 
     return (
         <div className="activity-box bg-zinc-900 border-2 border-white/5 rounded-[3.5rem] p-2 relative overflow-hidden flex flex-col transition-all duration-700 h-full">
-            <div className="w-full h-full flex flex-col justify-between px-10 pt-4 pb-8 animate-slide-up">
+            <div className="w-full h-full flex flex-col justify-between px-10 pt-4 pb-8 animate-slide-up" style={{ contain: 'content' }}>
                 {/* 1. Header Label */}
                 <div className="w-full flex flex-col items-center pt-2">
                     <div className="flex items-center gap-4 mb-2 opacity-80">
@@ -97,16 +101,34 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
                         </div>
                     ) : currentHadith ? (
                         <div className="overflow-hidden flex flex-col items-center justify-center w-full px-2">
-                            {currentHadith.entryText && <p className="text-zinc-500 text-lg mb-2 italic font-medium opacity-60">{currentHadith.entryText}</p>}
-                            <h3 className={`leading-[1.1] italic font-bold text-white mb-2 ${
-                                    currentHadith.textContent?.length > 450 ? 'text-lg lg:text-[1.4rem]' :
-                                    currentHadith.textContent?.length > 350 ? 'text-xl lg:text-[1.8rem]' :
-                                    currentHadith.textContent?.length > 250 ? 'text-2xl lg:text-[2.2rem]' :
-                                    currentHadith.textContent?.length > 180 ? 'text-3xl lg:text-[2.5rem]' :
-                                        'text-4xl lg:text-[3.3rem]'
-                                }`}>
-                                "{currentHadith.textContent}"
-                            </h3>
+                            {(() => {
+                                const entryLen = currentHadith.entryText?.length || 0;
+                                const contentLen = currentHadith.textContent?.length || 0;
+                                const tot = entryLen + contentLen;
+
+                                const entryClass = tot > 500 ? 'text-sm' : tot > 350 ? 'text-base' : 'text-lg';
+                                const contentClass = 
+                                    tot > 650 ? 'text-lg lg:text-[1.05rem]' :
+                                    tot > 500 ? 'text-lg lg:text-[1.2rem]' :
+                                    tot > 400 ? 'text-xl lg:text-[1.5rem]' :
+                                    tot > 300 ? 'text-2xl lg:text-[1.8rem]' :
+                                    tot > 200 ? 'text-3xl lg:text-[2.2rem]' :
+                                    tot > 150 ? 'text-3xl lg:text-[2.6rem]' :
+                                        'text-4xl lg:text-[3.2rem]';
+
+                                return (
+                                    <>
+                                        {currentHadith.entryText && (
+                                            <p className={`text-zinc-500 mb-1 italic font-medium opacity-60 text-center ${entryClass}`}>
+                                                {currentHadith.entryText}
+                                            </p>
+                                        )}
+                                        <h3 className={`leading-[1.15] italic font-bold text-white mb-2 text-center ${contentClass}`}>
+                                            "{currentHadith.textContent}"
+                                        </h3>
+                                    </>
+                                );
+                            })()}
                             <div className="mt-2 text-center">
                                 <div className="w-12 h-0.5 bg-emerald-500 rounded-full mb-2 mx-auto opacity-40" />
                                 <p className="text-emerald-400 font-black text-xl lg:text-[1.6rem] leading-none">{currentHadith.reference}</p>
