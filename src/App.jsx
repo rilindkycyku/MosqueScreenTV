@@ -190,31 +190,95 @@ export default function App() {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [handleKeyDown]);
 
-    // Screen Wake Lock: Prevent TV from going to sleep (Optimized for low-end TVs)
+    // Screen Wake Lock: Prevent TV from going to sleep (Hardened Heartbeat Version)
     useEffect(() => {
         let wakeLock = null;
         let isActive = true;
+        let retryTimeout = null;
+        let heartbeatInterval = null;
 
         const requestWakeLock = async () => {
-            if (!isActive || !('wakeLock' in navigator)) return;
+            if (!isActive || !('wakeLock' in navigator) || document.visibilityState !== 'visible') return;
             try {
+                if (wakeLock) {
+                    await wakeLock.release().catch(() => {});
+                    wakeLock = null;
+                }
                 wakeLock = await navigator.wakeLock.request('screen');
                 wakeLock.addEventListener('release', () => {
-                    if (isActive && document.visibilityState === 'visible') requestWakeLock();
+                    wakeLock = null;
+                    if (isActive && document.visibilityState === 'visible') {
+                        if (retryTimeout) clearTimeout(retryTimeout);
+                        retryTimeout = setTimeout(requestWakeLock, 2000);
+                    }
                 });
-            } catch (err) { /* Console logs removed for memory efficiency */ }
+            } catch (err) {
+                if (isActive && document.visibilityState === 'visible') {
+                    if (retryTimeout) clearTimeout(retryTimeout);
+                    retryTimeout = setTimeout(requestWakeLock, 10000);
+                }
+            }
         };
 
         requestWakeLock();
+        
+        heartbeatInterval = setInterval(() => {
+            if (isActive && document.visibilityState === 'visible' && !wakeLock) {
+                requestWakeLock();
+            }
+        }, 30000);
+
         const handleVisibilityChange = () => { if (document.visibilityState === 'visible') requestWakeLock(); };
         document.addEventListener('visibilitychange', handleVisibilityChange);
 
         return () => {
             isActive = false;
+            if (retryTimeout) clearTimeout(retryTimeout);
+            if (heartbeatInterval) clearInterval(heartbeatInterval);
             document.removeEventListener('visibilitychange', handleVisibilityChange);
             if (wakeLock) {
                 wakeLock.release().catch(() => {});
                 wakeLock = null;
+            }
+        };
+    }, []);
+
+    // Synthetic Pointer Move: Defeat screensavers on Tizen/WebOS browsers
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const x = Math.floor(Math.random() * window.innerWidth);
+            const y = Math.floor(Math.random() * window.innerHeight);
+            const event = new MouseEvent('mousemove', {
+                bubbles: true,
+                cancelable: true,
+                clientX: x,
+                clientY: y
+            });
+            window.dispatchEvent(event);
+        }, 180000); // 3 minutes
+
+        return () => clearInterval(interval);
+    }, []);
+
+    // Silent Audio Heartbeat: Keep audio pipeline alive on WebOS
+    useEffect(() => {
+        let audioCtx = null;
+        try {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (AudioContext) {
+                audioCtx = new AudioContext();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                gainNode.gain.value = 0; // Completely silent
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.start();
+            }
+        } catch (e) { /* Ignore audio context errors */ }
+
+        return () => {
+            if (audioCtx && audioCtx.state !== 'closed') {
+                audioCtx.close().catch(() => {});
             }
         };
     }, []);
@@ -367,7 +431,7 @@ export default function App() {
             
             const msUntilCheck = nextPeriodDate.getTime() - now.getTime();
             timerId = setTimeout(() => {
-                const isNearPrayer = infoTani && infoTani.mbetur < 15;
+                const isNearPrayer = infoTani && infoTani.mbetur < 20;
                 const isIdleMode = displayMode === 'hadith';
                 if (isIdleMode && !isNearPrayer && navigator.onLine && !showSettings) window.location.reload();
                 else setTimeout(checkReload, 5 * 60000);
@@ -389,7 +453,7 @@ export default function App() {
             frames++;
             if (time >= lastTime + 1000) {
                 const fps = Math.round((frames * 1000) / (time - lastTime));
-                if (fps < 25 && !showSettings) { // If bogged down below 25FPS
+                if (fps < 25 && !showSettings && document.visibilityState === 'visible') { // If bogged down below 25FPS
                     warningTicks++;
                     if (warningTicks > 15) { // 15 consecutive seconds of lag
                         const isNearPrayer = infoTani && infoTani.mbetur < 12;
@@ -622,6 +686,16 @@ export default function App() {
                     flexShrink: 0,
                     contain: 'layout style paint'
                 }}>
+                
+                {/* Keepalive Video Element (Prevents sleep on Android TV browsers) */}
+                <video 
+                    autoPlay 
+                    loop 
+                    muted 
+                    playsInline 
+                    src="/silent.mp4"
+                    style={{ position: 'absolute', width: '1px', height: '1px', opacity: 0, pointerEvents: 'none' }}
+                />
                 {/* Static CSS is in index.css */}
 
                 {isNightDimmed && <div className="dimmed-overlay" style={{ opacity: 0.6 }} />}

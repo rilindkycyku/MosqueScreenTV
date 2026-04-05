@@ -19,13 +19,13 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
-      includeAssets: ['favicon.png', 'logo.png', 'og-image.png'],
+      includeAssets: ['favicon.png', 'logo.png', 'og-image.png', 'silent.mp4'],
       workbox: {
         cleanupOutdatedCaches: true,
         skipWaiting: true,
         clientsClaim: true,
         navigateFallback: '/index.html', // Ensures SPA works offline for any URL
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,ttf,woff,woff2,jpg,jpeg,webp}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,ttf,woff,woff2,jpg,jpeg,webp,mp4}'],
         maximumFileSizeToCacheInBytes: 20 * 1024 * 1024, // Increase to 20MB for high-res scenery
         runtimeCaching: [
           {
