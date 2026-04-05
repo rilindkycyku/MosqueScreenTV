@@ -17,7 +17,7 @@ const NextPrayer = memo(function NextPrayer({ infoTani, ne24hFn, formatDallimFn,
     const labelMain = infoTani.ardhshëm.label.replace('ME XHEMAT: ', '');
 
     return (
-        <div className={`next-prayer-box bg-zinc-900 rounded-[3.5rem] p-2 relative overflow-hidden flex flex-col transition-all duration-500 h-full ${isSilenceMode && showSilence ? 'shadow-[0_0_50px_rgba(245,158,11,0.1)]' : 'shadow-2xl'}`}>
+        <div className={`next-prayer-box bg-gradient-to-br from-zinc-800 to-zinc-950 rounded-[3.5rem] p-2 relative overflow-hidden flex flex-col transition-all duration-500 h-full ${isSilenceMode && showSilence ? 'shadow-[0_0_50px_rgba(245,158,11,0.1)]' : 'shadow-2xl'}`}>
             {/* Silence Mode Overlay */}
             {showSilence && (
                 <div className={`absolute top-0 right-0 ${isSilenceMode ? 'bg-amber-500 animate-pulse' : 'bg-zinc-800'} w-24 h-24 rounded-bl-[2.5rem] shadow-lg flex items-center justify-center z-20 transition-colors duration-500`}>
@@ -46,10 +46,15 @@ const NextPrayer = memo(function NextPrayer({ infoTani, ne24hFn, formatDallimFn,
                         {(() => {
                             const displayName = labelMain.split(' (')[0];
                             const hasSubLabel = labelMain.includes('(');
-                            const sizeClass = displayName.length > 12 ? 'text-7xl lg:text-[10rem]'
-                                : displayName.length > 8              ? 'text-8xl lg:text-[12rem]'
-                                : hasSubLabel                          ? 'text-9xl lg:text-[14rem]'
-                                :                                        'text-10xl lg:text-[18rem]';
+                            const len = displayName.length;
+
+                            // Dynamic size calculation: base size decreases with length and presence of sub-label
+                            const sizeClass = 
+                                  len > 12 ? (hasSubLabel ? 'lg:text-[7.5rem]' : 'lg:text-[9rem]')
+                                : len > 10 ? (hasSubLabel ? 'lg:text-[9rem]' : 'lg:text-[11rem]')
+                                : len > 8  ? (hasSubLabel ? 'lg:text-[11rem]' : 'lg:text-[13rem]')
+                                : len > 6  ? (hasSubLabel ? 'lg:text-[13rem]' : 'lg:text-[15rem]')
+                                :            (hasSubLabel ? 'lg:text-[14rem]' : 'lg:text-[17rem]');
                             return (
                                 <h2 className={`font-bold text-white tracking-[0.05em] uppercase leading-[0.8] text-center whitespace-nowrap ${sizeClass}`} style={BN}>
                                     {displayName}

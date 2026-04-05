@@ -25,9 +25,19 @@ export default defineConfig({
         skipWaiting: true,
         clientsClaim: true,
         navigateFallback: '/index.html', // Ensures SPA works offline for any URL
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,ttf,woff,woff2}'],
-        maximumFileSizeToCacheInBytes: 8000000, 
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,ttf,woff,woff2,jpg,jpeg,webp}'],
+        maximumFileSizeToCacheInBytes: 20 * 1024 * 1024, // Increase to 20MB for high-res scenery
         runtimeCaching: [
+          {
+            // Cache ALL local images from both public/images and bundled assets
+            urlPattern: /\/(?:images|assets)\/.*\.(?:png|jpg|jpeg|svg|webp)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'mosque-assets-cache',
+              expiration: { maxEntries: 150, maxAgeSeconds: 60 * 60 * 24 * 60 }, // 60 days
+              cacheableResponse: { statuses: [0, 200] }
+            }
+          },
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: 'CacheFirst',

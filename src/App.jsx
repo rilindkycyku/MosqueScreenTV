@@ -44,7 +44,7 @@ const getPrayerLabel = (id, { isR, isHome, isFriday }) => {
     if (id === 'Imsaku') return isR ? (isHome ? "Syfyri" : "Syfyri (Imsaku)") : "Imsaku";
     if (id === 'Akshami') return isR ? (isHome ? "Iftari" : "Iftari (Akshami)") : "Akshami";
     if (id === 'Jacia') return isR ? (isHome ? "Jacia" : "Teravia (Jacia)") : "Jacia";
-    if (id === 'Sabahu' && isR && !isHome) return "Sabahu (Vakti)";
+    if (id === 'Sabahu' && isR && !isHome) return "Sabahu";
     if (id === 'Dreka' && isFriday && !isHome) return "Xhumaja";
     if (id === 'Xhuma1') return "Xhumaja";
     if (id === 'Xhuma2') return "Xhumaja II";
@@ -687,8 +687,8 @@ export default function App() {
                 </ErrorBoundary>
 
                 <ErrorBoundary fallback={<div className="flex-1 bg-black/40 flex items-center justify-center text-zinc-500 font-black uppercase">Gabim në shfaqjen e vaktisë</div>}>
-                    <main className="flex-1 flex flex-col gap-2 min-h-0" style={{ contain: 'layout style paint' }}>
-                        <div className="flex-[1.4] grid grid-cols-2 gap-2 relative z-10 min-h-0">
+                    <main className="flex-1 flex flex-col gap-6 min-h-0" style={{ contain: 'layout style paint' }}>
+                        <div className="flex-[1.4] grid grid-cols-2 gap-6 relative z-10 min-h-0">
                             <NextPrayer infoTani={infoTani} ne24hFn={ne24h} formatDallimFn={formatDallim} settings={settings} />
                             <ActivityBox displayMode={displayMode} settings={settings} currentHadith={currentHadith} vaktiSot={vaktiSot} infoTani={infoTani} />
                         </div>
