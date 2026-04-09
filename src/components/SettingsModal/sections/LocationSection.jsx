@@ -1,5 +1,5 @@
 import { HiGlobeAlt, HiClock, HiExclamation } from "react-icons/hi";
-import { SectionHeader, TimePicker } from "./shared";
+import { SectionHeader, TimePicker, NumberInput } from "./shared";
 
 export default function LocationSection({ settings, setSettings, triggerConfirm, onReset }) {
     return (
@@ -7,7 +7,7 @@ export default function LocationSection({ settings, setSettings, triggerConfirm,
             <SectionHeader
                 icon={HiGlobeAlt}
                 title="Vaktet & Namazet"
-                description="Zgjidhni kalendarin zyrtar dhe konfiguroni kohët e namazeve."
+                description="Zgjidhni kalendarin zyrtar dhe konfiguroni kohët e namazeve dhe Ikametit."
                 onReset={() => triggerConfirm(
                     "Rikthe Vaktet",
                     "A dëshironi t'i ktheni të gjitha kohët dhe parametrat e vaktit në vlerat fillestare?",
@@ -121,6 +121,85 @@ export default function LocationSection({ settings, setSettings, triggerConfirm,
                                  <h5 className="text-xl font-black text-amber-500 uppercase tracking-tighter mb-1">Këshillë: Përdorimi i 00:00</h5>
                                  <p className="text-lg text-zinc-400 font-medium leading-relaxed italic">Vlerat 00:00 llogariten automatikisht nga sistemi sipas kalendarit zyrtar të zgjedhur më lart.</p>
                              </div>
+                        </div>
+
+                        {/* 3. Iqamah Settings */}
+                        <div className="space-y-12 pt-8 border-t border-white/5">
+                            <div className="flex items-center gap-8 px-4">
+                                <div className="p-4 bg-emerald-500/10 rounded-2xl">
+                                    <HiClock className="text-4xl text-emerald-500" />
+                                </div>
+                                <div>
+                                    <h5 className="text-3xl font-black text-white uppercase tracking-tight">Koha e Ikametit (Xhematit)</h5>
+                                    <p className="text-lg text-zinc-500 font-medium italic opacity-70 mt-1">Shfaq kohën e faljes me xhemat nën kohën e Ezanit.</p>
+                                </div>
+                            </div>
+
+                            <div className="p-10 bg-zinc-900/40 rounded-[3rem] border-2 border-white/5 flex flex-col gap-10">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex flex-col gap-2">
+                                        <h4 className="text-2xl font-black text-white uppercase tracking-tight flex items-center gap-4">
+                                            Aktivizo Ikametin
+                                            {settings.iqamah?.active && <span className="bg-emerald-500/10 text-emerald-500 text-xs py-1 px-3 rounded-full animate-pulse">AKTIV</span>}
+                                        </h4>
+                                        <p className="text-lg text-zinc-500 font-medium italic opacity-70">Nëse është aktive, koha e Ikametit shtohet me +minuta pas Ezanit.</p>
+                                    </div>
+                                    <div className="flex bg-black/40 p-2 rounded-[1.5rem] border border-white/10 shadow-inner w-80 shrink-0">
+                                        <button
+                                            onClick={() => setSettings(p => ({ ...p, iqamah: { ...(p.iqamah || {}), active: false } }))}
+                                            className={`flex-1 py-4 rounded-[1rem] font-black text-lg uppercase tracking-widest transition-all duration-300 ${!settings.iqamah?.active ? 'bg-zinc-800 text-zinc-400 shadow-lg' : 'text-zinc-600 hover:text-zinc-400'}`}
+                                        >
+                                            Jo
+                                        </button>
+                                        <button
+                                            onClick={() => setSettings(p => ({ ...p, iqamah: { ...(p.iqamah || {}), active: true } }))}
+                                            className={`flex-1 py-4 rounded-[1rem] font-black text-lg uppercase tracking-widest transition-all duration-300 ${settings.iqamah?.active ? 'bg-emerald-500 text-black shadow-lg' : 'text-zinc-600 hover:text-emerald-500/50'}`}
+                                        >
+                                            Po
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {settings.iqamah?.active && (
+                                    <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-6 animate-in slide-in-from-top-4 duration-500">
+                                        <NumberInput
+                                            label="Sabahu"
+                                            value={settings.iqamah?.sabahu ?? 30}
+                                            onChange={val => setSettings(p => ({ ...p, iqamah: { ...p.iqamah, sabahu: val } }))}
+                                            unit="Min"
+                                            description="pas ezanit"
+                                        />
+                                        <NumberInput
+                                            label="Dreka"
+                                            value={settings.iqamah?.dreka ?? 15}
+                                            onChange={val => setSettings(p => ({ ...p, iqamah: { ...p.iqamah, dreka: val } }))}
+                                            unit="Min"
+                                            description="pas ezanit"
+                                        />
+                                        <NumberInput
+                                            label="Ikindia"
+                                            value={settings.iqamah?.ikindia ?? 15}
+                                            onChange={val => setSettings(p => ({ ...p, iqamah: { ...p.iqamah, ikindia: val } }))}
+                                            unit="Min"
+                                            description="pas ezanit"
+                                        />
+                                        <NumberInput
+                                            label="Akshami"
+                                            value={settings.iqamah?.akshami ?? 5}
+                                            onChange={val => setSettings(p => ({ ...p, iqamah: { ...p.iqamah, akshami: val } }))}
+                                            unit="Min"
+                                            description="pas ezanit"
+                                        />
+                                        <NumberInput
+                                            label="Jacia"
+                                            value={settings.iqamah?.jacia ?? 10}
+                                            onChange={val => setSettings(p => ({ ...p, iqamah: { ...p.iqamah, jacia: val } }))}
+                                            unit="Min"
+                                            description="pas ezanit"
+                                        />
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 )}

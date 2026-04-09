@@ -13,7 +13,8 @@ const PrayerGrid = memo(function PrayerGrid({ listaNamazeve, vaktiSot, infoTani,
     const labelSize = is7Col ? 'text-3xl' : is6Col ? 'text-4xl' : 'text-5xl';
     const subLabelSize = is7Col ? 'text-lg' : is6Col ? 'text-xl' : 'text-2xl';
     const timeNoSub = is7Col ? 'text-[7.2rem]' : is6Col ? 'text-[8.5rem]' : 'text-[10rem]';
-    const timeSub = is7Col ? 'text-[4.8rem]' : is6Col ? 'text-[6rem]' : 'text-[6.8rem]';
+    const timeSubSingle = is7Col ? 'text-[6rem]' : is6Col ? 'text-[7.5rem]' : 'text-[8.5rem]';
+    const timeSubDual = is7Col ? 'text-[5.5rem]' : is6Col ? 'text-[6.8rem]' : 'text-[7.5rem]';
     const cardPx = is7Col ? 'px-4' : is6Col ? 'px-6' : 'px-10';
     const trackingVal = is7Col ? 'tracking-normal' : is6Col ? 'tracking-[0.1em]' : 'tracking-[0.1em]';
 
@@ -33,7 +34,42 @@ const PrayerGrid = memo(function PrayerGrid({ listaNamazeve, vaktiSot, infoTani,
 
                         const hasLindja = id === 'Sabahu' && !isRamazan && vaktiSot.Lindja;
                         const hasNamazNate = namazNateActive && id === 'Jacia';
-                        const hasSubCard = hasLindja || hasNamazNate;
+
+                        const subCardsArray = [];
+                        if (hasLindja && vaktiSot.Lindja) {
+                            subCardsArray.push({ label: "L. Diellit", time: vaktiSot.Lindja });
+                        }
+                        if (hasNamazNate && settings?.ramazan?.namazNate?.koha) {
+                            subCardsArray.push({ label: "N. Natës", time: settings.ramazan.namazNate.koha });
+                        }
+
+                        if (settings?.iqamah?.active && settings?.appMode === 'mosque') {
+                            const isDailyPrayer = ['sabahu', 'dreka', 'ikindia', 'akshami', 'jacia'].includes(id.toLowerCase());
+                            if (isDailyPrayer) {
+                                // Find Adhan time for the base calculation
+                                let baseTime = null;
+                                if (id === 'Dreka' && settings.manualDreka && settings.manualDreka !== "00:00") {
+                                    baseTime = settings.manualDreka;
+                                } else if (id === 'Dreka' && vaktiSot.Dreka) {
+                                    // Handle automatic 11:55 / 12:55 fallback that xhemati does for Dreka, or just use vaktiSot.Dreka
+                                    // Usually Ezan is same as Xhemat for Dreka unless overridden.
+                                    const [h] = vaktiSot.Dreka.split(":").map(Number);
+                                    baseTime = h < 12 ? "11:55" : "12:55";
+                                } else if (vaktiSot[id]) {
+                                    baseTime = vaktiSot[id];
+                                }
+
+                                const offset = Number(settings.iqamah[id.toLowerCase()]);
+                                if (baseTime && !isNaN(offset) && offset !== 0) {
+                                    const [h, m] = baseTime.split(":").map(Number);
+                                    const total = h * 60 + m + offset;
+                                    const iqTime = `${String(Math.floor(total / 60) % 24).padStart(2, '0')}:${String(((total % 60) + 60) % 60).padStart(2, '0')}`;
+                                    subCardsArray.push({ label: "Ikameti", time: iqTime });
+                                }
+                            }
+                        }
+
+                        const hasSubCard = subCardsArray.length > 0;
 
                         const toTitleCase = s => {
                             if (!s) return s;
@@ -59,7 +95,7 @@ const PrayerGrid = memo(function PrayerGrid({ listaNamazeve, vaktiSot, infoTani,
                                                     ? 'bg-amber-950/20 shadow-[0_0_45px_rgba(245,158,11,0.15)] border-amber-500/40'
                                                     : 'bg-black/40 border-white/5'}`}
                             >
-                                <div className={`relative z-10 w-full h-full flex flex-col justify-between ${cardPx} pt-10 pb-6`}>
+                                <div className={`relative z-10 w-full h-full flex flex-col justify-between ${cardPx} pt-8 pb-5`}>
                                     {/* Top Content Row — Luxurious vertical flow */}
                                     <div className="flex-none flex flex-col items-center">
                                         <div className={`${labelSize} font-extrabold ${trackingVal} text-center leading-none ${isCurrent ? 'text-emerald-950' : isJumuah ? 'text-amber-400' : 'text-zinc-200'}`} style={{ fontFamily: "'Outfit', sans-serif" }}>
@@ -74,28 +110,29 @@ const PrayerGrid = memo(function PrayerGrid({ listaNamazeve, vaktiSot, infoTani,
 
                                     {/* Middle Content Row — Automatically centers in the available space */}
                                     <div className="flex-1 flex flex-col items-center justify-center pt-4">
-                                        <div className={`font-bold whitespace-nowrap leading-none tracking-tight [font-variant-numeric:tabular-nums] origin-center ${subLabelText ? 'scale-y-[1.15]' : 'scale-y-[1.3]'} ${hasSubCard ? timeSub : timeNoSub} ${isCurrent ? 'text-zinc-950' : isJumuah ? 'text-amber-400' : 'text-white'}`} style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
+                                        <div className={`font-bold whitespace-nowrap leading-none tracking-tight [font-variant-numeric:tabular-nums] origin-center ${subLabelText ? 'scale-y-[1.15]' : 'scale-y-[1.3]'} ${!hasSubCard ? timeNoSub : (subCardsArray.length > 1 ? timeSubDual : timeSubSingle)} ${isCurrent ? 'text-zinc-950' : isJumuah ? 'text-amber-400' : 'text-white'}`} style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
                                             {xh ? ne24hFn(xh) : '—'}
                                         </div>
                                     </div>
 
                                     {/* Bottom Content Row — pinned at bottom */}
                                     {hasSubCard && (
-                                        <div className="flex-none flex flex-col items-center w-full px-2 pb-1">
-                                            <div className={`pt-1.5 pb-2.5 px-10 rounded-[2rem] flex flex-col items-center border-2 transition-all duration-500 w-full ${isCurrent ? 'bg-emerald-950/10 border-emerald-950/20 shadow-inner' : 'bg-white/5 border-white/20'}`}>
-                                                {(() => {
-                                                    const subText = hasLindja ? "L. Diellit" : "N. Natës";
-                                                    const subTextSize = is7Col ? 'text-sm' : is6Col ? 'text-base' : subText.length > 10 ? 'text-base' : 'text-lg';
-                                                    return (
-                                                        <span className={`${subTextSize} font-bold tracking-[0.2em] leading-none mb-2 whitespace-nowrap ${isCurrent ? 'text-emerald-950/80' : 'text-zinc-400'}`}>
-                                                            {subText}
+                                        <div className="flex-none flex flex-col items-center w-full px-2 pb-1 gap-1.5">
+                                            {subCardsArray.map((sub, i) => {
+                                                const isSingle = subCardsArray.length === 1;
+                                                const subTextSize = is7Col ? 'text-xs' : is6Col ? 'text-sm' : sub.label.length > 10 ? 'text-sm' : 'text-base';
+                                                
+                                                return (
+                                                    <div key={i} className={`pt-1.5 pb-1.5 px-6 rounded-[2rem] flex ${isSingle ? 'flex-col justify-center' : 'flex-row justify-between'} items-center border-2 transition-all duration-500 w-full ${isCurrent ? 'bg-emerald-950/10 border-emerald-950/20 shadow-inner' : 'bg-white/5 border-white/20'}`}>
+                                                        <span className={`${subTextSize} font-bold tracking-[0.1em] leading-none ${isSingle ? 'mb-1' : ''} whitespace-nowrap ${isCurrent ? 'text-emerald-950/80' : 'text-zinc-400'}`}>
+                                                            {sub.label}
                                                         </span>
-                                                    );
-                                                })()}
-                                                <span className={`${is7Col ? 'text-4xl' : is6Col ? 'text-4xl' : 'text-5xl'} font-bold leading-none ${isCurrent ? 'text-zinc-950' : 'text-white'}`} style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
-                                                    {hasLindja ? ne24hFn(vaktiSot.Lindja) : ne24hFn(settings.ramazan.namazNate.koha || '00:30')}
-                                                </span>
-                                            </div>
+                                                        <span className={`${isSingle ? (is7Col ? 'text-4xl' : is6Col ? 'text-4xl' : 'text-5xl') : (is7Col ? 'text-2xl' : is6Col ? 'text-3xl' : 'text-[2.2rem]')} font-bold leading-none ${isCurrent ? 'text-zinc-950' : 'text-white'} ${!isSingle ? 'mt-0.5' : ''}`} style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
+                                                            {ne24hFn(sub.time)}
+                                                        </span>
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
                                     )}
                                 </div>

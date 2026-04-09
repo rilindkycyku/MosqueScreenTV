@@ -1,10 +1,10 @@
 import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { HiCog } from "react-icons/hi";
+// Components
 import vaktetKS from './data/vaktet-e-namazit.json';
 import vaktetAL from './data/vaktet-e-namazit-al.json';
 import config from './data/config.json';
 import haditheData from './data/hadithe.json';
-// Components
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import SettingsModal from './components/SettingsModal/SettingsModal';
 import ConfirmDialog from './components/ConfirmDialog/ConfirmDialog';
@@ -61,6 +61,7 @@ export default function App() {
     const [settings, setSettings] = useState(() => {
         const saved = localStorage.getItem('tv_settings');
         const parsed = saved ? JSON.parse(saved) : {};
+
         return {
             ...config.tvOptions,
             customMsg: "",
@@ -72,6 +73,10 @@ export default function App() {
             ramazan: {
                 ...config.ramazan,
                 ...(parsed.ramazan || {})
+            },
+            iqamah: {
+                ...config.tvOptions.iqamah,
+                ...(parsed.iqamah || {})
             }
         };
     });
@@ -303,6 +308,7 @@ export default function App() {
 
     const resetCategory = (category) => {
         let newSettings = { ...settings };
+        
         if (category === 'identity') {
             newSettings = {
                 ...newSettings,
@@ -335,7 +341,8 @@ export default function App() {
                 durations: {
                     ...newSettings.durations,
                     sabahuOffset: config.tvOptions.durations.sabahuOffset
-                }
+                },
+                iqamah: { ...config.tvOptions.iqamah }
             };
         } else if (category === 'message') {
             newSettings = { ...newSettings, customMsg: "" };
@@ -356,7 +363,8 @@ export default function App() {
             showQr: config.tvOptions.showQr,
             showFooter: config.tvOptions.showFooter,
             showSilenceWarning: config.tvOptions.showSilenceWarning,
-            appMode: config.tvOptions.appMode
+            appMode: config.tvOptions.appMode,
+            iqamah: { ...config.tvOptions.iqamah }
         };
         setSettings(defaults);
         setTempSettings(defaults);
@@ -398,7 +406,7 @@ export default function App() {
             const now = new Date();
             const minTani = now.getHours() * 60 + now.getMinutes();
 
-            // Night Dimming: dims 30 minutes after Jacia/Teravia until 10m before Sabahu
+            // Night Dimming: dims 60 minutes after Jacia/Teravia until 10m before Sabahu
             let dimStart = 23 * 60;
             let dimEnd = 4 * 60;
 
@@ -407,7 +415,7 @@ export default function App() {
                 const jaciaTime = (isR && settings.ramazan?.kohaTeravise && settings.ramazan?.kohaTeravise !== "00:00")
                     ? settings.ramazan.kohaTeravise
                     : vaktiSot.Jacia;
-                if (jaciaTime) dimStart = neMinuta(jaciaTime) + 30;
+                if (jaciaTime) dimStart = neMinuta(jaciaTime) + 60;
                 if (vaktiSot.Sabahu) dimEnd = neMinuta(vaktiSot.Sabahu) - 10;
             }
 

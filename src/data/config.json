@@ -21,6 +21,14 @@
             "announcement": 1,
             "hadithRefresh": 45,
             "sabahuOffset": 35
+        },
+        "iqamah": {
+            "active": false,
+            "sabahu": 30,
+            "dreka": 15,
+            "ikindia": 15,
+            "akshami": 5,
+            "jacia": 10
         }
     },
     "ramazan": {

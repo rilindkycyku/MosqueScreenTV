@@ -1,0 +1,91 @@
+{
+    "1": {
+        "name": "Xhamia e Dushkajës",
+        "address": "Kaçanik",
+        "imamName": "Nehat ef. Shehu",
+        "showQr": true,
+        "qrUrl": "https://xhamiaedushkajes.org",
+        "durations": {
+            "sabahuOffset": 40
+        },
+        "ramazan": {
+            "active": false,
+            "kohaTeravise": "00:00"
+        }
+    },
+    "2": {
+        "name": "Xhamia e Dëshmorëve",
+        "address": "Lagje e Re",
+        "imamName": "Fitim Kyçyku",
+        "location": "ks",
+        "appMode": "mosque",
+        "showQr": true,
+        "qrUrl": "https://www.facebook.com/xhamiaedeshmorevekacanik",
+        "durations": {
+            "sabahuOffset": 35
+        },
+        "ramazan": {
+            "active": false,
+            "kohaTeravise": "00:00",
+            "namazNate": {
+                "active": false,
+                "koha": "00:30"
+            }
+        }
+    },
+    "3": {
+        "name": "Xhamia e Dardanis",
+        "address": "Prishtinë",
+        "imamName": "Remzi",
+        "showQr": false,
+        "manualDreka": "13:00",
+        "manualXhuma1": "13:00",
+        "iqamah": {
+            "active": true,
+            "sabahu": 0,
+            "dreka": 15,
+            "ikindia": 0,
+            "akshami": 0,
+            "jacia": 0
+        },
+        "durations": {
+            "hadith": 5,
+            "qr": 1,
+            "notification": 10,
+            "announcement": 1,
+            "hadithRefresh": 45,
+            "sabahuOffset": 35
+        },
+        "ramazan": {
+            "active": false,
+            "kohaTeravise": "00:00",
+            "namazNate": {
+                "active": false,
+                "koha": "00:30"
+            }
+        }
+    },
+    "4": {
+        "name": "Xhamia e Fshatit Vragoli",
+        "address": "Vragoli",
+        "imamName": "Mendim Sllamniku",
+        "manualDreka": "13:00",
+        "manualXhuma1": "13:00",
+        "durations": {
+            "hadith": 5,
+            "qr": 1,
+            "notification": 10,
+            "announcement": 1,
+            "hadithRefresh": 45,
+            "sabahuOffset": 40
+        },
+        "ramazan": {
+            "active": false,
+            "kohaTeravise": "00:00",
+            "namazNate": {
+                "active": false,
+                "koha": "00:30"
+            }
+        }
+    }
+}
