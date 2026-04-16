@@ -15,6 +15,8 @@ import NextPrayer from './components/Display/NextPrayer';
 import ActivityBox from './components/Display/ActivityBox';
 // Vercel Analytics
 import { Analytics } from '@vercel/analytics/react';
+// Google Analytics
+import { initGA, logPageView, logEvent } from './lib/analytics';
 
 // Module-level pure utilities (never re-created)
 const neMinuta = (ora) => {
@@ -93,6 +95,12 @@ export default function App() {
     const [nextHadith, setNextHadith] = useState(null);
     // Ref mirrors currentHadith so the refresh timer can read it without being a dep
     const currentHadithRef = useRef(null);
+
+    // Initialize Google Analytics
+    useEffect(() => {
+        initGA();
+        logPageView();
+    }, []);
 
     // Optimized Scaling Logic to fit any screen
     useEffect(() => {
@@ -292,6 +300,7 @@ export default function App() {
         setSettings(tempSettings);
         localStorage.setItem('tv_settings', JSON.stringify(tempSettings));
         setShowSettings(false);
+        logEvent("Settings", "Save", tempSettings.appMode);
         // Explicitly trigger update to next prayer to catch logic changes immediately
         setTimeout(updateNextPrayer, 0);
     };
@@ -371,6 +380,7 @@ export default function App() {
         localStorage.setItem('tv_settings', JSON.stringify(defaults));
         setShowSettings(false);
         setShowConfirm(false);
+        logEvent("Settings", "Factory Reset");
     };
 
     useEffect(() => {
