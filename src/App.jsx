@@ -194,6 +194,7 @@ export default function App() {
         // Opening settings: S, M, or Enter/OK on remote
         if (key === 's' || key === 'm' || key === 'enter' || key === 'select') {
             setShowSettings(true);
+            logEvent("Settings", "Open_Hotkey", key);
         }
         if (key === 'r') window.location.reload();
     }, []);
@@ -735,7 +736,10 @@ export default function App() {
                                     </p>
 
                                     <button
-                                        onClick={() => setShowSettings(true)}
+                                        onClick={() => {
+                                            setShowSettings(true);
+                                            logEvent("Settings", "Open_UIMosqueMode");
+                                        }}
                                         className="flex items-center gap-4 px-8 py-3 w-fit rounded-[1.5rem] bg-white/5 hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/30 transition-all duration-500 group mt-1 shadow-2xl backdrop-blur-xl -ml-2"
                                     >
                                         <HiCog className="text-4xl text-zinc-600 group-hover:text-emerald-400 group-hover:rotate-180 transition-all duration-700" />
@@ -762,7 +766,10 @@ export default function App() {
                                     <Clock mode="home_left" />
                                     <div className="flex items-center gap-4">
                                         <button
-                                            onClick={() => setShowSettings(true)}
+                                            onClick={() => {
+                                                setShowSettings(true);
+                                                logEvent("Settings", "Open_UIHomeMode");
+                                            }}
                                             className="flex items-center gap-4 px-8 py-3 w-fit rounded-[1.5rem] bg-white/5 hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/30 transition-all duration-500 group z-30 shadow-2xl backdrop-blur-xl"
                                         >
                                             <HiCog className="text-4xl text-zinc-600 group-hover:text-emerald-400 group-hover:rotate-180 transition-all duration-700" />

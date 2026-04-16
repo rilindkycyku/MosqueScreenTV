@@ -5,6 +5,7 @@ import {
     HiPause,
     HiSpeakerWave
 } from 'react-icons/hi2';
+import { logEvent } from '../../lib/analytics';
 
 // ─── Permanent Yasser Al-Dosari Radio Stream ─────────────────────────────────
 const RADIO_URL = 'https://backup.qurango.net/radio/yasser_aldosari/;';
@@ -28,11 +29,15 @@ export default function QuranRadio() {
         if (!globalAudio) return;
         const audio = globalAudio;
 
-        const onPlay = () => setIsPlaying(true);
+        const onPlay = () => {
+            setIsPlaying(true);
+            logEvent("Radio", "Play");
+        };
         const onPause = () => setIsPlaying(false);
         const onPlaying = () => setIsPlaying(true);
         const onError = (e) => {
             console.error("Radio Audio Error:", e);
+            logEvent("Radio", "Error", "Stream Failed");
             setIsPlaying(false);
             try {
                 audio.load();
