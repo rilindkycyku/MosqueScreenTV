@@ -42,12 +42,12 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                     </svg>
                 </div>
-                <h2 className="text-4xl lg:text-[5rem] font-black text-white leading-[1.05] uppercase tracking-tight max-w-[98%] mx-auto">
+                <h2 className="text-[5rem] font-black text-white leading-[1.05] uppercase tracking-tight max-w-[98%] mx-auto">
                     FIKNI OSE NDALJANI ZËRIN TELEFONAVE!
                 </h2>
                 <div className="mt-6 flex flex-col items-center">
                     <div className="h-1 w-20 bg-amber-500/30 rounded-full mb-4" />
-                    <p className="text-amber-500 uppercase tracking-[0.4em] font-black text-xl lg:text-3xl">KOHA E NAMAZIT</p>
+                    <p className="text-amber-500 uppercase tracking-[0.4em] font-black text-3xl">KOHA E NAMAZIT</p>
                 </div>
             </div>
         );
@@ -134,21 +134,19 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
                 <div className="flex-1 flex flex-col justify-center text-center w-full px-2">
                     {displayMode === 'custom' ? (
                         <div className="flex flex-col items-center">
-                            <h3 className="text-4xl lg:text-5xl font-black text-emerald-400 leading-tight mb-2 uppercase drop-shadow-lg">Njoftim</h3>
-                            <p className="text-2xl lg:text-4xl text-white font-bold leading-relaxed drop-shadow-md">{customMsg}</p>
+                            <h3 className="text-5xl font-black text-emerald-400 leading-tight mb-2 uppercase drop-shadow-lg">Njoftim</h3>
+                            <p className="text-4xl text-white font-bold leading-relaxed drop-shadow-md">{customMsg}</p>
                         </div>
                     ) : displayMode === 'message' ? (
                         <div className="flex flex-col items-center">
                             {vaktiSot?.Festat && (
                                 <div className="mb-2">
-                                    <div className="text-emerald-400 font-bold uppercase tracking-widest text-base mb-1 opacity-90 drop-shadow-sm">Festa</div>
-                                    <h3 className="text-3xl lg:text-5xl font-black text-white leading-tight uppercase drop-shadow-lg">{vaktiSot.Festat}</h3>
+                                    <h3 className="text-5xl font-black text-white leading-tight uppercase drop-shadow-lg">{vaktiSot.Festat}</h3>
                                 </div>
                             )}
                             {vaktiSot?.Shenime && (
                                 <div>
-                                    {vaktiSot.Festat && <div className="w-12 h-px bg-white/10 mx-auto my-4" />}
-                                    <p className="text-2xl lg:text-4xl text-zinc-100 italic leading-relaxed opacity-95 drop-shadow-md">"{vaktiSot.Shenime}"</p>
+                                    <p className="text-4xl text-zinc-100 italic leading-relaxed opacity-95 drop-shadow-md">"{vaktiSot.Shenime}"</p>
                                 </div>
                             )}
                         </div>
@@ -162,13 +160,15 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
 
                                 const entryClass = tot > 500 ? 'text-lg' : tot > 350 ? 'text-xl' : 'text-2xl';
                                 const contentClass =
-                                    tot > 650 ? 'text-xl lg:text-[1.4rem]' :
-                                        tot > 500 ? 'text-2xl lg:text-[1.7rem]' :
-                                            tot > 400 ? 'text-3xl lg:text-[2.1rem]' :
-                                                tot > 300 ? 'text-4xl lg:text-[2.6rem]' :
-                                                    tot > 200 ? 'text-5xl lg:text-[3.1rem]' :
-                                                        tot > 150 ? 'text-5xl lg:text-[3.6rem]' :
-                                                            'text-6xl lg:text-[4.2rem]';
+                                    tot > 600 ? 'text-[1.4rem]' :
+                                        tot > 500 ? 'text-[1.6rem]' :
+                                            tot > 400 ? 'text-[1.9rem]' :
+                                                tot > 300 ? 'text-[2.3rem]' :
+                                                    tot > 250 ? 'text-[2.6rem]' :
+                                                        tot > 200 ? 'text-[2.9rem]' :
+                                                            tot > 150 ? 'text-[3.3rem]' :
+                                                                tot > 100 ? 'text-[3.7rem]' :
+                                                                    'text-[4.2rem]';
 
                                 return (
                                     <>
@@ -185,7 +185,7 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
                             })()}
                             <div className="mt-2 text-center">
                                 <div className="w-12 h-0.5 bg-emerald-500 rounded-full mb-2 mx-auto opacity-40" />
-                                <p className="text-emerald-400 font-bold text-xl lg:text-[1.6rem] leading-none">{currentHadith.reference}</p>
+                                <p className="text-emerald-400 font-bold text-[1.6rem] leading-none">{currentHadith.reference}</p>
                             </div>
                         </div>
                     ) : (

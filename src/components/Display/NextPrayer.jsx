@@ -50,11 +50,11 @@ const NextPrayer = memo(function NextPrayer({ infoTani, ne24hFn, formatDallimFn,
 
                             // Dynamic size calculation: base size decreases with length and presence of sub-label
                             const sizeClass = 
-                                  len > 12 ? (hasSubLabel ? 'lg:text-[7.5rem]' : 'lg:text-[9rem]')
-                                : len > 10 ? (hasSubLabel ? 'lg:text-[9rem]' : 'lg:text-[11rem]')
-                                : len > 8  ? (hasSubLabel ? 'lg:text-[11rem]' : 'lg:text-[13rem]')
-                                : len > 6  ? (hasSubLabel ? 'lg:text-[13rem]' : 'lg:text-[15rem]')
-                                :            (hasSubLabel ? 'lg:text-[14rem]' : 'lg:text-[17rem]');
+                                  len > 12 ? (hasSubLabel ? 'text-[7.5rem]' : 'text-[9rem]')
+                                : len > 10 ? (hasSubLabel ? 'text-[9rem]' : 'text-[11rem]')
+                                : len > 8  ? (hasSubLabel ? 'text-[11rem]' : 'text-[13rem]')
+                                : len > 6  ? (hasSubLabel ? 'text-[13rem]' : 'text-[15rem]')
+                                :            (hasSubLabel ? 'text-[14rem]' : 'text-[17rem]');
                             return (
                                 <h2 className={`font-bold text-white tracking-[0.05em] uppercase leading-[0.8] text-center whitespace-nowrap ${sizeClass}`} style={BN}>
                                     {displayName}
@@ -62,7 +62,7 @@ const NextPrayer = memo(function NextPrayer({ infoTani, ne24hFn, formatDallimFn,
                             );
                         })()}
                         {labelMain.includes('(') && (
-                            <p className="text-5xl lg:text-[5rem] text-emerald-500 font-bold -mt-4 uppercase tracking-[0.3em] opacity-90 leading-none text-center" style={BN}>
+                            <p className="text-[5rem] text-emerald-500 font-bold -mt-4 uppercase tracking-[0.3em] opacity-90 leading-none text-center" style={BN}>
                                 {labelMain.split('(')[1].replace(')', '')}
                             </p>
                         )}
@@ -73,12 +73,12 @@ const NextPrayer = memo(function NextPrayer({ infoTani, ne24hFn, formatDallimFn,
                         <div className="h-px w-full bg-gradient-to-r from-emerald-500/0 via-emerald-500/20 to-transparent mb-6 opacity-30" />
                         <div className="flex w-full items-center justify-center">
                             <div className="w-1/3 flex flex-col items-end pr-6 border-r-2 border-zinc-800/80">
-                                <p className="text-zinc-400 text-[2.6rem] lg:text-[3.2rem] uppercase font-bold tracking-widest leading-[1.05] text-right" style={BN}>
+                                <p className="text-zinc-400 text-[3.2rem] uppercase font-bold tracking-widest leading-[1.05] text-right" style={BN}>
                                     koha e <br /> mbetur
                                 </p>
                             </div>
                             <div className="w-2/3 flex items-center pl-6">
-                                <div className={`text-8xl lg:text-[13rem] font-bold tabular-nums leading-none whitespace-nowrap ${infoTani.mbetur <= 15 ? 'text-amber-400 animate-pulse' : 'text-emerald-400'}`} style={BN}>
+                                <div className={`text-[13rem] font-bold tabular-nums leading-none whitespace-nowrap ${infoTani.mbetur <= 15 ? 'text-amber-400 animate-pulse' : 'text-emerald-400'}`} style={BN}>
                                     {formatDallimFn(infoTani.mbetur)}
                                 </div>
                             </div>
