@@ -41,6 +41,11 @@ const formatDallim = (min) => {
     return res.trim();
 };
 
+// Safety backup: persists last-known valid state to localStorage
+const saveToSafety = (key, data) => {
+    try { localStorage.setItem(`safety_${key}`, JSON.stringify(data)); } catch (e) {}
+};
+
 // Shared prayer label helper used by both updateNextPrayer and listaNamazeve
 const getPrayerLabel = (id, { isR, isHome, isFriday }) => {
     if (id === 'Imsaku') return isR ? (isHome ? "Syfyri" : "Syfyri (Imsaku)") : "Imsaku";
@@ -131,14 +136,7 @@ export default function App() {
         };
     }, [JSON.stringify(settings.durations)]); // Use stringified durations for stable dependency
 
-    // --- RECOVERY & STABILITY: LocalStorage Sync ---
-    // This creates a safety backup of last-known valid state
-    const saveToSafety = (key, data) => {
-        try { localStorage.setItem(`safety_${key}`, JSON.stringify(data)); } catch (e) {}
-    };
-    const getFromSafety = (key) => {
-        try { return JSON.parse(localStorage.getItem(`safety_${key}`)); } catch (e) { return null; }
-    };
+    // saveToSafety is defined at module level above
 
     // --- DISPLAY CYCLE CONTROL: Robust Timer Management ---
     useEffect(() => {
@@ -686,7 +684,7 @@ export default function App() {
             list.unshift({ id: "Imsaku", label: getPrayerLabel("Imsaku", labelCtx) });
         }
         return list;
-    }, [settings.ramazan, settings.appMode, settings.xhuma2Active, settings.manualXhuma1, settings.manualXhuma2, settings.manualDreka]);
+    }, [vaktiSot?.Date, settings.ramazan, settings.appMode, settings.xhuma2Active, settings.manualXhuma1, settings.manualXhuma2, settings.manualDreka]);
 
 
     if (!vaktiSot) return <div className="h-screen bg-black flex items-center justify-center text-white text-3xl font-bold animate-pulse">Duke ngarkuar...</div>;

@@ -1,7 +1,6 @@
-import { memo, lazy, Suspense, useState, useEffect } from 'react';
-
-// Lazy load the heavy QR library - only loaded when needed in the display cycle
-const QRCodeCanvas = lazy(() => import('qrcode.react').then(mod => ({ default: mod.QRCodeCanvas })));
+import { memo, useState, useEffect } from 'react';
+import { QRCodeCanvas } from 'qrcode.react';
+import ErrorBoundary from '../ErrorBoundary/ErrorBoundary';
 
 const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHadith, vaktiSot, infoTani }) {
     const { isSilenceMode } = infoTani || {};
@@ -57,9 +56,17 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
         const qrUrl = settings.qrUrl || "https://xhamiaedushkajes.org";
         return (
             <div className="activity-box bg-zinc-900 border-2 border-white/5 rounded-[3.5rem] p-4 relative overflow-hidden flex flex-col items-center justify-center shadow-premium h-full">
-                <div className="flex flex-row items-center gap-12 w-full h-full justify-center px-6 animate-slide-up">
-                    <div className="p-6 bg-white rounded-[2.5rem] shrink-0 shadow-[0_0_50px_rgba(16,185,129,0.2)]">
-                        <Suspense fallback={<div className="w-[320px] h-[320px] bg-zinc-100 rounded-2xl animate-pulse" />}>
+                <ErrorBoundary
+                    resetKey={qrUrl}
+                    fallback={
+                        <div className="flex flex-col items-center justify-center w-full h-full gap-6 text-center">
+                            <p className="text-zinc-500 text-3xl font-black uppercase tracking-widest">QR Code</p>
+                            <p className="text-white text-5xl font-mono font-bold">{qrUrl.replace('https://', '').replace('www.', '')}</p>
+                        </div>
+                    }
+                >
+                    <div className="flex flex-row items-center gap-12 w-full h-full justify-center px-6 animate-slide-up">
+                        <div className="p-6 bg-white rounded-[2.5rem] shrink-0 shadow-[0_0_50px_rgba(16,185,129,0.2)]">
                             <QRCodeCanvas
                                 value={qrUrl}
                                 size={320}
@@ -67,21 +74,21 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
                                 fgColor="#000000"
                                 includeMargin={false}
                             />
-                        </Suspense>
-                    </div>
-                    <div className="flex flex-col items-start gap-4 text-left">
-                        <div className="flex flex-col gap-1">
-                            <span className="text-emerald-400 uppercase tracking-[0.5em] text-xl font-black">Skano Faqen</span>
-                            <span className="text-zinc-500 uppercase tracking-[0.2em] text-sm font-bold opacity-60">Për më shumë informata</span>
                         </div>
-                        <div className="h-1.5 w-16 bg-emerald-500/30 rounded-full my-2" />
-                        <div className="bg-white/5 border border-white/10 px-6 py-4 rounded-2xl">
-                            <p className="text-zinc-300 text-3xl font-mono font-bold tracking-tight">
-                                {qrUrl.replace('https://', '').replace('www.', '')}
-                            </p>
+                        <div className="flex flex-col items-start gap-4 text-left">
+                            <div className="flex flex-col gap-1">
+                                <span className="text-emerald-400 uppercase tracking-[0.5em] text-xl font-black">Skano Faqen</span>
+                                <span className="text-zinc-500 uppercase tracking-[0.2em] text-sm font-bold opacity-60">Për më shumë informata</span>
+                            </div>
+                            <div className="h-1.5 w-16 bg-emerald-500/30 rounded-full my-2" />
+                            <div className="bg-white/5 border border-white/10 px-6 py-4 rounded-2xl">
+                                <p className="text-zinc-300 text-3xl font-mono font-bold tracking-tight">
+                                    {qrUrl.replace('https://', '').replace('www.', '')}
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </ErrorBoundary>
             </div>
         );
     }

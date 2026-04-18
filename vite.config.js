@@ -9,10 +9,10 @@ export default defineConfig({
     react(),
     legacy({
       targets: [
-        'defaults', 
-        'not IE 11', 
-        'Chrome >= 49', 
-        'Samsung >= 4', 
+        'defaults',
+        'not IE 11',
+        'Chrome >= 49',
+        'Samsung >= 4',
         'Safari >= 10'
       ]
     }),
@@ -55,6 +55,11 @@ export default defineConfig({
               expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 365 },
               cacheableResponse: { statuses: [0, 200] }
             }
+          },
+          {
+            // Never cache GA network calls — always send live
+            urlPattern: /^https:\/\/(?:www\.google-analytics\.com|analytics\.google\.com|www\.googletagmanager\.com)\/.*/i,
+            handler: 'NetworkOnly',
           }
         ]
       },
