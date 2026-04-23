@@ -51,7 +51,9 @@ export default function QuranRadio() {
         audio.addEventListener('error', onError);
 
         // Try to start immediately
-        const startRadio = () => {
+        const startRadio = (e) => {
+            // Ignore synthetic events (e.g. WebOS keep-alive heartbeat dispatched by App.jsx)
+            if (e && e.isTrusted === false) return;
             if (audio.paused) {
                 audio.play()
                     .then(() => {

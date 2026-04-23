@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import legacy from '@vitejs/plugin-legacy'
+import { RangeRequestsPlugin } from 'workbox-range-requests'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -28,6 +29,21 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json,ttf,woff,woff2,jpg,jpeg,webp,mp4}'],
         maximumFileSizeToCacheInBytes: 20 * 1024 * 1024, // Increase to 20MB for high-res scenery
         runtimeCaching: [
+          {
+            // Range-request-aware cache for the keepalive silent video.
+            // Without rangeRequests plugin the SW returns 200 instead of 206,
+            // and the <video> element stalls or refuses to play offline.
+            urlPattern: /\/silent\.mp4$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'mosque-video-cache',
+              plugins: [
+                new RangeRequestsPlugin()
+              ],
+              expiration: { maxEntries: 1, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              cacheableResponse: { statuses: [0, 200] }
+            }
+          },
           {
             // Cache ALL local images from both public/images and bundled assets
             urlPattern: /\/(?:images|assets)\/.*\.(?:png|jpg|jpeg|svg|webp)$/,

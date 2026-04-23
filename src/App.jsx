@@ -267,7 +267,7 @@ export default function App() {
                 clientY: y
             });
             window.dispatchEvent(event);
-        }, 180000); // 3 minutes
+        }, 60000); // 1 minute — LG WebOS inactivity threshold is ~90s
 
         return () => clearInterval(interval);
     }, []);
@@ -293,6 +293,38 @@ export default function App() {
                 audioCtx.close().catch(() => {});
             }
         };
+    }, []);
+
+    // LG WebOS Keep-Alive: Keydown Heartbeat
+    // Dispatches a harmless keydown event every 45 seconds to satisfy
+    // the WebOS input activity detector and prevent idle timeout.
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const event = new KeyboardEvent('keydown', {
+                bubbles: true, cancelable: true,
+                keyCode: 0, which: 0, key: 'Unidentified'
+            });
+            document.dispatchEvent(event);
+        }, 45000);
+        return () => clearInterval(interval);
+    }, []);
+
+    // LG WebOS Keep-Alive: Video Pause/Resume Cycle
+    // Periodically pauses and resumes the silent video element every 50 seconds
+    // to trigger media state changes that WebOS registers as activity.
+    // NOTE: silent.mp4 must have a silent audio track (not just video) for WebOS
+    // to count it as media activity. Generate with:
+    // ffmpeg -f lavfi -i color=black:s=2x2:r=1 -f lavfi -i anullsrc=r=44100:cl=mono \
+    //   -t 3600 -c:v libx264 -c:a aac -shortest silent.mp4
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const vid = document.querySelector('video');
+            if (vid) {
+                vid.pause();
+                setTimeout(() => vid.play().catch(() => {}), 300);
+            }
+        }, 50000);
+        return () => clearInterval(interval);
     }, []);
 
     const saveSettings = () => {
