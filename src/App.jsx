@@ -670,7 +670,7 @@ export default function App() {
         setInfoTani(prev => {
             const diffA = nextInfo.mbetur;
             const diffT = nextInfo.tani?.kohe ? nowMin - neMinuta(nextInfo.tani.kohe) : 999;
-            const isSilenceMode = (diffA <= 5 && diffA >= 0) || (diffT >= 0 && diffT <= 2);
+            const isSilenceMode = (diffA <= 5 && diffA >= 0) || (diffT >= 0 && diffT <= 10);
 
             if (prev && prev.mbetur === nextInfo.mbetur && prev.isSilenceMode === isSilenceMode && prev.ardhshëm?.id === nextInfo.ardhshëm?.id) {
                 return prev;
