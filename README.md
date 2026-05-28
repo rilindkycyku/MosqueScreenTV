@@ -1,4 +1,4 @@
-# MosqueScreenTV 🕌📺
+﻿# MosqueScreenTV 🕌📺
 
 ![Main Screen](GitHubFoto/TVScreen.png)
 
@@ -84,3 +84,8 @@ Ky projekt është krijuar me përkushtim për komunitetin musliman. Mund të p�
 
 ---
 *Punuar me ❤️ nga [Rilind Kyçyku](https://github.com/rilindkycyku)*
+
+
+## Të Drejtat e Autorit (Copyright & License)
+
+Ky projekt është pronë intelektuale e **Rilind Kyçyku**. Nuk lejohet përdorimi, kopjimi, modifikimi apo shpërndarja e këtij kodi pa pëlqimin paraprak dhe miratimin me shkrim nga autori. Çdo përdorim i paautorizuar është rreptësisht i ndaluar.
