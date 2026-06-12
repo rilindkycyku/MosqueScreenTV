@@ -1,8 +1,44 @@
-import { memo, useState, useEffect } from 'react';
+import { memo, useState, useEffect, useRef } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 import ErrorBoundary from '../ErrorBoundary/ErrorBoundary';
 
-const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHadith, vaktiSot, infoTani }) {
+// Dynamically shrinks text until it fully fits inside its container (both axes)
+function FitText({ text, className, maxPx = 42, minPx = 16 }) {
+    const containerRef = useRef(null);
+    const textRef = useRef(null);
+
+    useEffect(() => {
+        const container = containerRef.current;
+        const el = textRef.current;
+        if (!container || !el || !text) return;
+
+        let size = maxPx;
+        el.style.fontSize = size + 'px';
+
+        // Shrink until text fits in both dimensions or we hit the minimum
+        while (
+            (el.scrollHeight > container.clientHeight + 1 || el.scrollWidth > container.clientWidth + 1)
+            && size > minPx
+        ) {
+            size -= 0.5;
+            el.style.fontSize = size + 'px';
+        }
+    }, [text, maxPx, minPx]);
+
+    return (
+        <div ref={containerRef} className="w-full h-full flex items-center justify-center overflow-hidden">
+            <p
+                ref={textRef}
+                className={className}
+                style={{ fontSize: maxPx + 'px' }}
+            >
+                {text}
+            </p>
+        </div>
+    );
+}
+
+const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHadith, currentEsmaul, vaktiSot, infoTani }) {
     const { isSilenceMode } = infoTani || {};
     const showSilence = settings?.showSilenceWarning !== false;
     const customMsg = settings?.customMsg || "";
@@ -18,7 +54,7 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
 
         // Content-Synchronized Picker: Only changes the background when the actual Hadith or Message text changes.
         // This ensures the image stays steady for the full 45-minute refresh period as requested.
-        const seedValue = (currentHadith?.textContent || "") + (vaktiSot?.Shenime || "") + (vaktiSot?.Festat || "");
+        const seedValue = (currentHadith?.textContent || "") + (vaktiSot?.Shenime || "") + (vaktiSot?.Festat || "") + (currentEsmaul?.arabic || "");
         
         // Simple hash function for consistent image selection
         let hash = 0;
@@ -29,7 +65,7 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
         
         const index = Math.abs(hash) % bgList.length;
         setCurrentBgUrl(bgList[index]);
-    }, [currentHadith?.textContent, vaktiSot?.Shenime, vaktiSot?.Festat]);
+    }, [currentHadith?.textContent, vaktiSot?.Shenime, vaktiSot?.Festat, currentEsmaul?.arabic]);
 
     // 1. SILENCE MODE (Highest Priority)
     if (isSilenceMode && showSilence) {
@@ -96,7 +132,7 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
     return (
         <div className={`activity-box bg-zinc-900 border-2 border-white/5 rounded-[3.5rem] p-2 relative overflow-hidden flex flex-col transition-all duration-700 h-full`}>
             {/* Dynamic Scenery Background with local high-res library */}
-            {(displayMode === 'hadith' || displayMode === 'message' || displayMode === 'custom') && (
+            {(displayMode === 'hadith' || displayMode === 'message' || displayMode === 'custom' || displayMode === 'esmaul') && (
                 <div className="absolute inset-0 z-0 overflow-hidden">
                     <div className="w-full h-full relative" style={{ contain: 'strict', willChange: 'transform' }}>
                         {currentBgUrl && (
@@ -126,16 +162,20 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
             )}
 
             <div className="w-full h-full flex flex-col justify-between px-1 pt-1 pb-1 relative z-10 animate-slide-up" style={{ contain: 'content' }}>
-                {/* 1. Header Label */}
-                <div className="w-full flex flex-col items-center pt-2">
-                    <div className="flex items-center gap-4 mb-2 opacity-90">
-                        <div className="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                        <p className="text-white uppercase tracking-[0.4em] text-2xl font-black text-center drop-shadow-md">
-                            {displayMode === 'message' ? "Shënim / Festë" :
-                                displayMode === 'custom' ? "Njoftim i Rëndësishëm" : "Hadith / Ajet"}
-                        </p>
-                    </div>
-                </div>
+                {/* 1. Header Label - hidden for esmaul (handled inline) */}
+                {displayMode !== 'esmaul' && (
+                    displayMode === 'hadith' || displayMode === 'message' || displayMode === 'custom' ? (
+                        <div className="w-full flex flex-col items-center pt-2">
+                            <div className="flex items-center gap-4 mb-2 opacity-90">
+                                <div className="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                                <p className="text-white uppercase tracking-[0.4em] text-2xl font-black text-center drop-shadow-md">
+                                    {displayMode === 'message' ? "Shënim / Festë" :
+                                        displayMode === 'custom' ? "Njoftim i Rëndësishëm" : "Hadith / Ajet"}
+                                </p>
+                            </div>
+                        </div>
+                    ) : null
+                )}
 
                 {/* 2. Main Content */}
                 <div className="flex-1 flex flex-col justify-center text-center w-full px-2">
@@ -156,6 +196,56 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
                                     <p className="text-4xl text-zinc-100 italic leading-relaxed opacity-95 drop-shadow-md">"{vaktiSot.Shenime}"</p>
                                 </div>
                             )}
+                        </div>
+                    ) : displayMode === 'esmaul' && currentEsmaul ? (
+                        <div className="flex flex-col w-full h-full overflow-hidden">
+                            {/* Label */}
+                            <div className="flex items-center justify-center gap-3 pt-3 pb-1 shrink-0">
+                                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
+                                <p className="text-white uppercase tracking-[0.35em] text-xl font-black drop-shadow-md">99 Emrat e Allahut</p>
+                            </div>
+                            {/* Row 1 — 15%: Title (Meaning) */}
+                            <div className="flex items-center justify-center px-8 shrink-0" style={{ flex: '0 0 15%', overflow: 'hidden' }}>
+                                <FitText
+                                    text={currentEsmaul.translations?.sq}
+                                    maxPx={48}
+                                    minPx={20}
+                                    className="text-emerald-400 font-bold drop-shadow-md leading-tight text-center w-full"
+                                />
+                            </div>
+
+                            {/* Row 2 — 30%: Arabic + Transliteration */}
+                            <div className="flex items-center justify-center gap-8 px-8 border-y border-emerald-500/20 shrink-0" style={{ flex: '0 0 30%', overflow: 'hidden' }}>
+                                {(() => {
+                                    const len = currentEsmaul.arabic?.length || 0;
+                                    const arClass = len > 8 ? 'text-[6rem]' : 'text-[8rem]';
+                                    return (
+                                        <h3 className={`${arClass} font-bold text-emerald-400 leading-none drop-shadow-xl drop-shadow-[0_0_20px_rgba(16,185,129,0.3)] shrink-0`} style={{ fontFamily: "'Amiri', serif" }}>
+                                            {currentEsmaul.arabic}
+                                        </h3>
+                                    );
+                                })()}
+                                <div className="w-px h-10 bg-emerald-500/30 shrink-0" />
+                                {/* Transliteration — FitText so long names never overflow */}
+                                <div className="flex-1 min-w-0 h-full py-2">
+                                    <FitText
+                                        text={currentEsmaul.transliterations?.sq || currentEsmaul.transliterations?.en}
+                                        maxPx={56}
+                                        minPx={20}
+                                        className="font-black text-white uppercase tracking-widest drop-shadow-lg text-center leading-tight w-full"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Row 3 — 55%: Explanation */}
+                            <div className="flex items-center justify-center overflow-hidden px-10" style={{ flex: '1 1 0', minHeight: 0 }}>
+                                <FitText
+                                    text={currentEsmaul.explanations?.sq}
+                                    maxPx={42}
+                                    minPx={16}
+                                    className="text-zinc-200 italic opacity-95 drop-shadow-sm leading-[1.45] text-center w-full"
+                                />
+                            </div>
                         </div>
                     ) : currentHadith ? (
                         <div className="overflow-hidden flex flex-col items-center justify-center w-full px-2">

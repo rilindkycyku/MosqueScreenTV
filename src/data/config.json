@@ -16,6 +16,7 @@
         "xhuma2Active": false,
         "durations": {
             "hadith": 5,
+            "esmaul": 2,
             "qr": 1,
             "notification": 10,
             "announcement": 1,

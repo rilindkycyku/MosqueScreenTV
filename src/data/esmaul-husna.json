@@ -1,0 +1,1289 @@
+[
+  {
+    "id": 1,
+    "arabic": "ٱللَّٰهُ",
+    "transliterations": {
+      "sq": "ALLAH"
+    },
+    "translations": {
+      "sq": "Allahu"
+    },
+    "explanations": {
+      "sq": "Emri i përveçëm i Zotit të Vetëm e të Vërtetë, që përmbledh të gjitha cilësitë dhe atributet e Tij hyjnore. Vetëm Ai meriton adhurimin e krijesave."
+    }
+  },
+  {
+    "id": 2,
+    "arabic": "ٱلرَّحْمَٰنُ",
+    "transliterations": {
+      "sq": "Ar-Rrahman"
+    },
+    "translations": {
+      "sq": "I Gjithëmëshirshmi"
+    },
+    "explanations": {
+      "sq": "Mëshira e Tij është absolute dhe gjithëpërfshirëse. Ajo përfshin çdo gjë dhe çdo krijesë në këtë botë, pavarësisht nëse janë besimtarë apo jobesimtarë. Ai jep jetë, diell, ujë dhe furnizim për të gjithë pa dallim."
+    }
+  },
+  {
+    "id": 3,
+    "arabic": "ٱلرَّحِيمُ",
+    "transliterations": {
+      "sq": "Ar-Rrahīm"
+    },
+    "translations": {
+      "sq": "Mëshirëploti"
+    },
+    "explanations": {
+      "sq": "Ky emër tregon mëshirën e Tij specifike dhe të veçantë. Është Mëshira që Ai e ka rezervuar në Botën Tjetër (Ahiret) vetëm për besimtarët, duke i falur dhe duke i shpërblyer me Xhenet."
+    }
+  },
+  {
+    "id": 4,
+    "arabic": "ٱلْمَلِكُ",
+    "transliterations": {
+      "sq": "Al-Melik"
+    },
+    "translations": {
+      "sq": "Sunduesi / Mbreti"
+    },
+    "explanations": {
+      "sq": "Ai është Pronari dhe Sundimtari absolut i gjithësisë. Çdo pushtet në tokë është i përkohshëm dhe i huazuar prej Tij. Përballë Tij, njeriu kujton përulësinë dhe faktin që streha e vërtetë është vetëm tek Mbreti i vërtetë."
+    }
+  },
+  {
+    "id": 5,
+    "arabic": "ٱلْقُدُّوسُ",
+    "transliterations": {
+      "sq": "Al-Kuddūs"
+    },
+    "translations": {
+      "sq": "I Shenjti / I Pastri nga çdo e metë"
+    },
+    "explanations": {
+      "sq": "Allahu është i pastër nga çdo e metë, dobësi, kufizim apo mangësi që mund t'i atribuohet nga mendja njerëzore. Kjo na mëson t'i drejtohemi Atij si e Vërteta e përsosur."
+    }
+  },
+  {
+    "id": 6,
+    "arabic": "ٱلسَّلَامُ",
+    "transliterations": {
+      "sq": "As-Selām"
+    },
+    "translations": {
+      "sq": "Paqedhënësi / Burimi i Paqes"
+    },
+    "explanations": {
+      "sq": "Ai është i shpëtuar nga çdo mangësi dhe është i vetmi Burim i paqes dhe sigurisë. Kushdo që kërkon qetësi shpirtërore dhe siguri në jetë, e gjen atë duke u lidhur me Paqedhënësin."
+    }
+  },
+  {
+    "id": 7,
+    "arabic": "ٱلْمُؤْمِنُ",
+    "transliterations": {
+      "sq": "Al-Mu'min"
+    },
+    "translations": {
+      "sq": "Siguruesi / Dhënësi i Besimit"
+    },
+    "explanations": {
+      "sq": "Ai që i ofron siguri robërve të Tij nga padrejtësia dhe nga frika. Ai është Dëshmuesi i së vërtetës dhe i mban premtimet e Tij gjithmonë."
+    }
+  },
+  {
+    "id": 8,
+    "arabic": "ٱلْمُهَيْمِنُ",
+    "transliterations": {
+      "sq": "Al-Muhejmin"
+    },
+    "translations": {
+      "sq": "Mbikëqyrësi / Dëshmuesi"
+    },
+    "explanations": {
+      "sq": "Allahu dëshmon çdo vepër, kujdeset, ruan dhe mbron çdo krijesë në çdo moment. Të jetosh me këtë emër do të thotë të kesh vetëdijen se Ai po të sheh dhe po kujdeset për ty gjithnjë."
+    }
+  },
+  {
+    "id": 9,
+    "arabic": "ٱلْعَزِيزُ",
+    "transliterations": {
+      "sq": "Al-'Azīz"
+    },
+    "translations": {
+      "sq": "I Plotfuqishmi / Ngadhënjyesi"
+    },
+    "explanations": {
+      "sq": "Fuqia dhe Krenaria e Tij janë të pakufishme. Ai është gjithmonë fitimtar dhe nuk mund të mposhtet nga askush. Por fuqia e Tij është gjithmonë e shoqëruar me drejtësi dhe urtësi."
+    }
+  },
+  {
+    "id": 10,
+    "arabic": "ٱلْجَبَّارُ",
+    "transliterations": {
+      "sq": "Al-Xhebbār"
+    },
+    "translations": {
+      "sq": "Detyruesi / Riparuesi"
+    },
+    "explanations": {
+      "sq": "Ky emër ka dy anë: e para është Ai që rregullon punët e thyera, që shëron zemrat e lënduara dhe forcon të dobëtit. E dyta është Ai që e ka gjithçka nën kontroll dhe askush nuk mund të dalë jashtë vullnetit të Tij."
+    }
+  },
+  {
+    "id": 11,
+    "arabic": "ٱلْمُتَكَبِّرُ",
+    "transliterations": {
+      "sq": "Al-Mutekebbir"
+    },
+    "translations": {
+      "sq": "I Madhërishmi / Krenari"
+    },
+    "explanations": {
+      "sq": "Madhështia dhe Krenaria i takojnë vetëm Atij si Krijues. Njeriu, duke qenë krijesë e dobët, nuk mund të jetë arrogant. Arroganca (kibër-i) është rroba e Zotit dhe nuk i ka hije asnjë njeriu."
+    }
+  },
+  {
+    "id": 12,
+    "arabic": "ٱلْخَالِقُ",
+    "transliterations": {
+      "sq": "Al-Hālik (H e fortë)"
+    },
+    "translations": {
+      "sq": "Krijuesi"
+    },
+    "explanations": {
+      "sq": "Ai është Zoti që projekton dhe krijon çdo gjë nga mosekzistenca. Të njohësh Krijuesin do të thotë të mahnitesh me thellësinë e universit dhe të vetë qenies njerëzore."
+    }
+  },
+  {
+    "id": 13,
+    "arabic": "ٱلْبَارِئُ",
+    "transliterations": {
+      "sq": "Al-Bāri'"
+    },
+    "translations": {
+      "sq": "Filluesi / Përsosësi"
+    },
+    "explanations": {
+      "sq": "Ai nuk thjesht krijon (Al-Hālik), por e sjell çdo gjë në ekzistencë pa asnjë model të mëparshëm, duke i dhënë masën dhe funksionin e duhur me një harmoni të përsosur."
+    }
+  },
+  {
+    "id": 14,
+    "arabic": "ٱلْمُصَوِّرُ",
+    "transliterations": {
+      "sq": "Al-Musau-uir"
+    },
+    "translations": {
+      "sq": "Formëdhënësi"
+    },
+    "explanations": {
+      "sq": "Ai i jep formë dhe pamje unike, karakteristika dhe bukuri të veçantë çdo krijese sipas dëshirës së Tij, ashtu siç i ka dhënë formën më të bukur njeriut."
+    }
+  },
+  {
+    "id": 15,
+    "arabic": "ٱلْغَفَّارُ",
+    "transliterations": {
+      "sq": "Al-Gaffār"
+    },
+    "translations": {
+      "sq": "Gjithëfalësi (që fal vazhdimisht)"
+    },
+    "explanations": {
+      "sq": "Forma e kësaj fjale në arabisht tregon dikë që fal përsëri dhe përsëri. Nuk ka rëndësi sa herë bie njeriu në gabime; nëse ai kthehet me pendim të sinqertë, dyert e Falësit janë të hapura gjithmonë. Ai i mbulon të metat tona në këtë botë dhe na i fal ato në tjetrën."
+    }
+  },
+  {
+    "id": 16,
+    "arabic": "ٱلْقَهَّارُ",
+    "transliterations": {
+      "sq": "Al-Kahhār"
+    },
+    "translations": {
+      "sq": "Mposhtësi / Dominuesi absolut"
+    },
+    "explanations": {
+      "sq": "Sunduesi para të Cilit nënshtrohet çdo krijesë dhe asgjë nuk mund t'i kundërvihet vullnetit të Tij. Ky emër thyen egon e tiranëve dhe u jep qetësi të shtypurve se një Ditë, Zoti do të bëjë drejtësi."
+    }
+  },
+  {
+    "id": 17,
+    "arabic": "ٱلْوَهَّابُ",
+    "transliterations": {
+      "sq": "Al-Uehhāb"
+    },
+    "translations": {
+      "sq": "Dhuruesi i madh"
+    },
+    "explanations": {
+      "sq": "Ai jep vazhdimisht pa pritur asnjë lloj shpërblimi në këmbim. Çdo dhuratë në jetën tonë (familja, trupi, talentet, udhëzimi) është dhuratë falas nga \"Al-Uehhab\", e cila kërkon vetëm mirënjohje."
+    }
+  },
+  {
+    "id": 18,
+    "arabic": "ٱلرَّزَّاقُ",
+    "transliterations": {
+      "sq": "Ar-Rrezzāk"
+    },
+    "translations": {
+      "sq": "Furnizuesi"
+    },
+    "explanations": {
+      "sq": "Ai jep çdo rrizk (furnizim). Kjo nuk përfshin vetëm ushqimin apo pasurinë, por edhe diturinë, qetësinë e zemrës dhe besimin. Të kuptosh këtë emër largon stresin dhe fiksimin e tepruar për anën materiale, pasi furnizimi është i garantuar nga Ai, ndërsa ne bëjmë vetëm përpjekjen."
+    }
+  },
+  {
+    "id": 19,
+    "arabic": "ٱلْفَتَّاحُ",
+    "transliterations": {
+      "sq": "Al-Fettāh"
+    },
+    "translations": {
+      "sq": "Zgjidhjadhënësi / Hapësi"
+    },
+    "explanations": {
+      "sq": "Ai që hap dyert e bllokuara. Kush gjendet në vështirësi, në mbyllje të rrugëve apo pengesa shpirtërore e materiale, i drejtohet Atij për t'i hapur rrugët e suksesit, udhëzimit dhe qetësimit."
+    }
+  },
+  {
+    "id": 20,
+    "arabic": "ٱلْعَلِيمُ",
+    "transliterations": {
+      "sq": "Al-'Alīm"
+    },
+    "translations": {
+      "sq": "I Gjithëdijshmi"
+    },
+    "explanations": {
+      "sq": "Ai di gjithçka: të kaluarën, të tashmen, të ardhmen, ato që themi me zë të lartë dhe ato që i fshehim thellë në zemër. Dija e Tij është e pakufishme."
+    }
+  },
+  {
+    "id": 21,
+    "arabic": "ٱلْقَابِضُ",
+    "transliterations": {
+      "sq": "Al-Kābid"
+    },
+    "translations": {
+      "sq": "Shtrënguesi / Ndaluesi"
+    },
+    "explanations": {
+      "sq": "Jeta rrotullohet mes lehtësimit dhe vështirësisë. Ndonjëherë Ai e ngushton (shtrëngon) furnizimin, gëzimin apo lehtësimin për të na edukuar, për të testuar durimin tonë, ose për të na kthyer te Vetja nga hutimi i kësaj bote. (Ky emër vjen gjithmonë bashkë me emrin e 21-të, Al-Bāsit - Zgjeruesi)."
+    }
+  },
+  {
+    "id": 22,
+    "arabic": "ٱلْبَاسِطُ",
+    "transliterations": {
+      "sq": "Al-Bāsit"
+    },
+    "translations": {
+      "sq": "Zgjeruesi / Dhënësi i bollëkut"
+    },
+    "explanations": {
+      "sq": "Ky emër është çift me të 20-in (Al-Kābid). Allahu e zgjeron furnizimin, gëzimin dhe jetën për kë të dojë, me mëshirën e Tij. Kur dyert hapen dhe gjërat ecin mbarë, kujtojmë se është Ai që po na e zgjeron rrugën."
+    }
+  },
+  {
+    "id": 23,
+    "arabic": "ٱلْخَافِضُ",
+    "transliterations": {
+      "sq": "Al-Hāfid (H e ashpër)"
+    },
+    "translations": {
+      "sq": "Përulësi / Ulësi"
+    },
+    "explanations": {
+      "sq": "Ai poshtëron zullumqarët, arrogantët dhe ata që devijojnë nga e vërteta. Askush nuk mund të mbajë një pozitë të lartë nëse Ai vendos ta ulë."
+    }
+  },
+  {
+    "id": 24,
+    "arabic": "ٱلرَّافِعُ",
+    "transliterations": {
+      "sq": "Ar-Rāfi'"
+    },
+    "translations": {
+      "sq": "Lartësuesi / Ngritësi"
+    },
+    "explanations": {
+      "sq": "Ai i lartëson besimtarët, të diturit dhe ata që janë të përulur ndaj Tij. Nderi i vërtetë vjen vetëm duke kërkuar Lartësuesin, dhe jo duke u servilosur te njerëzit."
+    }
+  },
+  {
+    "id": 25,
+    "arabic": "ٱلْمُعِزُّ",
+    "transliterations": {
+      "sq": "Al-Mu'izz"
+    },
+    "translations": {
+      "sq": "Nderuesi / Ngadhënjyesi"
+    },
+    "explanations": {
+      "sq": "Ai i jep krenari, nder dhe pushtet atij që i bindet. Besimtari gjen forcë dhe dinjitet të thellë në këtë emër, duke ditur se \"Krenaria (Izzeti) i takon vetëm Allahut\"."
+    }
+  },
+  {
+    "id": 26,
+    "arabic": "ٱلْمُذِلُّ",
+    "transliterations": {
+      "sq": "Al-Mudhill (Dh si that në anglisht)"
+    },
+    "translations": {
+      "sq": "Poshtëruesi"
+    },
+    "explanations": {
+      "sq": "Kujtdo që i kthen shpinën së vërtetës dhe mbështetet vetëm tek egoja e vet, Ai ia heq mbrojtjen dhe e lë të poshtërohet. Kjo tregon balancën e Tij mes mëshirës dhe drejtësisë."
+    }
+  },
+  {
+    "id": 27,
+    "arabic": "ٱلسَّمِيعُ",
+    "transliterations": {
+      "sq": "As-Semī'"
+    },
+    "translations": {
+      "sq": "Të Gjithëdëgjuesi"
+    },
+    "explanations": {
+      "sq": "Ai dëgjon çdo gjë: çdo lutje të shprehur me zë, çdo pëshpëritje, madje edhe fjalët e pathëna që fshihen në thellësi të zemrës. Kjo i jep besimtarit siguri absolute kur bën lutje (Dua)."
+    }
+  },
+  {
+    "id": 28,
+    "arabic": "ٱلْبَصِيرُ",
+    "transliterations": {
+      "sq": "Al-Besīr"
+    },
+    "translations": {
+      "sq": "Të Gjithëshikuesi"
+    },
+    "explanations": {
+      "sq": "Ai sheh çdo qelizë në univers dhe çdo vepër tonën. Të jetosh me vetëdijen e këtij emri do të thotë të arrish shkallën e Ihsanit (Përsosmërisë): të veprosh ashtu sikur e sheh Atë, e nëse ti nuk e sheh, të dish se Ai të sheh ty."
+    }
+  },
+  {
+    "id": 29,
+    "arabic": "ٱلْحَكَمُ",
+    "transliterations": {
+      "sq": "Al-Hekem"
+    },
+    "translations": {
+      "sq": "Gjykuesi Absolut / Arbitri"
+    },
+    "explanations": {
+      "sq": "Ai është gjykatësi i vetëm i vërtetë. Rregullat, ligjet dhe gjykimet e Tij janë të përsosura dhe pa asnjë të metë."
+    }
+  },
+  {
+    "id": 30,
+    "arabic": "ٱلْعَدْلُ",
+    "transliterations": {
+      "sq": "Al-'Adl"
+    },
+    "translations": {
+      "sq": "I Drejti Absolut"
+    },
+    "explanations": {
+      "sq": "Drejtësia e Tij është e pakorruptueshme. Atij nuk i shpëton asnjë e drejtë e mohuar, dhe tek Ai, askujt nuk i bëhet zullum (padrejtësi) as sa një grimcë."
+    }
+  },
+  {
+    "id": 31,
+    "arabic": "ٱللَّطِيفُ",
+    "transliterations": {
+      "sq": "Al-Letīf"
+    },
+    "translations": {
+      "sq": "I Buti / Bamirësi / I Holli (Në njohjen e detajeve)"
+    },
+    "explanations": {
+      "sq": "Ai dërgon mirësi dhe rrugëdalje në mënyra aq \"të holla\" e subtile, saqë ne shpesh nuk i vëmë re fare derisa ato të kenë ndodhur. Ai kujdeset për ne butësisht në momentet më të papritura."
+    }
+  },
+  {
+    "id": 32,
+    "arabic": "ٱلْخَبِيرُ",
+    "transliterations": {
+      "sq": "Al-Habīr (H e ashpër)"
+    },
+    "translations": {
+      "sq": "I Gjithëdituri (për të fshehtat)"
+    },
+    "explanations": {
+      "sq": "Ndryshe nga Al-'Alīm (që thekson dijen e përgjithshme), Al-Habīr thekson njohjen e brendësisë, realitetit të thellë dhe qëllimeve të fshehta të çdo vepre e mendimi."
+    }
+  },
+  {
+    "id": 33,
+    "arabic": "ٱلْحَلِيمُ",
+    "transliterations": {
+      "sq": "Al-Helīm"
+    },
+    "translations": {
+      "sq": "I Buti / Toleranti / Përdëllimtari"
+    },
+    "explanations": {
+      "sq": "Ai sheh mëkatet tona dhe ka fuqi të na dënojë menjëherë, por me tolerancën e Tij, nuk nxiton. Ai na jep kohë, hapësirë dhe mundësi të reflektojmë e të pendohemi para se të marrim atë që meritojmë."
+    }
+  },
+  {
+    "id": 34,
+    "arabic": "ٱلْعَظِيمُ",
+    "transliterations": {
+      "sq": "Al-'Adhīm (Dh e theksuar)"
+    },
+    "translations": {
+      "sq": "I Madhërishmi"
+    },
+    "explanations": {
+      "sq": "Madhështia e Tij tejkalon çdo perceptim njerëzor. Kur biem në ruku gjatë namazit, themi \"Subhane Rabbijel 'Adhim\", pikërisht për të përulur veten tonë fizikisht dhe shpirtërisht para kësaj Madhështie."
+    }
+  },
+  {
+    "id": 35,
+    "arabic": "ٱلْغَفُورُ",
+    "transliterations": {
+      "sq": "Al-Gafūr"
+    },
+    "translations": {
+      "sq": "Mëkatfalësi i Madh"
+    },
+    "explanations": {
+      "sq": "Ndryshe nga Al-Gaffar (që fal vazhdimisht përsëritjen e gabimeve), Al-Gafur thekson thellësinë e faljes. Ai fal madje edhe mëkatet më të mëdha, nëse robi kthehet me zemër të thyer e të penduar tek Ai."
+    }
+  },
+  {
+    "id": 36,
+    "arabic": "ٱلشَّكُورُ",
+    "transliterations": {
+      "sq": "Ash-Shekūr"
+    },
+    "translations": {
+      "sq": "Mirënjohësi / Shpërblyesi"
+    },
+    "explanations": {
+      "sq": "Edhe pse ne bëjmë shumë pak, Ai na shpërblen jashtëzakonisht shumë. Ai vlerëson çdo vepër të mirë, sado e vogël të jetë ajo (madje edhe largimin e një pengese nga rruga), dhe e shumëfishon shpërblimin e saj."
+    }
+  },
+  {
+    "id": 37,
+    "arabic": "ٱلْعَلِيُّ",
+    "transliterations": {
+      "sq": "Al-'Alijj"
+    },
+    "translations": {
+      "sq": "I Larti"
+    },
+    "explanations": {
+      "sq": "Pozita e Tij është më e larta, absolutisht mbi çdo krijesë, mbi çdo të metë dhe mbi çdo gjë që mund të asociohet me Të. Ai i lartëson ata që përulen para Tij."
+    }
+  },
+  {
+    "id": 38,
+    "arabic": "ٱلْكَبِيرُ",
+    "transliterations": {
+      "sq": "Al-Kebīr"
+    },
+    "translations": {
+      "sq": "I Madhi / I Pakufishmi"
+    },
+    "explanations": {
+      "sq": "Asgjë nuk është më e madhe se Ai. Kjo është logjika pse themi vazhdimisht \"Allahu Ekber\" (Allahu është më i Madhi). Sado i madh të jetë një problem apo një frikë në jetë, Allahu është shumë herë më i Madh."
+    }
+  },
+  {
+    "id": 39,
+    "arabic": "ٱلْحَفِيظُ",
+    "transliterations": {
+      "sq": "Al-Hefīdh"
+    },
+    "translations": {
+      "sq": "Ruajtësi"
+    },
+    "explanations": {
+      "sq": "Ai mban universin që të mos shkatërrohet, mbron besimtarin nga e keqja fizike dhe shpirtërore, dhe ruan të regjistruara të gjitha veprat tona, pa humbur asgjë, për Ditën e Llogarisë."
+    }
+  },
+  {
+    "id": 40,
+    "arabic": "ٱلْمُقِيتُ",
+    "transliterations": {
+      "sq": "Al-Mukīt"
+    },
+    "translations": {
+      "sq": "Ushqyesi / Mirëmbajtësi"
+    },
+    "explanations": {
+      "sq": "Ai i jep çdo krijese furnizimin specifik që e mban atë gjallë: ushqim për trupin dhe ushqim (besim e njohuri) për shpirtin. Ai është i Vetmi që kujdeset për ruajtjen e jetës në çdo moment."
+    }
+  },
+  {
+    "id": 41,
+    "arabic": "ٱلْحَسِيبُ",
+    "transliterations": {
+      "sq": "Al-Hesīb"
+    },
+    "translations": {
+      "sq": "Llogarimarrësi / Mjaftuesi"
+    },
+    "explanations": {
+      "sq": "Ky emër tregon se Ai llogarit gjithçka me precizion absolut në Ditën e Gjykimit. Gjithashtu, tregon mbështetjen: për besimtarin, Ai është \"HasbiyAllahu\" – Allahu më mjafton mua (Ai është zgjidhësi më i mirë i çështjeve)."
+    }
+  },
+  {
+    "id": 42,
+    "arabic": "ٱلْجَلِيلُ",
+    "transliterations": {
+      "sq": "Al-Xhelīl"
+    },
+    "translations": {
+      "sq": "I Madhërishmi / I Lavdishmi"
+    },
+    "explanations": {
+      "sq": "Ky emër tregon madhështinë e Tij në cilësi dhe atribute. Ashtu si Al-Kebir tregon madhështinë në qenie, Al-Xhelil tregon bukurinë dhe përsosmërinë e atributeve të Tij, që ngjallin respekt dhe mahnitje të thellë tek besimtari."
+    }
+  },
+  {
+    "id": 43,
+    "arabic": "ٱلْكَرِيمُ",
+    "transliterations": {
+      "sq": "Al-Kerīm"
+    },
+    "translations": {
+      "sq": "Fisniku / Bujari Absolut"
+    },
+    "explanations": {
+      "sq": "Ai jep pa masë, edhe kur nuk i kërkohet, dhe fal edhe kur robi e meriton ndëshkimin. Bujaria e Tij nuk shteron kurrë dhe Ai mbulon të metat e njerëzve me fisnikëri, duke i trajtuar me butësi edhe kur ata gabojnë."
+    }
+  },
+  {
+    "id": 44,
+    "arabic": "ٱلرَّقِيبُ",
+    "transliterations": {
+      "sq": "Ar-Rrekīb"
+    },
+    "translations": {
+      "sq": "Mbikëqyrësi / Vigjilenti"
+    },
+    "explanations": {
+      "sq": "Asnjë lëvizje, sado e vogël, nuk i shpëton vëmendjes së Tij. Kuptimi i këtij emri e ndihmon njeriun të arrijë vetëdijen shpirtërore (muraqaba) – ndjesinë se Zoti është gjithmonë i pranishëm, duke e ruajtur njeriun nga veprat e këqija kur është vetëm."
+    }
+  },
+  {
+    "id": 45,
+    "arabic": "ٱلْمُجِيبُ",
+    "transliterations": {
+      "sq": "Al-Muxhīb"
+    },
+    "translations": {
+      "sq": "Lutjepranuesi / Përgjigjësi"
+    },
+    "explanations": {
+      "sq": "Allahu i përgjigjet çdo lutjeje (Duaje) që vjen nga një zemër e sinqertë. Ai u përgjigjet në mënyrën më të mirë dhe në kohën më të duhur, qoftë duke e dhënë atë që kërkohet, duke larguar një të keqe, apo duke e ruajtur si shpërblim për në Botën Tjetër."
+    }
+  },
+  {
+    "id": 46,
+    "arabic": "ٱلْوَاسِعُ",
+    "transliterations": {
+      "sq": "Al-Uāsi'"
+    },
+    "translations": {
+      "sq": "Gjithëpërfshirësi / I Gjëri"
+    },
+    "explanations": {
+      "sq": "Mëshira, dija, furnizimi dhe falja e Tij janë aq të gjëra sa nuk kanë kufij. Pavarësisht sa të mëdha janë nevojat e krijesave apo sa të rënda janë gabimet e tyre, \"Gjërësia\" e Zotit i mbulon të gjitha."
+    }
+  },
+  {
+    "id": 47,
+    "arabic": "ٱلْحَكِيمُ",
+    "transliterations": {
+      "sq": "Al-Hekīm"
+    },
+    "translations": {
+      "sq": "I Urti / Plot Urtësi"
+    },
+    "explanations": {
+      "sq": "Çdo gjë që Ai krijon, çdo ligj që vendos dhe çdo caktim në jetën tonë është i mbushur me urtësi absolute, edhe nëse ne nuk e kuptojmë dot arsyen në atë moment. Pas çdo vështirësie fshihet një urtësi e Tij."
+    }
+  },
+  {
+    "id": 48,
+    "arabic": "ٱلْوَدُودُ",
+    "transliterations": {
+      "sq": "Al-Uedūd"
+    },
+    "translations": {
+      "sq": "I Dashuri / Burimi i Dashurisë"
+    },
+    "explanations": {
+      "sq": "Ndryshe nga llojet e tjera të dashurisë, Uedud është një dashuri e shprehur përmes veprave të vazhdueshme të mirësisë. Ai i do robërit e Tij të mirë dhe u fal atyre dashurinë për njëri-tjetrin. Ai është Ai që kthehet me dashuri tek robi i Tij edhe pasi robi është penduar."
+    }
+  },
+  {
+    "id": 49,
+    "arabic": "ٱلْمَجِيدُ",
+    "transliterations": {
+      "sq": "Al-Mexhīd"
+    },
+    "translations": {
+      "sq": "I Lavdishmi / I Lartësuari"
+    },
+    "explanations": {
+      "sq": "Lavdia e Tij është e pakrahasueshme për shkak të përsosmërisë së veprave dhe fisnikërisë së Tij. Është një kombinim i Al-Xhelil (Madhështisë) dhe Al-Kerim (Bujarisë)."
+    }
+  },
+  {
+    "id": 50,
+    "arabic": "ٱلْبَاعِثُ",
+    "transliterations": {
+      "sq": "Al-Bā'ith (Th si thanks në anglisht)"
+    },
+    "translations": {
+      "sq": "Ringjallësi / Dërguesi"
+    },
+    "explanations": {
+      "sq": "Ai është Zoti që ringjall të vdekurit ditën e Kiametit nga varret e tyre për të dhënë llogari. Gjithashtu, është Ai që dërgon Profetët për të zgjuar zemrat e vdekura të njerëzve dhe për t'i udhëzuar ata."
+    }
+  },
+  {
+    "id": 51,
+    "arabic": "ٱلشَّهِيدُ",
+    "transliterations": {
+      "sq": "Ash-Shehīd"
+    },
+    "translations": {
+      "sq": "Dëshmuesi Absolut"
+    },
+    "explanations": {
+      "sq": "Ai është dëshmitar i çdo ngjarjeje, i çdo fjale dhe i çdo sekreti. Asgjë nuk ndodh në univers pa qenë Ai dëshmitar. Kjo i jep siguri atij që i bëhet padrejtësi në tokë, se Dëshmitari kryesor nuk harron."
+    }
+  },
+  {
+    "id": 52,
+    "arabic": "ٱلْحَقُّ",
+    "transliterations": {
+      "sq": "Al-Hakk"
+    },
+    "translations": {
+      "sq": "E Vërteta / I Vërteti"
+    },
+    "explanations": {
+      "sq": "Ai është e Vërteta e vetme absolute dhe e pandryshueshme. Gjithçka tjetër përveç Tij është kalimtare. Fjala e Tij është e vërtetë, premtimi i Tij është i vërtetë, dhe Kiameti është i vërtetë."
+    }
+  },
+  {
+    "id": 53,
+    "arabic": "ٱلْوَكِيلُ",
+    "transliterations": {
+      "sq": "Al-Uekīl"
+    },
+    "translations": {
+      "sq": "Kujdestari / Mbështetësi / Besuesi"
+    },
+    "explanations": {
+      "sq": "Ai të cilit i besohen të gjitha çështjet. Kur besimtari thotë \"Hasbuna-llahu ue ni'mel Uekil\" (Allahu na mjafton, Ai është Kujdestari më i mirë), ai dorëzon barrën e jetës së tij te Zoti, duke u liruar nga ankthi dhe frika."
+    }
+  },
+  {
+    "id": 54,
+    "arabic": "ٱلْقَوِيُّ",
+    "transliterations": {
+      "sq": "Al-Kauijj"
+    },
+    "translations": {
+      "sq": "I Forti / I Plotfuqishmi"
+    },
+    "explanations": {
+      "sq": "Fuqia e Tij është e pashtershme dhe nuk ka nevojë për asnjë mjet apo ndihmë. Kjo forcë ruan qiejt dhe tokën, dhe u jep forcë atyre që mbështeten tek Ai në momentet më të dobëta të jetës."
+    }
+  },
+  {
+    "id": 55,
+    "arabic": "ٱلْمَتِينُ",
+    "transliterations": {
+      "sq": "Al-Metīn"
+    },
+    "translations": {
+      "sq": "I Pathyeshmi / I Qëndrueshmi"
+    },
+    "explanations": {
+      "sq": "Ndërkohë që Al-Kauijj tregon sasinë e forcës, Al-Metin tregon intensitetin dhe qëndrueshmërinë e saj. Nuk ka asnjë sfidë apo rezistencë që mund të lodhë apo të dobësojë vullnetin e Tij."
+    }
+  },
+  {
+    "id": 56,
+    "arabic": "ٱلْوَلِيُّ",
+    "transliterations": {
+      "sq": "Al-Uelijj"
+    },
+    "translations": {
+      "sq": "Mbrojtësi / Miku / Kujdestari i afërt"
+    },
+    "explanations": {
+      "sq": "Ai është Miku dhe Mbrojtësi më i afërt i atyre që besojnë. Ai i nxjerr ata nga errësira në dritë, i drejton hapat e tyre dhe i mbron kur janë të pambrojtur nga askush tjetër."
+    }
+  },
+  {
+    "id": 57,
+    "arabic": "ٱلْحَمِيدُ",
+    "transliterations": {
+      "sq": "Al-Hamīd"
+    },
+    "translations": {
+      "sq": "I Falënderuari / I Lavdëruari"
+    },
+    "explanations": {
+      "sq": "Ai meriton çdo lavdërim, falënderim dhe mirënjohje në çdo gjendje, qoftë në gëzim apo hidhërim. Ai është i lavdëruar në qenien e Tij, edhe nëse asnjë krijesë nuk e falënderon Atë."
+    }
+  },
+  {
+    "id": 58,
+    "arabic": "ٱلْمُحْصِي",
+    "transliterations": {
+      "sq": "Al-Muhsī"
+    },
+    "translations": {
+      "sq": "Llogaritësi / Regjistruesi"
+    },
+    "explanations": {
+      "sq": "Ai numëron dhe regjistron me saktësi absolute çdo vepër, çdo fjalë, madje edhe gjethet që bien nga pemët, pa i shpëtuar asnjë detaj, sado i vogël, për ta sjellë atë në Ditën e Gjykimit."
+    }
+  },
+  {
+    "id": 59,
+    "arabic": "ٱلْمُبْدِئُ",
+    "transliterations": {
+      "sq": "Al-Mubdi'"
+    },
+    "translations": {
+      "sq": "Nismëtari / Filluesi"
+    },
+    "explanations": {
+      "sq": "Ai është Ai që e filloi krijimin e universit nga asgjëja. Pa Të, asgjë nuk mund ta ketë një fillim. Kjo na mëson se çdo nismë e mirë duhet të fillojë duke përmendur emrin e Tij (Bismilah)."
+    }
+  },
+  {
+    "id": 60,
+    "arabic": "ٱلْمُعِيدُ",
+    "transliterations": {
+      "sq": "Al-Mu'īd"
+    },
+    "translations": {
+      "sq": "Rikthyesi / Përsëritësi"
+    },
+    "explanations": {
+      "sq": "Ai që i jep fund jetës dhe e rikthen atë sërish. Ai e rikthen njeriun në jetë në Ditën e Ringjalljes po aq lehtë sa e krijoi atë për herë të parë."
+    }
+  },
+  {
+    "id": 61,
+    "arabic": "ٱلْمُحْيِي",
+    "transliterations": {
+      "sq": "Al-Muhjī"
+    },
+    "translations": {
+      "sq": "Jetëdhënësi"
+    },
+    "explanations": {
+      "sq": "Ai fut shpirtin në trupat e vdekur duke u dhënë jetë, Ai ngjall tokën e thatë me shiun, dhe ngjall zemrat e zbrazëta me dritën e besimit dhe diturisë."
+    }
+  },
+  {
+    "id": 62,
+    "arabic": "ٱلْمُمِيتُ",
+    "transliterations": {
+      "sq": "Al-Mumīt"
+    },
+    "translations": {
+      "sq": "Vdekjedhënësi / Marrësi i jetës"
+    },
+    "explanations": {
+      "sq": "Ai është i Vetmi që përcakton fundin e jetës së çdo krijese. Në perspektivën hyjnore, vdekja nuk është fundi absolut, por një stacion kalimtar nga kjo botë në Botën e Përjetshme, e caktuar me urtësinë e Tij."
+    }
+  },
+  {
+    "id": 63,
+    "arabic": "ٱلْحَيُّ",
+    "transliterations": {
+      "sq": "Al-Hajj (H e thellë)"
+    },
+    "translations": {
+      "sq": "I Gjalli (Përgjithmonë)"
+    },
+    "explanations": {
+      "sq": "Jeta e Tij është e përsosur, absolute, pa fillim dhe pa fund. Ndryshe nga jeta e krijesave, e cila është e kufizuar dhe e varur prej Tij, Atë nuk e zë as dremitja dhe as gjumi."
+    }
+  },
+  {
+    "id": 64,
+    "arabic": "ٱلْقَيُّومُ",
+    "transliterations": {
+      "sq": "Al-Kajjūm"
+    },
+    "translations": {
+      "sq": "I Vetëmjaftueshmi / Mbajtësi i gjithçkaje"
+    },
+    "explanations": {
+      "sq": "Ky emër është baza e ekzistencës. Ai ekziston në Vetvete dhe mban në ekzistencë çdo gjë tjetër. Asgjë në univers nuk mund të funksionojë as për një fraksion sekondi pa u mirëmbajtur nga Ai."
+    }
+  },
+  {
+    "id": 65,
+    "arabic": "ٱلْوَاجِدُ",
+    "transliterations": {
+      "sq": "Al-Uāxhid"
+    },
+    "translations": {
+      "sq": "Gjetësi / I Pasuri (që s'i mungon asgjë)"
+    },
+    "explanations": {
+      "sq": "Ai gjen çfarëdo që dëshiron dhe kurdo që dëshiron; asgjë nuk mund t'i shpëtojë apo t'i fshihet. Atij nuk i mungon asgjë, ndaj i mjafton vetëm të thotë \"Bëhu!\" dhe ajo bëhet."
+    }
+  },
+  {
+    "id": 66,
+    "arabic": "ٱلْمَاجِدُ",
+    "transliterations": {
+      "sq": "Al-Māxhid"
+    },
+    "translations": {
+      "sq": "I Lavdishmi / Fisniku i Lartë"
+    },
+    "explanations": {
+      "sq": "Ashtu si Al-Mexhid, ky emër tregon lavdinë e Tij, por thekson veçanërisht fisnikërinë e Tij në trajtimin e krijesave. Ai është jashtëzakonisht i lavdishëm në dhurimin e mirësive, duke ndihmuar robtë e Tij vazhdimisht."
+    }
+  },
+  {
+    "id": 67,
+    "arabic": "ٱلْوَاحِدُ",
+    "transliterations": {
+      "sq": "Al-Uāhid (H e thellë)"
+    },
+    "translations": {
+      "sq": "I Vetmi"
+    },
+    "explanations": {
+      "sq": "Ai është Një dhe i pandashëm. Nuk ka ortak, as shok, as ndihmës. Ai nuk ndahet në pjesë. Ky emër është thelbi i Teuhidit (Monoteizmit) të pastër islam."
+    }
+  },
+  {
+    "id": 68,
+    "arabic": "ٱلصَّمَدُ",
+    "transliterations": {
+      "sq": "As-Samed"
+    },
+    "translations": {
+      "sq": "Streha Absolute / I Përjetshmi"
+    },
+    "explanations": {
+      "sq": "Ai tek i Cili drejtohen të gjitha krijesat për të përmbushur nevojat e tyre, ndërsa Ai vetë nuk ka nevojë për asgjë. Ai nuk ha, nuk pi, as nuk ka lindur dikë, dhe as nuk është i lindur nga dikush tjetër."
+    }
+  },
+  {
+    "id": 69,
+    "arabic": "ٱلْقَادِرُ",
+    "transliterations": {
+      "sq": "Al-Kādir"
+    },
+    "translations": {
+      "sq": "I Plotfuqishmi"
+    },
+    "explanations": {
+      "sq": "Ai ka fuqinë dhe aftësinë për të bërë gjithçka që do. Ndryshe nga njerëzit, fuqia e të cilëve është e kufizuar dhe varet nga shkaqet e jashtme, forca e Tij realizon çdo synim pa asnjë lodhje apo kufizim."
+    }
+  },
+  {
+    "id": 70,
+    "arabic": "ٱلْمُقْتَدِرُ",
+    "transliterations": {
+      "sq": "Al-Muktedir"
+    },
+    "translations": {
+      "sq": "Krijuesi i Fuqisë / I Gjithëpushtetshmi"
+    },
+    "explanations": {
+      "sq": "Ai jo vetëm që është i fuqishëm Vetë, por është Ai që krijon, përcakton dhe menaxhon fuqinë në çdo krijesë. Asnjë mbret, perandori apo forcë e natyrës nuk mund të ushtrojë pushtet veçse me lejen e Tij."
+    }
+  },
+  {
+    "id": 71,
+    "arabic": "ٱلْمُقَدِّمُ",
+    "transliterations": {
+      "sq": "Al-Mukaddim"
+    },
+    "translations": {
+      "sq": "Nismëtari / Pararendësi (Që u jep përparësi gjërave)"
+    },
+    "explanations": {
+      "sq": "Ai u jep përparësi personave apo çështjeve sipas urtësisë së Tij. Për shembull, Ai i afron besimtarët drejt Vetes, u jep sukses atyre që përpiqen, dhe udhëheq ngjarjet e historisë drejt asaj që është më e mira."
+    }
+  },
+  {
+    "id": 72,
+    "arabic": "ٱلْمُؤَخِّرُ",
+    "transliterations": {
+      "sq": "Al-Mu'ahhir (H e ashpër)"
+    },
+    "translations": {
+      "sq": "Shtyrtari / Lënësi prapa"
+    },
+    "explanations": {
+      "sq": "I kundërti i Mukaddim. Ai mund të vonojë një shpërblim, një sukses, apo një dënim me plot mençuri. Ndonjëherë Ai e vonon dënimin e gabimtarëve për t'u dhënë atyre një shans për t'u penduar."
+    }
+  },
+  {
+    "id": 73,
+    "arabic": "ٱلْأَوَّلُ",
+    "transliterations": {
+      "sq": "Al-Au-uel"
+    },
+    "translations": {
+      "sq": "I Pari"
+    },
+    "explanations": {
+      "sq": "Ai ekzistonte para se të ekzistonte hapësira, koha dhe çdo krijesë tjetër. Ekzistenca e Tij nuk ka një pikënisje; Ai është Burimi dhe Fillimi i gjithçkaje."
+    }
+  },
+  {
+    "id": 74,
+    "arabic": "ٱلْآخِرُ",
+    "transliterations": {
+      "sq": "Al-Āhir (H e ashpër)"
+    },
+    "translations": {
+      "sq": "I Fundit"
+    },
+    "explanations": {
+      "sq": "Ekzistenca e Tij nuk ka fund. Kur çdo gjë në univers të zhduket dhe të marrë fund, vetëm Ai do të mbetet i Përhershëm. Ne e nisim jetën tek Ai dhe tek Ai do të kthehemi në fund."
+    }
+  },
+  {
+    "id": 75,
+    "arabic": "ٱلظَّاهِرُ",
+    "transliterations": {
+      "sq": "Adh-Dhāhir (Dh e theksuar thellë)"
+    },
+    "translations": {
+      "sq": "I Dukshmi / I Shfaquri (me argumente)"
+    },
+    "explanations": {
+      "sq": "Ekzistenca dhe fuqia e Tij janë aq të qarta dhe të dukshme përmes shenjave të krijimit. Dielli, yjet, jeta, ligjet e fizikës dhe çdo atom tregon për gjenialitetin e Krijuesit, duke e bërë praninë e Tij krejtësisht \"të dukshme\" për mendjen."
+    }
+  },
+  {
+    "id": 76,
+    "arabic": "ٱلْبَاطِنُ",
+    "transliterations": {
+      "sq": "Al-Bātin"
+    },
+    "translations": {
+      "sq": "I Fshehti (për syrin)"
+    },
+    "explanations": {
+      "sq": "Megjithëse shenjat e Tij janë kudo, Vetja e Tij është e fshehtë dhe e pakapshme nga shqisat tona fizike në këtë botë. Gjithashtu, thekson se Ai njeh thellësitë më të fshehta të zemrave dhe mendimeve tona."
+    }
+  },
+  {
+    "id": 77,
+    "arabic": "ٱلْوَالِي",
+    "transliterations": {
+      "sq": "Al-Uālī"
+    },
+    "translations": {
+      "sq": "Rregulluesi / Kujdestari Drejtues"
+    },
+    "explanations": {
+      "sq": "Ai e drejton, menaxhon dhe rregullon universin dhe jetën e krijesave të Tij. Ashtu si një kujdestar i dashur drejton punët e atij që ka në ngarkim, ashtu Ai siguron që çdo gjë të funksionojë në harmoni."
+    }
+  },
+  {
+    "id": 78,
+    "arabic": "ٱلْمُتَعَالِي",
+    "transliterations": {
+      "sq": "Al-Muta'ālī"
+    },
+    "translations": {
+      "sq": "I Lartësuari (mbi çdo gjë)"
+    },
+    "explanations": {
+      "sq": "Ai është i lartësuar mbi çdo të metë, mbi çdo trillim njerëzor, dhe mbi çdo mendim apo kufizim. Asnjë perceptim i yni nuk arrin ta rrokë madhështinë dhe përsosmërinë e Tij absolute."
+    }
+  },
+  {
+    "id": 79,
+    "arabic": "ٱلْبَرُّ",
+    "transliterations": {
+      "sq": "Al-Berr"
+    },
+    "translations": {
+      "sq": "Bamirësi i Madh / Burimi i Mirësisë"
+    },
+    "explanations": {
+      "sq": "Ai është thelbi dhe burimi i çdo mirësie. Çdo e mirë që të vjen në jetë, pavarësisht shkakut në dukje, vjen si një akt i mirësisë dhe dashamirësisë së Tij ndaj teje."
+    }
+  },
+  {
+    "id": 80,
+    "arabic": "ٱلتَّوَّابُ",
+    "transliterations": {
+      "sq": "At-Teu-uāb"
+    },
+    "translations": {
+      "sq": "Pranuesi i Pendimit / Pendimpranuesi"
+    },
+    "explanations": {
+      "sq": "Ky emër është një burim shprese. Ai pranon pendimin (Teuben) e njeriut sado thellë të ketë gabuar ai, me kusht që të kthehet me sinqeritet. Forma e fjalës do të thotë që Ai e pranon pendimin përsëri dhe përsëri, pa u lodhur nga ne."
+    }
+  },
+  {
+    "id": 81,
+    "arabic": "ٱلْمُنْتَقِمُ",
+    "transliterations": {
+      "sq": "Al-Muntakim"
+    },
+    "translations": {
+      "sq": "Ndëshkuesi / Hakmarrësi (ndaj zullumqarëve)"
+    },
+    "explanations": {
+      "sq": "Ai ndëshkon ata që këmbëngulin në krime dhe padrejtësi. Ky nuk është një inat njerëzor, por drejtësi e thellë për të rivendosur ekuilibrin dhe për të mbrojtur të shtypurit e të dobtit në tokë."
+    }
+  },
+  {
+    "id": 82,
+    "arabic": "ٱلْعَفُوُّ",
+    "transliterations": {
+      "sq": "Al-'Afu-uu"
+    },
+    "translations": {
+      "sq": "Falësi / Fshirësi i mëkateve"
+    },
+    "explanations": {
+      "sq": "Ndryshe nga Al-Gafur (që e mbulon mëkatin), Al-'Afu-uu e fshin atë plotësisht nga regjistri, sikur të mos kishte ndodhur kurrë. Është shkalla më e lartë dhe më qetësuese e faljes."
+    }
+  },
+  {
+    "id": 83,
+    "arabic": "ٱلرَّؤُوفُ",
+    "transliterations": {
+      "sq": "Ar-Rra'ūf"
+    },
+    "translations": {
+      "sq": "I Buti / I Dhembshuri"
+    },
+    "explanations": {
+      "sq": "Dhembshuria e Tij është e pakufishme. Ai na lehtëson barrët dhe nuk na ngarkon me atë që nuk e mbajmë dot, duke treguar një kujdes të veçantë dhe të ëmbël për krijesat e Tij."
+    }
+  },
+  {
+    "id": 84,
+    "arabic": "مَالِكُ ٱلْمُلْكِ",
+    "transliterations": {
+      "sq": "Mālik-ul-Mulk"
+    },
+    "translations": {
+      "sq": "Pronari i Pushtetit Absolut"
+    },
+    "explanations": {
+      "sq": "Ai është i vetmi pronar i vërtetë i gjithçkaje në ekzistencë. Ai e jep pushtetin dhe pasurinë kujt të dojë dhe ia heq kujt të dojë. Njeriu është vetëm një menaxhues i përkohshëm i të mirave."
+    }
+  },
+  {
+    "id": 85,
+    "arabic": "ذُو ٱلْجَلَالِ وَٱلْإِكْرَامِ",
+    "transliterations": {
+      "sq": "Dhūl-Xhelāli uel-Ikrām (Dh e theksuar)"
+    },
+    "translations": {
+      "sq": "Poseduesi i Madhështisë dhe Nderit"
+    },
+    "explanations": {
+      "sq": "Ai bashkon dy cilësi: Madhështinë (që kërkon respekt e përulje) dhe Bujarinë/Nderin (që kërkon dashuri e shpresë). Kjo e mban besimtarin gjithmonë në një balancë mes frikës me respekt dhe shpresës plot dashuri."
+    }
+  },
+  {
+    "id": 86,
+    "arabic": "ٱلْمُقْسِطُ",
+    "transliterations": {
+      "sq": "Al-Muksit"
+    },
+    "translations": {
+      "sq": "I Drejti / Rregullatori"
+    },
+    "explanations": {
+      "sq": "Ai e zbaton drejtësinë me përpikmëri. Ai u jep hakun të gjithëve dhe rregullon marrëdhëniet mes krijesave, duke garantuar që në fund, askush nuk do të dëmtohet padrejtësisht."
+    }
+  },
+  {
+    "id": 87,
+    "arabic": "ٱلْجَامِعُ",
+    "transliterations": {
+      "sq": "Al-Xhāmi'"
+    },
+    "translations": {
+      "sq": "Tubuesi / Bashkuesi"
+    },
+    "explanations": {
+      "sq": "Ai do t'i bashkojë të gjitha krijesat në Ditën e Gjykimit. Në këtë botë, Ai bashkon trupat me shpirtrat, njerëzit me njëri-tjetrin dhe gjërat e kundërta në një harmoni të përsosur të natyrës."
+    }
+  },
+  {
+    "id": 88,
+    "arabic": "ٱلْغَنِيُّ",
+    "transliterations": {
+      "sq": "Al-Ganijj"
+    },
+    "translations": {
+      "sq": "I Pasuri Absolut (I Pavaruri)"
+    },
+    "explanations": {
+      "sq": "Ai nuk ka nevojë për asgjë dhe për askënd. Adhurimet tona nuk i shtojnë asgjë madhështisë së Tij dhe mosbindja jonë nuk i heq asgjë; çdo vepër e bëjmë vetëm për dobinë tonë."
+    }
+  },
+  {
+    "id": 89,
+    "arabic": "ٱلْمُغْنِي",
+    "transliterations": {
+      "sq": "Al-Mugnī"
+    },
+    "translations": {
+      "sq": "Pasuridhënësi"
+    },
+    "explanations": {
+      "sq": "Ai pasuron kë të dojë, qoftë me pasuri materiale, qoftë me pasuri shpirtërore. Qetësia e thellë e zemrës dhe kënaqësia me atë që ke (Kenaati) është pasuria më e madhe që Ai i dhuron njeriut."
+    }
+  },
+  {
+    "id": 90,
+    "arabic": "ٱلْمَانِعُ",
+    "transliterations": {
+      "sq": "Al-Māni'"
+    },
+    "translations": {
+      "sq": "Ndaluesi / Mbrojtësi"
+    },
+    "explanations": {
+      "sq": "Ai i ndalon të këqijat dhe dëmet që t'u afrohen atyre që mbron. Ndonjëherë Ai mund të ndalojë edhe një \"të mirë\" në dukje, sepse në dijen e Tij të fshehtë ajo gjë mund të ishte e dëmshme për ne."
+    }
+  },
+  {
+    "id": 91,
+    "arabic": "ٱلضَّارُّ",
+    "transliterations": {
+      "sq": "Ad-Dārr (D e theksuar thellë)"
+    },
+    "translations": {
+      "sq": "Dëmsjellësi / Krijuesi i dëmit"
+    },
+    "explanations": {
+      "sq": "Çdo vështirësi, sëmundje apo dëm vjen me lejen e Tij si sprovë, edukim apo pastrim nga mëkatet. (Ky emër përmendet gjithmonë i lidhur me emrin pasardhës, An-Nāfi')."
+    }
+  },
+  {
+    "id": 92,
+    "arabic": "ٱلنَّافِعُ",
+    "transliterations": {
+      "sq": "An-Nāfi'"
+    },
+    "translations": {
+      "sq": "Dobiprurësi"
+    },
+    "explanations": {
+      "sq": "Ai është burimi i vetëm i çdo dobie, shërimi, lehtësimi dhe suksesi. Nëse të gjithë njerëzit bashkohen për të të bërë dëm, nuk munden nëse Ai vendos të sjellë dobi për ty."
+    }
+  },
+  {
+    "id": 93,
+    "arabic": "ٱلنُّورُ",
+    "transliterations": {
+      "sq": "An-Nūr"
+    },
+    "translations": {
+      "sq": "Drita"
+    },
+    "explanations": {
+      "sq": "Ai është Drita e qiejve dhe e tokës. Ai ndriçon universin fizikisht dhe, më e rëndësishmja, ndriçon zemrat dhe mendjet me besim, për t'i nxjerrë nga errësira e padijes dhe e konfuzionit."
+    }
+  },
+  {
+    "id": 94,
+    "arabic": "ٱلْهَادِي",
+    "transliterations": {
+      "sq": "Al-Hādī"
+    },
+    "translations": {
+      "sq": "Udhëzuesi"
+    },
+    "explanations": {
+      "sq": "Ai i udhëzon zemrat drejt rrugës së drejtë. Është Ai që u tregon zogjve rrugën e shtegtimit pa busull, ashtu siç i tregon njeriut rrugën e shpëtimit shpirtëror."
+    }
+  },
+  {
+    "id": 95,
+    "arabic": "ٱلْبَدِيعُ",
+    "transliterations": {
+      "sq": "Al-Bedī'"
+    },
+    "translations": {
+      "sq": "Shpikësi / Krijuesi i Pashëmbullt"
+    },
+    "explanations": {
+      "sq": "Ai krijon gjithçka me një bukuri, inxhinieri dhe inovacion të pashoq, pa kopjuar asnjë model të mëparshëm. Çdo yll, çdo lule dhe çdo qelizë është një vepër arti unike e Tij."
+    }
+  },
+  {
+    "id": 96,
+    "arabic": "ٱلْبَاقِي",
+    "transliterations": {
+      "sq": "Al-Bākī"
+    },
+    "translations": {
+      "sq": "I Përjetshmi (pas zhdukjes së gjithçkaje)"
+    },
+    "explanations": {
+      "sq": "Çdo gjë në këtë botë fizike ka një fund, përveç Atij. Të lidhësh zemrën me Krijuesin do të thotë të lidhesh me atë që nuk vdes kurrë, duke i dhënë kuptim të përhershëm jetës sate kalimtare."
+    }
+  },
+  {
+    "id": 97,
+    "arabic": "ٱلْوَارِثُ",
+    "transliterations": {
+      "sq": "Al-Uārith (Th si thanks në anglisht)"
+    },
+    "translations": {
+      "sq": "Trashëgimtari"
+    },
+    "explanations": {
+      "sq": "Pas përfundimit të pronësisë iluzore të njerëzve në këtë botë, çdo gjë i kthehet Pronarit të Vërtetë. Ai është Trashëgimtari absolut i qiejve, tokës dhe çdo gjëje brenda tyre."
+    }
+  },
+  {
+    "id": 98,
+    "arabic": "ٱلرَّشِيدُ",
+    "transliterations": {
+      "sq": "Ar-Rreshīd"
+    },
+    "translations": {
+      "sq": "Drejtuesi i Përsosur / Udhërrëfyesi i Drejtë"
+    },
+    "explanations": {
+      "sq": "Ai i drejton çështjet drejt përfundimit më të mirë me një mençuri absolute, pa patur nevojë për këshillën apo ndihmën e askujt. Çdo plan i Tij funksionon me përsosmëri."
+    }
+  },
+  {
+    "id": 99,
+    "arabic": "ٱلصَّبُورُ",
+    "transliterations": {
+      "sq": "As-Sabūr"
+    },
+    "translations": {
+      "sq": "Durimtari i Madh"
+    },
+    "explanations": {
+      "sq": "Ai nuk nxiton të ndëshkojë gabimtarët, megjithëse ka fuqinë t'i ndalojë në moment. Ai u jep atyre kohë dhe jetë për të reflektuar e për t'u penduar, duke na mësuar ne virtytin hyjnor të durimit."
+    }
+  }
+]

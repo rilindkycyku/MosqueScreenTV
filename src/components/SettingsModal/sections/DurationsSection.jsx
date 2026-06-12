@@ -5,6 +5,7 @@ export default function DurationsSection({ settings, setSettings, triggerConfirm
     const fields = [
         { id: 'hadithRefresh', label: 'Rifreskimi i Hadithit / Ajetit', desc: 'Koha për përditësimin automatik të Hadithit / Ajetit.' },
         { id: 'hadith', label: 'Hadithi / Ajeti', desc: 'Sa kohë të qëndrojë Hadithi / Ajeti i shfaqur.' },
+        { id: 'esmaul', label: 'Esmaul Husna', desc: 'Sa kohë të shfaqet një nga Emrat e Allahut.' },
         { id: 'qr', label: 'QR Kodi', desc: 'Koha e shfaqjes së QR Code për skanim.', mosqueOnly: true },
         { id: 'notification', label: 'Njoftimi Special', desc: 'Sa kohë të shfaqet mesazhi juaj i lënë.', mosqueOnly: true },
         { id: 'announcement', label: 'Festat / Shënimet', desc: 'Koha për shfaqjen e festave dhe shënimeve nga kalendari.' }

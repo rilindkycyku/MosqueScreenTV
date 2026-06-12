@@ -2,11 +2,16 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import legacy from '@vitejs/plugin-legacy'
-import { RangeRequestsPlugin } from 'workbox-range-requests'
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [
+export default defineConfig(async () => {
+  if (typeof self === 'undefined') {
+    global.self = global;
+  }
+  const { RangeRequestsPlugin } = await import('workbox-range-requests');
+
+  return {
+    plugins: [
     react(),
     legacy({
       targets: [
@@ -105,4 +110,5 @@ export default defineConfig({
   server: {
     host: true,
   },
+  }
 })

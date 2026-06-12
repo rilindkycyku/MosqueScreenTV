@@ -5,6 +5,7 @@ import vaktetKS from './data/vaktet-e-namazit.json';
 import vaktetAL from './data/vaktet-e-namazit-al.json';
 import config from './data/config.json';
 import haditheData from './data/hadithe.json';
+import esmaulData from './data/esmaul-husna.json';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import SettingsModal from './components/SettingsModal/SettingsModal';
 import ConfirmDialog from './components/ConfirmDialog/ConfirmDialog';
@@ -63,6 +64,7 @@ export default function App() {
     const [vaktiSot, setVaktiSot] = useState(null);
     const [infoTani, setInfoTani] = useState(null);
     const [currentHadith, setCurrentHadith] = useState(null);
+    const [currentEsmaul, setCurrentEsmaul] = useState(null);
 
     // Unified Settings State
     const [settings, setSettings] = useState(() => {
@@ -98,8 +100,10 @@ export default function App() {
     const [isNightDimmed, setIsNightDimmed] = useState(false);
     // nextHadith queues a new hadith to swap in at the next cycle start (seamless swap)
     const [nextHadith, setNextHadith] = useState(null);
+    const [nextEsmaul, setNextEsmaul] = useState(null);
     // Ref mirrors currentHadith so the refresh timer can read it without being a dep
     const currentHadithRef = useRef(null);
+    const currentEsmaulRef = useRef(null);
 
     // Initialize Google Analytics
     useEffect(() => {
@@ -130,6 +134,7 @@ export default function App() {
         };
         return {
             hadith: toMs(raw.hadith ?? config.tvOptions.durations.hadith),
+            esmaul: toMs(raw.esmaul ?? config.tvOptions.durations.esmaul ?? 2),
             qr: toMs(raw.qr ?? config.tvOptions.durations.qr),
             notification: toMs(raw.notification ?? config.tvOptions.durations.notification),
             announcement: toMs(raw.announcement ?? config.tvOptions.durations.announcement)
@@ -151,6 +156,16 @@ export default function App() {
                 setNextHadith(null);
             }
             const duration = settings.customMsg ? Math.min(durations.hadith, 30000) : durations.hadith;
+            timeoutId = setTimeout(showEsmaul, duration);
+        };
+        const showEsmaul = () => {
+            if (!isMounted) return;
+            setDisplayMode('esmaul');
+            if (nextEsmaul) {
+                setCurrentEsmaul(nextEsmaul);
+                setNextEsmaul(null);
+            }
+            const duration = settings.customMsg ? Math.min(durations.esmaul, 30000) : durations.esmaul;
             if (settings.showQr !== false && durations.qr > 0) timeoutId = setTimeout(showQR, duration);
             else timeoutId = setTimeout(showMsgIfAny, duration);
         };
@@ -418,23 +433,41 @@ export default function App() {
         const refreshMin = settings.durations.hadithRefresh ?? config.tvOptions.durations.hadithRefresh;
         let isStillCurrent = true;
         
-        const pickHadith = () => {
+        const pickContent = () => {
             const select = () => {
-                if (!isStillCurrent || !haditheData.a?.length) return;
-                const randomIdx = Math.floor(Math.random() * haditheData.a.length);
-                const chosen = haditheData.a[randomIdx];
-                if (!currentHadithRef.current) {
-                    currentHadithRef.current = chosen;
-                    setCurrentHadith(chosen);
-                } else {
-                    setNextHadith(chosen);
+                if (!isStillCurrent) return;
+                
+                if (haditheData.a?.length) {
+                    const randomIdx = Math.floor(Math.random() * haditheData.a.length);
+                    const chosen = haditheData.a[randomIdx];
+                    if (!currentHadithRef.current) {
+                        currentHadithRef.current = chosen;
+                        setCurrentHadith(chosen);
+                    } else {
+                        setNextHadith(chosen);
+                    }
+                }
+                
+                if (esmaulData?.length) {
+                    // Filter out Allah from random rotation if it has no translation, or just pick randomly.
+                    // To be safe, pick from elements that have a translation.
+                    const validEsmauls = esmaulData.filter(e => e.translations?.sq);
+                    const randomIdx = Math.floor(Math.random() * (validEsmauls.length || esmaulData.length));
+                    const chosenE = validEsmauls[randomIdx] || esmaulData[randomIdx];
+                    
+                    if (!currentEsmaulRef.current) {
+                        currentEsmaulRef.current = chosenE;
+                        setCurrentEsmaul(chosenE);
+                    } else {
+                        setNextEsmaul(chosenE);
+                    }
                 }
             };
             if ('requestIdleCallback' in window) window.requestIdleCallback(select);
             else setTimeout(select, 0);
         };
-        pickHadith();
-        const interval = setInterval(() => { if (isStillCurrent) pickHadith(); }, refreshMin * 60000);
+        pickContent();
+        const interval = setInterval(() => { if (isStillCurrent) pickContent(); }, refreshMin * 60000);
         return () => { 
             isStillCurrent = false;
             clearInterval(interval);
@@ -681,6 +714,7 @@ export default function App() {
 
     // Sync currentHadith state into ref so refresh timer can check it without being a dep
     useEffect(() => { currentHadithRef.current = currentHadith; }, [currentHadith]);
+    useEffect(() => { currentEsmaulRef.current = currentEsmaul; }, [currentEsmaul]);
 
     useEffect(() => {
         updateNextPrayer();
@@ -819,7 +853,7 @@ export default function App() {
                     <main className="flex-1 flex flex-col gap-6 min-h-0" style={{ contain: 'layout style paint' }}>
                         <div className="flex-[1.4] grid grid-cols-2 gap-6 relative z-10 min-h-0">
                             <NextPrayer infoTani={infoTani} ne24hFn={ne24h} formatDallimFn={formatDallim} settings={settings} />
-                            <ActivityBox displayMode={displayMode} settings={settings} currentHadith={currentHadith} vaktiSot={vaktiSot} infoTani={infoTani} />
+                            <ActivityBox displayMode={displayMode} settings={settings} currentHadith={currentHadith} currentEsmaul={currentEsmaul} vaktiSot={vaktiSot} infoTani={infoTani} />
                         </div>
                         <PrayerGrid listaNamazeve={listaNamazeve} vaktiSot={vaktiSot} infoTani={infoTani} xhematiFn={xhemati} ne24hFn={ne24h} isRamazan={settings.ramazan?.active} settings={settings} />
                     </main>
