@@ -1,4 +1,5 @@
 import { memo, useMemo } from 'react';
+import FitText from './FitText';
 
 const PrayerGrid = memo(function PrayerGrid({ listaNamazeve, vaktiSot, infoTani, xhematiFn, ne24hFn, isRamazan, settings }) {
     const namazNateActive = isRamazan && settings?.ramazan?.namazNate?.active && settings?.appMode !== 'home';
@@ -12,9 +13,9 @@ const PrayerGrid = memo(function PrayerGrid({ listaNamazeve, vaktiSot, infoTani,
     // Optimized font sizes for 1920x1080 display - Labels kept large, numbers refined
     const labelSize = is7Col ? 'text-3xl' : is6Col ? 'text-4xl' : 'text-5xl';
     const subLabelSize = is7Col ? 'text-lg' : is6Col ? 'text-xl' : 'text-2xl';
-    const timeNoSub = is7Col ? 'text-[7.2rem]' : is6Col ? 'text-[8.5rem]' : 'text-[10rem]';
-    const timeSubSingle = is7Col ? 'text-[6rem]' : is6Col ? 'text-[7.5rem]' : 'text-[8.5rem]';
-    const timeSubDual = is7Col ? 'text-[5.5rem]' : is6Col ? 'text-[6.8rem]' : 'text-[7.5rem]';
+    const timeNoSub = is7Col ? 170 : is6Col ? 200 : 240;
+    const timeSubSingle = is7Col ? 140 : is6Col ? 165 : 195;
+    const timeSubDual = is7Col ? 120 : is6Col ? 145 : 170;
     const cardPx = is7Col ? 'px-4' : is6Col ? 'px-6' : 'px-10';
     const trackingVal = is7Col ? 'tracking-normal' : is6Col ? 'tracking-[0.1em]' : 'tracking-[0.1em]';
 
@@ -109,10 +110,14 @@ const PrayerGrid = memo(function PrayerGrid({ listaNamazeve, vaktiSot, infoTani,
                                     </div>
 
                                     {/* Middle Content Row — Automatically centers in the available space */}
-                                    <div className="flex-1 flex flex-col items-center justify-center pt-4">
-                                        <div className={`font-bold whitespace-nowrap leading-none tracking-tight [font-variant-numeric:tabular-nums] origin-center ${subLabelText ? 'scale-y-[1.15]' : 'scale-y-[1.3]'} ${!hasSubCard ? timeNoSub : (subCardsArray.length > 1 ? timeSubDual : timeSubSingle)} ${isCurrent ? 'text-zinc-950' : isJumuah ? 'text-amber-400' : 'text-white'}`} style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
-                                            {xh ? ne24hFn(xh) : '—'}
-                                        </div>
+                                    <div className="flex-1 flex flex-col items-center justify-center pt-2 w-full min-h-0">
+                                        <FitText
+                                            text={xh ? ne24hFn(xh) : '—'}
+                                            maxPx={!hasSubCard ? timeNoSub : (subCardsArray.length > 1 ? timeSubDual : timeSubSingle)}
+                                            minPx={48}
+                                            className={`font-bold whitespace-nowrap leading-none tracking-tight [font-variant-numeric:tabular-nums] origin-center ${subLabelText ? 'scale-y-[1.15]' : 'scale-y-[1.3]'} ${isCurrent ? 'text-zinc-950' : isJumuah ? 'text-amber-400' : 'text-white'}`}
+                                            style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+                                        />
                                     </div>
 
                                     {/* Bottom Content Row — pinned at bottom */}

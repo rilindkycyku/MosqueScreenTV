@@ -49,12 +49,12 @@ const NextPrayer = memo(function NextPrayer({ infoTani, ne24hFn, formatDallimFn,
                             const len = displayName.length;
 
                             // Dynamic size calculation: base size decreases with length and presence of sub-label
-                            const sizeClass = 
-                                  len > 12 ? (hasSubLabel ? 'text-[7.5rem]' : 'text-[9rem]')
-                                : len > 10 ? (hasSubLabel ? 'text-[9rem]' : 'text-[11rem]')
-                                : len > 8  ? (hasSubLabel ? 'text-[11rem]' : 'text-[13rem]')
-                                : len > 6  ? (hasSubLabel ? 'text-[13rem]' : 'text-[15rem]')
-                                :            (hasSubLabel ? 'text-[14rem]' : 'text-[17rem]');
+                            const sizeClass =
+                                len > 12 ? (hasSubLabel ? 'text-[7.5rem]' : 'text-[9rem]')
+                                    : len > 10 ? (hasSubLabel ? 'text-[9rem]' : 'text-[11rem]')
+                                        : len > 8 ? (hasSubLabel ? 'text-[11rem]' : 'text-[13rem]')
+                                            : len > 6 ? (hasSubLabel ? 'text-[13rem]' : 'text-[15rem]')
+                                                : (hasSubLabel ? 'text-[14rem]' : 'text-[17rem]');
                             return (
                                 <h2 className={`font-bold text-white tracking-[0.05em] uppercase leading-[0.8] text-center whitespace-nowrap ${sizeClass}`} style={BN}>
                                     {displayName}

@@ -6,6 +6,7 @@ import vaktetAL from './data/vaktet-e-namazit-al.json';
 import config from './data/config.json';
 import haditheData from './data/hadithe.json';
 import esmaulData from './data/esmaul-husna.json';
+const validEsmaulData = esmaulData.filter(e => e.translations?.sq);
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import SettingsModal from './components/SettingsModal/SettingsModal';
 import ConfirmDialog from './components/ConfirmDialog/ConfirmDialog';
@@ -303,12 +304,41 @@ export default function App() {
             }
         } catch (e) { /* Ignore audio context errors */ }
 
+        // Browsers can start (or autoplay-suspend) the context in a "suspended"
+        // state, which silently defeats this heartbeat — resume whenever the
+        // screen becomes visible again.
+        const resumeAudio = () => {
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+        };
+        document.addEventListener('visibilitychange', resumeAudio);
+        resumeAudio();
+
         return () => {
+            document.removeEventListener('visibilitychange', resumeAudio);
             if (audioCtx && audioCtx.state !== 'closed') {
                 audioCtx.close().catch(() => {});
             }
         };
     }, []);
+
+    // Suppress OS-level media transport overlay (play/pause/seek) that Android TV /
+    // WebOS show whenever they detect an actively playing <video>/<audio> element.
+    // The keepalive video is invisible plumbing, not user-facing media.
+    const suppressMediaSessionUi = useCallback(() => {
+        if (!('mediaSession' in navigator)) return;
+        try {
+            navigator.mediaSession.metadata = null;
+            navigator.mediaSession.playbackState = 'none';
+            ['play', 'pause', 'stop', 'seekbackward', 'seekforward', 'seekto', 'previoustrack', 'nexttrack']
+                .forEach(action => {
+                    try { navigator.mediaSession.setActionHandler(action, null); } catch (e) { /* unsupported action */ }
+                });
+        } catch (e) { /* mediaSession not fully supported */ }
+    }, []);
+
+    useEffect(() => {
+        suppressMediaSessionUi();
+    }, [suppressMediaSessionUi]);
 
     // LG WebOS Keep-Alive: Keydown Heartbeat
     // Dispatches a harmless keydown event every 45 seconds to satisfy
@@ -336,7 +366,10 @@ export default function App() {
             const vid = document.querySelector('video');
             if (vid) {
                 vid.pause();
-                setTimeout(() => vid.play().catch(() => {}), 300);
+                setTimeout(() => {
+                    vid.play().catch(() => {});
+                    suppressMediaSessionUi();
+                }, 300);
             }
         }, 50000);
         return () => clearInterval(interval);
@@ -449,11 +482,8 @@ export default function App() {
                 }
                 
                 if (esmaulData?.length) {
-                    // Filter out Allah from random rotation if it has no translation, or just pick randomly.
-                    // To be safe, pick from elements that have a translation.
-                    const validEsmauls = esmaulData.filter(e => e.translations?.sq);
-                    const randomIdx = Math.floor(Math.random() * (validEsmauls.length || esmaulData.length));
-                    const chosenE = validEsmauls[randomIdx] || esmaulData[randomIdx];
+                    const randomIdx = Math.floor(Math.random() * (validEsmaulData.length || esmaulData.length));
+                    const chosenE = validEsmaulData[randomIdx] || esmaulData[randomIdx];
                     
                     if (!currentEsmaulRef.current) {
                         currentEsmaulRef.current = chosenE;
@@ -771,11 +801,16 @@ export default function App() {
                 }}>
                 
                 {/* Keepalive Video Element (Prevents sleep on Android TV browsers) */}
-                <video 
-                    autoPlay 
-                    loop 
-                    muted 
-                    playsInline 
+                <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    disablePictureInPicture
+                    disableRemotePlayback
+                    controlsList="nodownload nofullscreen noremoteplayback"
+                    tabIndex={-1}
+                    aria-hidden="true"
                     src="/silent.mp4"
                     style={{ position: 'absolute', width: '1px', height: '1px', opacity: 0, pointerEvents: 'none' }}
                 />

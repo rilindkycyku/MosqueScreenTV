@@ -9,6 +9,9 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "@fontsource/amiri": "^5.2.8",
+        "@fontsource/bebas-neue": "^5.2.7",
+        "@fontsource/outfit": "^5.2.8",
         "@vercel/analytics": "^1.6.1",
         "framer-motion": "^12.35.2",
         "lucide-react": "^0.577.0",

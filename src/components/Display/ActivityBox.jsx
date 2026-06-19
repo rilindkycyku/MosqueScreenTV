@@ -1,42 +1,7 @@
 import { memo, useState, useEffect, useRef } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 import ErrorBoundary from '../ErrorBoundary/ErrorBoundary';
-
-// Dynamically shrinks text until it fully fits inside its container (both axes)
-function FitText({ text, className, maxPx = 42, minPx = 16 }) {
-    const containerRef = useRef(null);
-    const textRef = useRef(null);
-
-    useEffect(() => {
-        const container = containerRef.current;
-        const el = textRef.current;
-        if (!container || !el || !text) return;
-
-        let size = maxPx;
-        el.style.fontSize = size + 'px';
-
-        // Shrink until text fits in both dimensions or we hit the minimum
-        while (
-            (el.scrollHeight > container.clientHeight + 1 || el.scrollWidth > container.clientWidth + 1)
-            && size > minPx
-        ) {
-            size -= 0.5;
-            el.style.fontSize = size + 'px';
-        }
-    }, [text, maxPx, minPx]);
-
-    return (
-        <div ref={containerRef} className="w-full h-full flex items-center justify-center overflow-hidden">
-            <p
-                ref={textRef}
-                className={className}
-                style={{ fontSize: maxPx + 'px' }}
-            >
-                {text}
-            </p>
-        </div>
-    );
-}
+import FitText from './FitText';
 
 const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHadith, currentEsmaul, vaktiSot, infoTani }) {
     const { isSilenceMode } = infoTani || {};
@@ -208,7 +173,7 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
                             <div className="flex items-center justify-center px-8 shrink-0" style={{ flex: '0 0 15%', overflow: 'hidden' }}>
                                 <FitText
                                     text={currentEsmaul.translations?.sq}
-                                    maxPx={48}
+                                    maxPx={72}
                                     minPx={20}
                                     className="text-emerald-400 font-bold drop-shadow-md leading-tight text-center w-full"
                                 />
@@ -227,13 +192,18 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
                                 })()}
                                 <div className="w-px h-10 bg-emerald-500/30 shrink-0" />
                                 {/* Transliteration — FitText so long names never overflow */}
-                                <div className="flex-1 min-w-0 h-full py-2">
+                                <div className="flex-1 min-w-0 h-full py-2 flex flex-col items-center justify-center gap-1">
                                     <FitText
-                                        text={currentEsmaul.transliterations?.sq || currentEsmaul.transliterations?.en}
-                                        maxPx={56}
+                                        text={currentEsmaul.transliterations?.sq}
+                                        maxPx={88}
                                         minPx={20}
                                         className="font-black text-white uppercase tracking-widest drop-shadow-lg text-center leading-tight w-full"
                                     />
+                                    {currentEsmaul.pronunciations?.sq && (
+                                        <p className="text-emerald-300/80 text-lg italic tracking-wide text-center">
+                                            ({currentEsmaul.pronunciations.sq})
+                                        </p>
+                                    )}
                                 </div>
                             </div>
 
@@ -241,7 +211,7 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
                             <div className="flex items-center justify-center overflow-hidden px-10" style={{ flex: '1 1 0', minHeight: 0 }}>
                                 <FitText
                                     text={currentEsmaul.explanations?.sq}
-                                    maxPx={42}
+                                    maxPx={56}
                                     minPx={16}
                                     className="text-zinc-200 italic opacity-95 drop-shadow-sm leading-[1.45] text-center w-full"
                                 />

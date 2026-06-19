@@ -146,13 +146,16 @@
     "id": 12,
     "arabic": "ٱلْخَالِقُ",
     "transliterations": {
-      "sq": "Al-Hālik (H e fortë)"
+      "sq": "Al-Hālik"
     },
     "translations": {
       "sq": "Krijuesi"
     },
     "explanations": {
       "sq": "Ai është Zoti që projekton dhe krijon çdo gjë nga mosekzistenca. Të njohësh Krijuesin do të thotë të mahnitesh me thellësinë e universit dhe të vetë qenies njerëzore."
+    },
+    "pronunciations": {
+      "sq": "H e fortë"
     }
   },
   {
@@ -289,13 +292,16 @@
     "id": 23,
     "arabic": "ٱلْخَافِضُ",
     "transliterations": {
-      "sq": "Al-Hāfid (H e ashpër)"
+      "sq": "Al-Hāfid"
     },
     "translations": {
       "sq": "Përulësi / Ulësi"
     },
     "explanations": {
       "sq": "Ai poshtëron zullumqarët, arrogantët dhe ata që devijojnë nga e vërteta. Askush nuk mund të mbajë një pozitë të lartë nëse Ai vendos ta ulë."
+    },
+    "pronunciations": {
+      "sq": "H e ashpër"
     }
   },
   {
@@ -328,13 +334,16 @@
     "id": 26,
     "arabic": "ٱلْمُذِلُّ",
     "transliterations": {
-      "sq": "Al-Mudhill (Dh si that në anglisht)"
+      "sq": "Al-Mudhill"
     },
     "translations": {
       "sq": "Poshtëruesi"
     },
     "explanations": {
       "sq": "Kujtdo që i kthen shpinën së vërtetës dhe mbështetet vetëm tek egoja e vet, Ai ia heq mbrojtjen dhe e lë të poshtërohet. Kjo tregon balancën e Tij mes mëshirës dhe drejtësisë."
+    },
+    "pronunciations": {
+      "sq": "Dh si that në anglisht"
     }
   },
   {
@@ -406,13 +415,16 @@
     "id": 32,
     "arabic": "ٱلْخَبِيرُ",
     "transliterations": {
-      "sq": "Al-Habīr (H e ashpër)"
+      "sq": "Al-Habīr"
     },
     "translations": {
       "sq": "I Gjithëdituri (për të fshehtat)"
     },
     "explanations": {
       "sq": "Ndryshe nga Al-'Alīm (që thekson dijen e përgjithshme), Al-Habīr thekson njohjen e brendësisë, realitetit të thellë dhe qëllimeve të fshehta të çdo vepre e mendimi."
+    },
+    "pronunciations": {
+      "sq": "H e ashpër"
     }
   },
   {
@@ -432,13 +444,16 @@
     "id": 34,
     "arabic": "ٱلْعَظِيمُ",
     "transliterations": {
-      "sq": "Al-'Adhīm (Dh e theksuar)"
+      "sq": "Al-'Adhīm"
     },
     "translations": {
       "sq": "I Madhërishmi"
     },
     "explanations": {
       "sq": "Madhështia e Tij tejkalon çdo perceptim njerëzor. Kur biem në ruku gjatë namazit, themi \"Subhane Rabbijel 'Adhim\", pikërisht për të përulur veten tonë fizikisht dhe shpirtërisht para kësaj Madhështie."
+    },
+    "pronunciations": {
+      "sq": "Dh e theksuar"
     }
   },
   {
@@ -640,13 +655,16 @@
     "id": 50,
     "arabic": "ٱلْبَاعِثُ",
     "transliterations": {
-      "sq": "Al-Bā'ith (Th si thanks në anglisht)"
+      "sq": "Al-Bā'ith"
     },
     "translations": {
       "sq": "Ringjallësi / Dërguesi"
     },
     "explanations": {
       "sq": "Ai është Zoti që ringjall të vdekurit ditën e Kiametit nga varret e tyre për të dhënë llogari. Gjithashtu, është Ai që dërgon Profetët për të zgjuar zemrat e vdekura të njerëzve dhe për t'i udhëzuar ata."
+    },
+    "pronunciations": {
+      "sq": "Th si thanks në anglisht"
     }
   },
   {
@@ -809,13 +827,16 @@
     "id": 63,
     "arabic": "ٱلْحَيُّ",
     "transliterations": {
-      "sq": "Al-Hajj (H e thellë)"
+      "sq": "Al-Hajj"
     },
     "translations": {
       "sq": "I Gjalli (Përgjithmonë)"
     },
     "explanations": {
       "sq": "Jeta e Tij është e përsosur, absolute, pa fillim dhe pa fund. Ndryshe nga jeta e krijesave, e cila është e kufizuar dhe e varur prej Tij, Atë nuk e zë as dremitja dhe as gjumi."
+    },
+    "pronunciations": {
+      "sq": "H e thellë"
     }
   },
   {
@@ -861,13 +882,16 @@
     "id": 67,
     "arabic": "ٱلْوَاحِدُ",
     "transliterations": {
-      "sq": "Al-Uāhid (H e thellë)"
+      "sq": "Al-Uāhid"
     },
     "translations": {
       "sq": "I Vetmi"
     },
     "explanations": {
       "sq": "Ai është Një dhe i pandashëm. Nuk ka ortak, as shok, as ndihmës. Ai nuk ndahet në pjesë. Ky emër është thelbi i Teuhidit (Monoteizmit) të pastër islam."
+    },
+    "pronunciations": {
+      "sq": "H e thellë"
     }
   },
   {
@@ -926,13 +950,16 @@
     "id": 72,
     "arabic": "ٱلْمُؤَخِّرُ",
     "transliterations": {
-      "sq": "Al-Mu'ahhir (H e ashpër)"
+      "sq": "Al-Mu'ahhir"
     },
     "translations": {
       "sq": "Shtyrtari / Lënësi prapa"
     },
     "explanations": {
       "sq": "I kundërti i Mukaddim. Ai mund të vonojë një shpërblim, një sukses, apo një dënim me plot mençuri. Ndonjëherë Ai e vonon dënimin e gabimtarëve për t'u dhënë atyre një shans për t'u penduar."
+    },
+    "pronunciations": {
+      "sq": "H e ashpër"
     }
   },
   {
@@ -952,26 +979,32 @@
     "id": 74,
     "arabic": "ٱلْآخِرُ",
     "transliterations": {
-      "sq": "Al-Āhir (H e ashpër)"
+      "sq": "Al-Āhir"
     },
     "translations": {
       "sq": "I Fundit"
     },
     "explanations": {
       "sq": "Ekzistenca e Tij nuk ka fund. Kur çdo gjë në univers të zhduket dhe të marrë fund, vetëm Ai do të mbetet i Përhershëm. Ne e nisim jetën tek Ai dhe tek Ai do të kthehemi në fund."
+    },
+    "pronunciations": {
+      "sq": "H e ashpër"
     }
   },
   {
     "id": 75,
     "arabic": "ٱلظَّاهِرُ",
     "transliterations": {
-      "sq": "Adh-Dhāhir (Dh e theksuar thellë)"
+      "sq": "Adh-Dhāhir"
     },
     "translations": {
       "sq": "I Dukshmi / I Shfaquri (me argumente)"
     },
     "explanations": {
       "sq": "Ekzistenca dhe fuqia e Tij janë aq të qarta dhe të dukshme përmes shenjave të krijimit. Dielli, yjet, jeta, ligjet e fizikës dhe çdo atom tregon për gjenialitetin e Krijuesit, duke e bërë praninë e Tij krejtësisht \"të dukshme\" për mendjen."
+    },
+    "pronunciations": {
+      "sq": "Dh e theksuar thellë"
     }
   },
   {
@@ -1095,13 +1128,16 @@
     "id": 85,
     "arabic": "ذُو ٱلْجَلَالِ وَٱلْإِكْرَامِ",
     "transliterations": {
-      "sq": "Dhūl-Xhelāli uel-Ikrām (Dh e theksuar)"
+      "sq": "Dhūl-Xhelāli uel-Ikrām"
     },
     "translations": {
       "sq": "Poseduesi i Madhështisë dhe Nderit"
     },
     "explanations": {
       "sq": "Ai bashkon dy cilësi: Madhështinë (që kërkon respekt e përulje) dhe Bujarinë/Nderin (që kërkon dashuri e shpresë). Kjo e mban besimtarin gjithmonë në një balancë mes frikës me respekt dhe shpresës plot dashuri."
+    },
+    "pronunciations": {
+      "sq": "Dh e theksuar"
     }
   },
   {
@@ -1173,13 +1209,16 @@
     "id": 91,
     "arabic": "ٱلضَّارُّ",
     "transliterations": {
-      "sq": "Ad-Dārr (D e theksuar thellë)"
+      "sq": "Ad-Dārr"
     },
     "translations": {
       "sq": "Dëmsjellësi / Krijuesi i dëmit"
     },
     "explanations": {
       "sq": "Çdo vështirësi, sëmundje apo dëm vjen me lejen e Tij si sprovë, edukim apo pastrim nga mëkatet. (Ky emër përmendet gjithmonë i lidhur me emrin pasardhës, An-Nāfi')."
+    },
+    "pronunciations": {
+      "sq": "D e theksuar thellë"
     }
   },
   {
@@ -1251,13 +1290,16 @@
     "id": 97,
     "arabic": "ٱلْوَارِثُ",
     "transliterations": {
-      "sq": "Al-Uārith (Th si thanks në anglisht)"
+      "sq": "Al-Uārith"
     },
     "translations": {
       "sq": "Trashëgimtari"
     },
     "explanations": {
       "sq": "Pas përfundimit të pronësisë iluzore të njerëzve në këtë botë, çdo gjë i kthehet Pronarit të Vërtetë. Ai është Trashëgimtari absolut i qiejve, tokës dhe çdo gjëje brenda tyre."
+    },
+    "pronunciations": {
+      "sq": "Th si thanks në anglisht"
     }
   },
   {

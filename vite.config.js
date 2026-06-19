@@ -60,24 +60,6 @@ export default defineConfig(async () => {
             }
           },
           {
-            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'google-fonts-cache',
-              expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 365 },
-              cacheableResponse: { statuses: [0, 200] }
-            }
-          },
-          {
-            urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'gstatic-fonts-cache',
-              expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 365 },
-              cacheableResponse: { statuses: [0, 200] }
-            }
-          },
-          {
             // Never cache GA network calls — always send live
             urlPattern: /^https:\/\/(?:www\.google-analytics\.com|analytics\.google\.com|www\.googletagmanager\.com)\/.*/i,
             handler: 'NetworkOnly',
