@@ -77,25 +77,32 @@ export function useMosqueRemote({ onCommand, onConnect, baseUrl = window.locatio
   // ── PeerJS host ──────────────────────────────────────────────────────────
   useEffect(() => {
     let destroyed = false;
-    const guid = loadOrCreateGuid();
-    guidRef.current = guid;
-    localStorage.setItem("mosque_room_guid", guid);
+    let currentGuid = loadOrCreateGuid();
+    guidRef.current = currentGuid;
+    localStorage.setItem("mosque_room_guid", currentGuid);
     setRemoteUrl(null);
+
+    let retryCount = 0;
+    const MAX_RETRIES = 5;
 
     function connect() {
       if (destroyed) return;
 
+      currentGuid = loadOrCreateGuid();
+      guidRef.current = currentGuid;
+      
       // Peer id == prefixed guid, so the phone reaches us via the room guid.
-      const peer = new Peer(`${PEER_PREFIX}${guid}`);
+      const peer = new Peer(`${PEER_PREFIX}${currentGuid}`);
       peerRef.current = peer;
 
       peer.on("open", () => {
         if (destroyed) { peer.destroy(); return; }
-        console.log("[MosqueRemote] peer open, guid:", guid);
+        retryCount = 0; // reset on success
+        console.log("[MosqueRemote] peer open, guid:", currentGuid);
         // Show QR now that the peer is registered with the broker.
         const { token, expiresAt } = loadOrCreateToken();
         tokenRef.current = token;
-        setRemoteUrl(buildUrl(guid, token));
+        setRemoteUrl(buildUrl(currentGuid, token));
         setTimeLeft(Math.max(0, expiresAt - Date.now()));
       });
 
@@ -151,27 +158,39 @@ export function useMosqueRemote({ onCommand, onConnect, baseUrl = window.locatio
       });
 
       peer.on("error", (err) => {
-        if (err?.type !== "network") {
-          console.warn("[MosqueRemote] peer error:", err?.type || err?.message);
+        if (err?.type === "network") {
+          // Broker is unreachable — don't spam reconnect, let the
+          // "disconnected" handler deal with backoff.
+          return;
         }
-        // "unavailable-id" means our id is still held by the broker (e.g. after
-        // a reload, or a StrictMode double-mount). Destroy this dead peer and
-        // retry so we don't leak a half-open peer while the QR is shown.
+        console.warn("[MosqueRemote] peer error:", err?.type || err?.message);
         if (!destroyed && err?.type === "unavailable-id") {
           try { peer.destroy(); } catch { /* noop */ }
+          localStorage.removeItem("mosque_room_guid");
           setTimeout(connect, 1500);
         }
       });
 
       peer.on("disconnected", () => {
         if (destroyed) return;
-        // Lost the signaling link to the broker. Wait a bit before reconnecting
-        // to avoid a tight infinite loop if the broker is unreachable.
+        retryCount++;
+        if (retryCount > MAX_RETRIES) {
+          console.warn("[MosqueRemote] broker unreachable after", MAX_RETRIES, "retries — will retry in 60s");
+          // Long cooldown, then reset counter and try fresh
+          setTimeout(() => {
+            if (destroyed) return;
+            retryCount = 0;
+            try { peer.destroy(); } catch {}
+            connect();
+          }, 60000);
+          return;
+        }
+        const delay = Math.min(5000 * Math.pow(2, retryCount - 1), 30000);
         setTimeout(() => {
           if (!destroyed && peer && !peer.destroyed) {
             try { peer.reconnect(); } catch { /* peer may be destroyed */ }
           }
-        }, 10000);
+        }, delay);
       });
 
       peer.on("close", () => {
@@ -181,7 +200,12 @@ export function useMosqueRemote({ onCommand, onConnect, baseUrl = window.locatio
         setConnected(false);
         setRemoteName(null);
         setRemoteUrl(null);
-        setTimeout(connect, 2000);
+        retryCount++;
+        if (retryCount > MAX_RETRIES) {
+          setTimeout(() => { if (!destroyed) { retryCount = 0; connect(); } }, 60000);
+          return;
+        }
+        setTimeout(connect, Math.min(5000 * Math.pow(2, retryCount - 1), 30000));
       });
     }
 
@@ -204,7 +228,15 @@ export function useMosqueRemote({ onCommand, onConnect, baseUrl = window.locatio
     return () => {
       destroyed = true;
       try { connRef.current?.close(); } catch { /* noop */ }
-      try { peerRef.current?.destroy(); } catch { /* noop */ }
+      const p = peerRef.current;
+      if (p && !p.destroyed) {
+        if (!p.open && !p.disconnected) {
+          p.on("open", () => { try { p.destroy(); } catch {} });
+          p.on("error", () => { try { p.destroy(); } catch {} });
+        } else {
+          try { p.destroy(); } catch {}
+        }
+      }
     };
   }, [buildUrl, onCommand, onConnect]);
 
