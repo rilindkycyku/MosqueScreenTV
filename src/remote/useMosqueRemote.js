@@ -152,10 +152,12 @@ export function useMosqueRemote({ onCommand, baseUrl = window.location.origin })
 
       peer.on("error", (err) => {
         console.warn("[MosqueRemote] peer error:", err?.type || err?.message);
-        // "unavailable-id" means our id is briefly still held by the broker
-        // after a reload; PeerJS will not auto-recover, so retry.
+        // "unavailable-id" means our id is still held by the broker (e.g. after
+        // a reload, or a StrictMode double-mount). Destroy this dead peer and
+        // retry so we don't leak a half-open peer while the QR is shown.
         if (!destroyed && err?.type === "unavailable-id") {
-          setTimeout(connect, 2000);
+          try { peer.destroy(); } catch { /* noop */ }
+          setTimeout(connect, 1500);
         }
       });
 

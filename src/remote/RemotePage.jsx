@@ -182,13 +182,15 @@ export default function RemotePage() {
 
     peer.on("error", (err) => {
       if (destroyed) return;
-      console.warn("[Remote] peer error:", err?.type || err?.message);
+      const code = err?.type || err?.message || "unknown";
+      console.warn("[Remote] peer error:", code);
       // "peer-unavailable" → the TV isn't registered / not online.
       setPhase((prev) => (prev === "connected" ? prev : "error"));
       setErrorMsg(
-        err?.type === "peer-unavailable"
+        (err?.type === "peer-unavailable"
           ? "TV-ja nuk u gjet. Sigurohu që ekrani i xhamisë është ndezur."
-          : "Lidhja dështoi. Provo përsëri ose skano QR kodin e ri."
+          : "Lidhja dështoi. Provo përsëri ose skano QR kodin e ri.") +
+          `  [${code}]`
       );
     });
 
