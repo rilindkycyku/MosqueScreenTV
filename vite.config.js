@@ -3,6 +3,10 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import legacy from '@vitejs/plugin-legacy'
 
+// The phone remote uses WebRTC via PeerJS (public broker for signaling only),
+// so there is no relay server to run here — it works on a static host (Vercel)
+// and in local dev/preview alike.
+
 // https://vitejs.dev/config/
 export default defineConfig(async () => {
   if (typeof self === 'undefined') {

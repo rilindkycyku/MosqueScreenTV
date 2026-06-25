@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { HiX, HiIdentification, HiClock, HiSpeakerphone, HiGlobeAlt, HiRefresh, HiCheckCircle } from "react-icons/hi";
+import { HiX, HiIdentification, HiClock, HiSpeakerphone, HiGlobeAlt, HiRefresh, HiCheckCircle, HiDeviceMobile } from "react-icons/hi";
 
 // Section components — each in its own file for easy maintenance
 import IdentitySection  from "./sections/IdentitySection";
@@ -8,6 +8,7 @@ import LocationSection  from "./sections/LocationSection";
 import DurationsSection from "./sections/DurationsSection";
 import RamazanSection   from "./sections/RamazanSection";
 import MessageSection   from "./sections/MessageSection";
+import RemoteSection   from "./sections/RemoteSection";
 
 /**
  * SettingsModal — full-screen settings interface for TV displays.
@@ -24,7 +25,11 @@ export default function SettingsModal({
     saveSettings,
     triggerConfirm,
     resetCategory,
-    resetToFactory
+    resetToFactory,
+    remoteUrl,
+    timeLeft,
+    connected,
+    remoteName,
 }) {
     const tabs = [
         { id: 'identity',  label: 'Të dhënat',    icon: HiIdentification, subtitle: 'Të dhënat e xhamisë',                mosqueOnly: true },
@@ -32,7 +37,8 @@ export default function SettingsModal({
         { id: 'location',  label: 'Vaktet',        icon: HiGlobeAlt,       subtitle: 'Shteti dhe Namazet' },
         { id: 'durations', label: 'Kohëzgjatja',   icon: HiClock,          subtitle: 'Ciklet e shfaqjes',                   mosqueOnly: true },
         { id: 'ramazan',   label: 'Ramazani',      icon: HiClock,          subtitle: 'Konfigurimi i muajit të ramazanit' },
-        { id: 'message',   label: 'Njoftimet',     icon: HiSpeakerphone,   subtitle: 'Mesazh i shpejtë',                    mosqueOnly: true }
+        { id: 'message',   label: 'Njoftimet',     icon: HiSpeakerphone,   subtitle: 'Mesazh i shpejtë',                    mosqueOnly: true },
+        { id: 'remote',    label: 'Remote',        icon: HiDeviceMobile,   subtitle: 'Telekomanda & Siguria' }
     ].filter(tab => !tab.mosqueOnly || tempSettings.appMode === 'mosque');
 
     // Reset tempSettings to committed settings whenever the modal opens —
@@ -154,6 +160,7 @@ export default function SettingsModal({
                         {activeTab === 'durations' && <DurationsSection settings={tempSettings} setSettings={setTempSettings} triggerConfirm={triggerConfirm} onReset={() => resetCategory('durations')} />}
                         {activeTab === 'ramazan'   && <RamazanSection   settings={tempSettings} setSettings={setTempSettings} triggerConfirm={triggerConfirm} onReset={() => resetCategory('ramazan')} />}
                         {activeTab === 'message'   && <MessageSection   settings={tempSettings} setSettings={setTempSettings} triggerConfirm={triggerConfirm} onReset={() => resetCategory('message')} />}
+                        {activeTab === 'remote'    && <RemoteSection remoteUrl={remoteUrl} timeLeft={timeLeft} connected={connected} remoteName={remoteName} />}
                     </div>
                 </main>
             </div>

@@ -19,6 +19,8 @@ import ActivityBox from './components/Display/ActivityBox';
 import { Analytics } from '@vercel/analytics/react';
 // Google Analytics
 import { initGA, logPageView, logEvent } from './lib/analytics';
+// Remote control
+import { useMosqueRemote } from './remote/useMosqueRemote';
 
 // Module-level pure utilities (never re-created)
 const neMinuta = (ora) => {
@@ -105,6 +107,36 @@ export default function App() {
     // Ref mirrors currentHadith so the refresh timer can read it without being a dep
     const currentHadithRef = useRef(null);
     const currentEsmaulRef = useRef(null);
+
+    // Remote control — stable ref pattern keeps onCommand identity fixed so
+    // useMosqueRemote's peer setup never re-runs due to handler recreation.
+    const remoteCommandRef = useRef(null);
+    remoteCommandRef.current = (cmd) => {
+        switch (cmd.type) {
+            case 'SHOW_HADITH':        setDisplayMode('hadith'); break;
+            case 'SHOW_QURAN':         setDisplayMode('esmaul'); break;
+            case 'SHOW_PRAYER_TIMES':  setDisplayMode('hadith'); break;
+            case 'SHOW_ANNOUNCEMENTS': setDisplayMode(settings.customMsg ? 'custom' : 'message'); break;
+            case 'SHOW_CLOCK':         break; // clock is always visible in header
+            case 'TOGGLE_FULLSCREEN':
+                if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+                else document.documentElement.requestFullscreen().catch(() => {});
+                break;
+            case 'RELOAD_PAGE': window.location.reload(); break;
+            case 'ANNOUNCEMENT_TEXT':
+                if (cmd.payload?.text) {
+                    const updated = { ...settings, customMsg: cmd.payload.text };
+                    setSettings(updated);
+                    setTempSettings(updated);
+                    localStorage.setItem('tv_settings', JSON.stringify(updated));
+                    setDisplayMode('custom');
+                }
+                break;
+            default: break;
+        }
+    };
+    const stableHandleRemoteCommand = useCallback((cmd) => { remoteCommandRef.current?.(cmd); }, []);
+    const { remoteUrl, timeLeft, connected, remoteName } = useMosqueRemote({ onCommand: stableHandleRemoteCommand });
 
     // Initialize Google Analytics
     useEffect(() => {
@@ -786,6 +818,7 @@ export default function App() {
     if (!vaktiSot) return <div className="h-screen bg-black flex items-center justify-center text-white text-3xl font-bold animate-pulse">Duke ngarkuar...</div>;
 
     return (
+        <>
         <div className="fixed top-0 left-0 w-full h-full bg-black z-[50] overflow-hidden">
             <div className="tv-container bg-black text-white font-sans overflow-hidden flex flex-col p-1 select-none"
                 style={{
@@ -907,6 +940,10 @@ export default function App() {
                     triggerConfirm={triggerConfirm}
                     resetCategory={resetCategory}
                     resetToFactory={resetToFactory}
+                    remoteUrl={remoteUrl}
+                    timeLeft={timeLeft}
+                    connected={connected}
+                    remoteName={remoteName}
                 />
 
                 <ConfirmDialog
@@ -918,5 +955,7 @@ export default function App() {
                 <Analytics />
             </div>
         </div>
+
+        </>
     );
 }
