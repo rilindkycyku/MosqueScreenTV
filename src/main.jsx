@@ -12,6 +12,7 @@ import '@fontsource/amiri/700.css'
 import './index.css'
 
 const isRemotePage = window.location.pathname === '/remote';
+if (isRemotePage) document.documentElement.classList.add('remote-page');
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>

@@ -57,7 +57,7 @@ function loadOrCreateToken() {
   return { token, expiresAt };
 }
 
-export function useMosqueRemote({ onCommand, baseUrl = window.location.origin }) {
+export function useMosqueRemote({ onCommand, onConnect, baseUrl = window.location.origin }) {
   const [remoteUrl, setRemoteUrl]   = useState(null);
   const [timeLeft, setTimeLeft]     = useState(TOKEN_TTL_MS);
   const [connected, setConnected]   = useState(false);
@@ -151,7 +151,9 @@ export function useMosqueRemote({ onCommand, baseUrl = window.location.origin })
       });
 
       peer.on("error", (err) => {
-        console.warn("[MosqueRemote] peer error:", err?.type || err?.message);
+        if (err?.type !== "network") {
+          console.warn("[MosqueRemote] peer error:", err?.type || err?.message);
+        }
         // "unavailable-id" means our id is still held by the broker (e.g. after
         // a reload, or a StrictMode double-mount). Destroy this dead peer and
         // retry so we don't leak a half-open peer while the QR is shown.
@@ -163,9 +165,13 @@ export function useMosqueRemote({ onCommand, baseUrl = window.location.origin })
 
       peer.on("disconnected", () => {
         if (destroyed) return;
-        // Lost the signaling link to the broker — reconnect so new phones can
-        // still find us. Existing data connections survive independently.
-        try { peer.reconnect(); } catch { /* peer may be destroyed */ }
+        // Lost the signaling link to the broker. Wait a bit before reconnecting
+        // to avoid a tight infinite loop if the broker is unreachable.
+        setTimeout(() => {
+          if (!destroyed && peer && !peer.destroyed) {
+            try { peer.reconnect(); } catch { /* peer may be destroyed */ }
+          }
+        }, 10000);
       });
 
       peer.on("close", () => {
@@ -189,6 +195,8 @@ export function useMosqueRemote({ onCommand, baseUrl = window.location.origin })
       setConnected(true);
       setRemoteName("Remote");
       conn.send({ type: "AUTH_OK" });
+      // Let the app push initial state (e.g. full settings) to the new phone.
+      onConnect?.((data) => { if (conn.open) conn.send(data); });
     }
 
     connect();
@@ -198,7 +206,7 @@ export function useMosqueRemote({ onCommand, baseUrl = window.location.origin })
       try { connRef.current?.close(); } catch { /* noop */ }
       try { peerRef.current?.destroy(); } catch { /* noop */ }
     };
-  }, [buildUrl, onCommand]);
+  }, [buildUrl, onCommand, onConnect]);
 
   // ── Token countdown ──────────────────────────────────────────────────────
   useEffect(() => {

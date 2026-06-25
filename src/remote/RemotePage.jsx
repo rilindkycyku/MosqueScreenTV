@@ -14,9 +14,20 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Peer from "peerjs";
+import RemoteSettings from "./RemoteSettings";
 
 // Must match PEER_PREFIX in useMosqueRemote.js (TV side).
 const PEER_PREFIX = "mosquetv-";
+
+// Deep-merge a patch into the local settings mirror (matches the TV's merge).
+const isPlainObject = (v) => v != null && typeof v === "object" && !Array.isArray(v);
+function mergeSettings(base, patch) {
+  const out = { ...(base || {}) };
+  for (const [k, v] of Object.entries(patch)) {
+    out[k] = isPlainObject(v) && isPlainObject(out[k]) ? mergeSettings(out[k], v) : v;
+  }
+  return out;
+}
 
 const COMMANDS = [
   { type: "SHOW_PRAYER_TIMES",  label: "🕌  Oraret e Namazit",  color: "#1d4ed8" },
@@ -83,12 +94,31 @@ export default function RemotePage() {
   const [passcodeError, setPasscodeError] = useState("");
   const [lastSent, setLastSent]           = useState(null);
   const [loading, setLoading]             = useState(false);
+  const [settings, setSettings]           = useState(null); // synced from TV
+  const [appState, setAppState]           = useState({}); // live app state
+  const [view, setView]                   = useState("controls"); // controls | settings
 
   const peerRef     = useRef(null);
   const connRef     = useRef(null);
   const guidRef     = useRef(null);
   const tokenRef    = useRef(null);
   const passcodeRef = useRef(null); // tracks whether last AUTH attempt used a passcode
+
+  // Apply a local edit: optimistically merge into the mirror and push to TV.
+  const patch = useCallback((partial) => {
+    setSettings((prev) => (prev ? mergeSettings(prev, partial) : prev));
+    if (connRef.current?.open) {
+      connRef.current.send({ type: "SETTINGS_PATCH", payload: partial });
+    }
+  }, []);
+
+  // Ask the TV to reset a section (or 'factory'). The TV re-broadcasts the
+  // resulting settings, so we don't optimistically mutate here.
+  const sendReset = useCallback((category) => {
+    if (connRef.current?.open) {
+      connRef.current.send({ type: "SETTINGS_RESET", payload: { category } });
+    }
+  }, []);
 
   // Wire a fresh DataConnection's handlers. `firstAttempt` controls whether a
   // token AUTH is auto-sent on open (true) vs. waiting for a passcode (false).
@@ -114,6 +144,17 @@ export default function RemotePage() {
     conn.on("data", (data) => {
       if (!data || typeof data !== "object") return;
       console.log("[Remote] received:", data?.type, data?.payload);
+
+      if (data.type === "SETTINGS_SYNC") {
+        // Full settings snapshot from the TV — replace the local mirror.
+        if (data.payload && typeof data.payload === "object") setSettings(data.payload);
+        return;
+      }
+
+      if (data.type === "STATE_SYNC") {
+        setAppState(data.payload || {});
+        return;
+      }
 
       if (data.type === "AUTH_OK") {
         setPhase("connected");
@@ -314,26 +355,72 @@ export default function RemotePage() {
           </div>
         )}
 
-        {/* Connected — control panel */}
+        {/* Connected — control panel + settings editor */}
         {phase === "connected" && (
           <div>
-            <div style={s.sectionTitle}>Përmbajtja</div>
-            <div style={s.grid}>
-              {COMMANDS.map((cmd) => (
-                <button
-                  key={cmd.type}
-                  style={{
-                    ...s.cmdBtn,
-                    background: lastSent === cmd.type ? "#22c55e" : cmd.color,
-                    transform: lastSent === cmd.type ? "scale(0.95)" : "scale(1)",
-                  }}
-                  onClick={() => send(cmd)}
-                >
-                  {lastSent === cmd.type ? "✓ Dërguar" : cmd.label}
-                </button>
-              ))}
+            {/* View switch */}
+            <div style={s.viewSwitch}>
+              <button
+                style={{ ...s.viewTab, ...(view === "controls" ? s.viewTabActive : {}) }}
+                onClick={() => setView("controls")}
+              >Kontrolli</button>
+              <button
+                style={{ ...s.viewTab, ...(view === "settings" ? s.viewTabActive : {}) }}
+                onClick={() => setView("settings")}
+              >Cilësimet</button>
             </div>
-            <AnnouncementSender onSend={send} />
+
+            {view === "controls" && (
+              <>
+                <div style={s.sectionTitle}>Veprime të Shpejta</div>
+                <div style={s.grid}>
+                  <button 
+                    style={{ ...s.cmdBtn, background: appState.silenceBoosted ? "#ef4444" : "#1e293b", color: appState.silenceBoosted ? "#fff" : "#94a3b8" }}
+                    onClick={() => send({ type: 'SILENCE_BOOST' })}>
+                    {appState.silenceBoosted ? "🔕 Heshtje Auto-Revert" : "🔔 Heshtje (10 Min)"}
+                  </button>
+                  <button 
+                    style={{ ...s.cmdBtn, background: appState.isNightDimmed ? "#8b5cf6" : "#1e293b", color: appState.isNightDimmed ? "#fff" : "#94a3b8" }}
+                    onClick={() => send({ type: 'TOGGLE_NIGHT_DIM' })}>
+                    {appState.isNightDimmed ? "☀️ Kthe Ndriçimin" : "🌙 Dimmer i Natës"}
+                  </button>
+                  <button 
+                    style={{ ...s.cmdBtn, background: "#374151" }}
+                    onClick={() => send({ type: 'PREV_CONTENT' })}>
+                    {"⬅ Përmbajtja Para"}
+                  </button>
+                  <button 
+                    style={{ ...s.cmdBtn, background: "#374151" }}
+                    onClick={() => send({ type: 'NEXT_CONTENT' })}>
+                    {"Përmbajtja Tjetër ➡"}
+                  </button>
+                </div>
+
+                <div style={s.sectionTitle}>Përmbajtja</div>
+                <div style={s.grid}>
+                  {COMMANDS.map((cmd) => (
+                    <button
+                      key={cmd.type}
+                      style={{
+                        ...s.cmdBtn,
+                        background: lastSent === cmd.type ? "#22c55e" : cmd.color,
+                        transform: lastSent === cmd.type ? "scale(0.95)" : "scale(1)",
+                      }}
+                      onClick={() => send(cmd)}
+                    >
+                      {lastSent === cmd.type ? "✓ Dërguar" : cmd.label}
+                    </button>
+                  ))}
+                </div>
+                <AnnouncementSender onSend={send} />
+              </>
+            )}
+
+            {view === "settings" && (
+              settings
+                ? <RemoteSettings settings={settings} patch={patch} sendReset={sendReset} />
+                : <div style={s.center}><div style={s.spinner} /><div style={s.centerText}>Duke marrë cilësimet…</div></div>
+            )}
           </div>
         )}
       </div>
@@ -355,6 +442,20 @@ const s = {
     boxShadow: "0 8px 40px rgba(0,0,0,0.5)",
   },
   header: { display: "flex", alignItems: "center", gap: 14, marginBottom: 28 },
+  viewSwitch: {
+    display: "flex", gap: 5, background: "rgba(0,0,0,0.35)",
+    border: "1px solid rgba(255,255,255,0.07)", borderRadius: 16, padding: 5, marginBottom: 22,
+  },
+  viewTab: {
+    flex: 1, padding: "13px 8px", borderRadius: 12, border: "none",
+    background: "transparent", color: "#64748b",
+    fontSize: 14, fontWeight: 800, cursor: "pointer",
+    textTransform: "uppercase", letterSpacing: "0.05em",
+  },
+  viewTabActive: {
+    background: "#10b981", color: "#04140d",
+    boxShadow: "0 4px 16px rgba(16,185,129,0.3)",
+  },
   logo: { fontSize: 32 },
   title: { fontSize: 20, fontWeight: 700, color: "#f1f5f9" },
   subtitle: { fontSize: 12, color: "#64748b", marginTop: 2 },

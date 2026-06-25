@@ -50,6 +50,18 @@ const saveToSafety = (key, data) => {
     try { localStorage.setItem(`safety_${key}`, JSON.stringify(data)); } catch (e) {}
 };
 
+// Deep-merge a settings patch (from the phone remote) into the current settings.
+// Plain objects are merged recursively; everything else is replaced. This keeps
+// nested groups like durations/ramazan/iqamah intact when only one key changes.
+const isPlainObject = (v) => v != null && typeof v === 'object' && !Array.isArray(v);
+const mergeSettings = (base, patch) => {
+    const out = { ...base };
+    for (const [k, v] of Object.entries(patch)) {
+        out[k] = isPlainObject(v) && isPlainObject(base[k]) ? mergeSettings(base[k], v) : v;
+    }
+    return out;
+};
+
 // Shared prayer label helper used by both updateNextPrayer and listaNamazeve
 const getPrayerLabel = (id, { isR, isHome, isFriday }) => {
     if (id === 'Imsaku') return isR ? (isHome ? "Syfyri" : "Syfyri (Imsaku)") : "Imsaku";
@@ -101,6 +113,12 @@ export default function App() {
     const [confirmConfig, setConfirmConfig] = useState({ title: "", message: "", action: null });
     const [scale, setScale] = useState(1);
     const [isNightDimmed, setIsNightDimmed] = useState(false);
+    // Manual night-dim override from the remote: null = follow auto schedule,
+    // true/false = forced until toggled back to auto.
+    const [nightDimOverride, setNightDimOverride] = useState(null);
+    // Temporary silence-warning boost: timestamp (ms) until which the warning is
+    // forced on, regardless of the normal schedule. null/expired = normal.
+    const [silenceBoostUntil, setSilenceBoostUntil] = useState(null);
     // nextHadith queues a new hadith to swap in at the next cycle start (seamless swap)
     const [nextHadith, setNextHadith] = useState(null);
     const [nextEsmaul, setNextEsmaul] = useState(null);
@@ -123,6 +141,32 @@ export default function App() {
                 else document.documentElement.requestFullscreen().catch(() => {});
                 break;
             case 'RELOAD_PAGE': window.location.reload(); break;
+            case 'SILENCE_BOOST':
+                setSilenceBoostUntil(prev => (prev && Date.now() < prev) ? null : Date.now() + 10 * 60 * 1000);
+                break;
+            case 'TOGGLE_NIGHT_DIM':
+                setNightDimOverride(!isNightDimmed);
+                break;
+            case 'NEXT_CONTENT': {
+                const modes = ['hadith', 'esmaul'];
+                if (settings.showQr !== false && durations.qr > 0) modes.push('qr');
+                const hasMsg = vaktiSot?.Festat || vaktiSot?.Shenime;
+                if (hasMsg && durations.announcement > 0) modes.push('message');
+                if (settings.customMsg && durations.notification > 0) modes.push('custom');
+                const idx = modes.indexOf(displayMode);
+                if (idx >= 0) setDisplayMode(modes[(idx + 1) % modes.length]);
+                break;
+            }
+            case 'PREV_CONTENT': {
+                const modes = ['hadith', 'esmaul'];
+                if (settings.showQr !== false && durations.qr > 0) modes.push('qr');
+                const hasMsg = vaktiSot?.Festat || vaktiSot?.Shenime;
+                if (hasMsg && durations.announcement > 0) modes.push('message');
+                if (settings.customMsg && durations.notification > 0) modes.push('custom');
+                const idx = modes.indexOf(displayMode);
+                if (idx >= 0) setDisplayMode(modes[(idx - 1 + modes.length) % modes.length]);
+                break;
+            }
             case 'ANNOUNCEMENT_TEXT':
                 if (cmd.payload?.text) {
                     const updated = { ...settings, customMsg: cmd.payload.text };
@@ -132,11 +176,57 @@ export default function App() {
                     setDisplayMode('custom');
                 }
                 break;
+            case 'SETTINGS_PATCH':
+                // Live edit from the phone: deep-merge the patch into settings,
+                // persist, and apply immediately (mirrors saveSettings).
+                if (cmd.payload && typeof cmd.payload === 'object') {
+                    const updated = mergeSettings(settings, cmd.payload);
+                    setSettings(updated);
+                    setTempSettings(updated);
+                    localStorage.setItem('tv_settings', JSON.stringify(updated));
+                }
+                break;
+            case 'SETTINGS_RESET':
+                // Phone tapped a per-section reset — reuse the TV's own logic so
+                // defaults stay in one place. A re-broadcast keeps the phone synced.
+                if (cmd.payload?.category === 'factory') resetToFactory();
+                else if (cmd.payload?.category) resetCategory(cmd.payload.category);
+                break;
             default: break;
         }
     };
     const stableHandleRemoteCommand = useCallback((cmd) => { remoteCommandRef.current?.(cmd); }, []);
-    const { remoteUrl, timeLeft, connected, remoteName } = useMosqueRemote({ onCommand: stableHandleRemoteCommand });
+
+    // Push the full current settings to a phone the moment it authenticates.
+    const settingsRef = useRef(settings);
+    settingsRef.current = settings;
+    const sendToRemoteRef = useRef(null);
+    const stableHandleRemoteConnect = useCallback((send) => {
+        sendToRemoteRef.current = send;
+        send({ type: 'SETTINGS_SYNC', payload: settingsRef.current });
+    }, []);
+    const { remoteUrl, timeLeft, connected, remoteName, sendToRemote } = useMosqueRemote({
+        onCommand: stableHandleRemoteCommand,
+        onConnect: stableHandleRemoteConnect,
+    });
+
+    // Keep the connected phone's mirror in sync with any TV-side settings change.
+    useEffect(() => {
+        if (connected) sendToRemote({ type: 'SETTINGS_SYNC', payload: settings });
+    }, [settings, connected, sendToRemote]);
+
+    // Keep the phone synced with live state (night dim, silence boost)
+    useEffect(() => {
+        if (connected) {
+            sendToRemote({
+                type: 'STATE_SYNC',
+                payload: {
+                    isNightDimmed,
+                    silenceBoosted: silenceBoostUntil != null && Date.now() < silenceBoostUntil
+                }
+            });
+        }
+    }, [isNightDimmed, silenceBoostUntil, connected, sendToRemote]);
 
     // Initialize Google Analytics
     useEffect(() => {
@@ -555,13 +645,15 @@ export default function App() {
                 if (vaktiSot.Sabahu) dimEnd = neMinuta(vaktiSot.Sabahu) - 10;
             }
 
-            setIsNightDimmed(minTani >= dimStart || minTani < dimEnd);
+            // A manual remote override wins until cleared back to auto (null).
+            if (nightDimOverride !== null) setIsNightDimmed(nightDimOverride);
+            else setIsNightDimmed(minTani >= dimStart || minTani < dimEnd);
         };
 
         checkDim();
         const interval = setInterval(checkDim, 60000);
         return () => clearInterval(interval);
-    }, [vaktiSot, settings]);
+    }, [vaktiSot, settings, nightDimOverride]);
 
     // --- MAINTENANCE & STABILITY: Smart Reload (4 times a day) ---
     useEffect(() => {
@@ -765,14 +857,16 @@ export default function App() {
         setInfoTani(prev => {
             const diffA = nextInfo.mbetur;
             const diffT = nextInfo.tani?.kohe ? nowMin - neMinuta(nextInfo.tani.kohe) : 999;
-            const isSilenceMode = (diffA <= 5 && diffA >= 0) || (diffT >= 0 && diffT <= 10);
+            // Remote "silence +10 min" boost forces silence mode on until it expires.
+            const boosted = silenceBoostUntil != null && Date.now() < silenceBoostUntil;
+            const isSilenceMode = boosted || (diffA <= 5 && diffA >= 0) || (diffT >= 0 && diffT <= 10);
 
             if (prev && prev.mbetur === nextInfo.mbetur && prev.isSilenceMode === isSilenceMode && prev.ardhshëm?.id === nextInfo.ardhshëm?.id) {
                 return prev;
             }
             return { ...nextInfo, isSilenceMode, nowMin };
         });
-    }, [vaktiSot, vaktet, settings.appMode, settings.ramazan, settings.xhuma2Active, xhemati]);
+    }, [vaktiSot, vaktet, settings.appMode, settings.ramazan, settings.xhuma2Active, xhemati, silenceBoostUntil]);
 
     // Sync currentHadith state into ref so refresh timer can check it without being a dep
     useEffect(() => { currentHadithRef.current = currentHadith; }, [currentHadith]);

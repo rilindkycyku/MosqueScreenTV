@@ -31,6 +31,20 @@ body {
   height: 100%;
 }
 
+/* Phone remote page (/remote) needs normal vertical scrolling, unlike the
+   fixed-height TV display. main.jsx adds .remote-page to <html> for this route. */
+html.remote-page,
+html.remote-page body {
+  overflow-y: auto;
+  height: auto;
+  min-height: 100vh;
+  -webkit-overflow-scrolling: touch;
+}
+html.remote-page #root {
+  height: auto;
+  min-height: 100vh;
+}
+
 @layer utilities {
   .tabular-nums {
     font-variant-numeric: tabular-nums;
