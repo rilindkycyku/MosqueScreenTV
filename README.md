@@ -1,6 +1,6 @@
 ﻿# MosqueScreenTV 🕌📺
 
-![Main Screen](GitHubFoto/TVScreen.png)
+![MosqueScreenTV — Turn any Smart TV into a mosque info screen](GitHubFoto/montage/hero.png)
 
 **MosqueScreenTV** është një platformë profesionale, moderne dhe jashtëzakonisht e optimizuar për shfaqjen e informacioneve në ekranet e xhamive. E ndërtuar posaçërisht për qëndrueshmëri 24/7, kjo platformë transformon çdo Smart TV në një qendër informative estetike dhe funksionale për xhematin.
 
@@ -48,6 +48,8 @@ Për modifikime të kodit ose përdorim në rrjetin lokal pa internet:
    ```
 
 ---
+
+![The screen, and everything behind it](GitHubFoto/montage/showcase.png)
 
 ## 📂 Kontrolli i Cilësimeve
 
