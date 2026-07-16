@@ -58,18 +58,25 @@ Për të hapur panelin e kontrollit direkt në TV:
 - **Tastiera:** Shtypni tastin **S** ose **M**.
 
 Nga paneli mund të ndryshoni:
-- Emrin dhe adresën e xhamisë.
-- Linkun e QR Kodit për njoftime.
+- Emrin, adresën dhe imamin e xhamisë.
+- Shtetin/kalendarin dhe kohët manuale të namazeve dhe Ikametit.
+- Mënyrën e përdorimit (Xhami/Shtëpi), vërejtjen e heshtjes dhe QR Kodin.
 - Kohëzgjatjen e ciklove (Sa gjatë të qëndrojë Hadithi, QR Kodi, etj).
-- **Modulin e Ramazanit:** Aktivizimi i emërtimit Syfyr/Iftar dhe kohës së Teravisë.
+- **Modulin e Ramazanit:** Aktivizimi i emërtimit Syfyr/Iftar, kohës së Teravisë dhe Namazit të Natës.
+- Njoftimin e shpejtë të shfaqur në ekran.
+- Lidhjen dhe sigurinë e telekomandës (Remote).
 
 ### 📸 Pamjet e Cilësimeve
 
-| Të Dhënat | Timerat |
+| Të Dhënat | Ekrani |
 | :---: | :---: |
-| ![Të Dhënat](GitHubFoto/SettingsTeDhenat.png) | ![Timerat](GitHubFoto/SettingsTimer.png) |
+| ![Të Dhënat](GitHubFoto/SettingsTeDhenat.png) | ![Ekrani](GitHubFoto/SettingsEkrani.png) |
+| **Vaktet** | **Kohëzgjatja** |
+| ![Vaktet](GitHubFoto/SettingsVaktet.png) | ![Kohëzgjatja](GitHubFoto/SettingsTimer.png) |
 | **Ramazani** | **Njoftimet** |
 | ![Ramazani](GitHubFoto/SettingsRamazani.png) | ![Njoftimet](GitHubFoto/SettingsNjoftimi.png) |
+| **Remote** | |
+| ![Remote](GitHubFoto/SettingsRemote.png) | |
 
 ---
 
