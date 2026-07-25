@@ -64,9 +64,20 @@ export default defineConfig(async () => {
             }
           },
           {
-            // Never cache GA network calls — always send live
-            urlPattern: /^https:\/\/(?:www\.google-analytics\.com|analytics\.google\.com|www\.googletagmanager\.com)\/.*/i,
+            // Never cache GA network calls — always send live. When a hit
+            // fails anyway (dead wifi the browser still reports as online,
+            // captive portal) Background Sync holds it and replays it once
+            // the connection is back, instead of dropping it. Note GA stamps
+            // a replayed hit at arrival time, so the app also tags its own
+            // offline hits with offline_time (see src/lib/analytics.js).
+            urlPattern: /^https:\/\/(?:www\.google-analytics\.com|analytics\.google\.com|region\d+\.google-analytics\.com|www\.googletagmanager\.com)\/.*/i,
             handler: 'NetworkOnly',
+            options: {
+              backgroundSync: {
+                name: 'ga-hit-queue',
+                options: { maxRetentionTime: 24 * 60 } // minutes; GA drops older hits anyway
+              }
+            }
           }
         ]
       },
