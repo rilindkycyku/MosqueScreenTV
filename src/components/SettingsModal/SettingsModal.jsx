@@ -10,6 +10,8 @@ import RamazanSection   from "./sections/RamazanSection";
 import MessageSection   from "./sections/MessageSection";
 import RemoteSection   from "./sections/RemoteSection";
 
+import { APP_VERSION } from "../../lib/version";
+
 /**
  * SettingsModal — full-screen settings interface for TV displays.
  * This file is intentionally thin: it owns only the sidebar chrome and
@@ -141,6 +143,9 @@ export default function SettingsModal({
 
                         <div className="mt-auto flex flex-col items-center py-4 border-t border-white/10 pt-8">
                             <span className="text-zinc-300 text-lg font-black uppercase tracking-[0.4em] mb-2">Mosque Screen TV</span>
+                            <span className="px-3 py-1 mb-3 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em]">
+                                Versioni {APP_VERSION}
+                            </span>
                             <div className="flex flex-col items-center gap-1">
                                 <span className="text-zinc-500 text-[10px] font-bold uppercase tracking-[0.2em]">Zhvilluar nga</span>
                                 <span className="text-emerald-400 text-xl font-black uppercase tracking-tight">Rilind Kyçyku</span>

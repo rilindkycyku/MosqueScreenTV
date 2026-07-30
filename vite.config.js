@@ -2,6 +2,11 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import legacy from '@vitejs/plugin-legacy'
+import { readFileSync } from 'node:fs'
+
+// package.json is the single source of truth for the version; it gets injected
+// as __APP_VERSION__ and shown in the settings footer (src/lib/version.js).
+const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf-8'))
 
 // The phone remote uses WebRTC via PeerJS (public broker for signaling only),
 // so there is no relay server to run here — it works on a static host (Vercel)
@@ -15,6 +20,9 @@ export default defineConfig(async () => {
   const { RangeRequestsPlugin } = await import('workbox-range-requests');
 
   return {
+    define: {
+      __APP_VERSION__: JSON.stringify(pkg.version)
+    },
     plugins: [
     react(),
     legacy({
