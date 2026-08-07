@@ -8,7 +8,8 @@
       "type": "ajet",
       "tags": [
         "namazi",
-        "bamiresia"
+        "bamiresia",
+        "xhuma"
       ]
     },
     {
@@ -932,7 +933,8 @@
       "reference": "Araf - Ajeti 31",
       "type": "ajet",
       "tags": [
-        "namazi"
+        "namazi",
+        "xhuma"
       ]
     },
     {
@@ -4402,7 +4404,8 @@
       "type": "ajet",
       "tags": [
         "namazi",
-        "meshira"
+        "meshira",
+        "xhuma"
       ]
     },
     {
@@ -16339,7 +16342,8 @@
       "reference": "Nur - Ajeti 36",
       "type": "ajet",
       "tags": [
-        "dhikri"
+        "dhikri",
+        "xhuma"
       ]
     },
     {
@@ -16350,7 +16354,8 @@
       "type": "ajet",
       "tags": [
         "namazi",
-        "dhikri"
+        "dhikri",
+        "xhuma"
       ]
     },
     {
@@ -25176,6 +25181,186 @@
       "type": "hadith",
       "tags": [
         "morali"
+      ]
+    },
+    {
+      "id": 2430,
+      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
+      "textContent": "Ne jemi të fundit, por të parët në Ditën e Kiametit; atyre para nesh iu dha Libri para nesh, kurse kjo ditë u bë obligim për ta e ata u përçanë rreth saj, ndërsa Allahu na udhëzoi ne drejt saj.",
+      "reference": "Muttefekun alejhi",
+      "type": "hadith",
+      "tags": [
+        "kurani",
+        "xhuma"
+      ]
+    },
+    {
+      "id": 2431,
+      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
+      "textContent": "Dita e xhuma është ditë feste për muslimanët, prandaj mos e bëni ditën e festës suaj ditë agjërimi, përveç nëse agjëroni edhe një ditë para ose pas saj.",
+      "reference": "Transmeton Ibn Maxhe",
+      "type": "hadith",
+      "tags": [
+        "agjerimi",
+        "xhuma"
+      ]
+    },
+    {
+      "id": 2432,
+      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
+      "textContent": "Kush lahet ditën e xhuma, pastrohet sa ka mundësi, lyhet me vaj ose parfum, del nga shtëpia dhe nuk i ndan dy veta të ulur, fal atë që i është caktuar dhe pastaj hesht kur flet imami, i falen mëkatet mes asaj xhumaje dhe xhumasë së kaluar.",
+      "reference": "Transmeton Buhariu",
+      "type": "hadith",
+      "tags": [
+        "meshira",
+        "xhuma"
+      ]
+    },
+    {
+      "id": 2433,
+      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
+      "textContent": "Kur të vijë ndonjëri prej jush në xhuma dhe imami është në minber, le t'i falë dy rekate të shkurtra para se të ulet.",
+      "reference": "Muttefekun alejhi",
+      "type": "hadith",
+      "tags": [
+        "xhuma"
+      ]
+    },
+    {
+      "id": 2434,
+      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
+      "textContent": "Zgjatja e namazit dhe shkurtimi i hutbes janë shenjë e kuptimit të thellë të fesë; prandaj zgjateni namazin dhe shkurtojeni hutben.",
+      "reference": "Transmeton Muslimi",
+      "type": "hadith",
+      "tags": [
+        "namazi",
+        "xhuma"
+      ]
+    },
+    {
+      "id": 2435,
+      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
+      "textContent": "Kush prej jush fal namaz pas xhumasë, le të falë katër rekate.",
+      "reference": "Transmeton Muslimi",
+      "type": "hadith",
+      "tags": [
+        "namazi",
+        "xhuma"
+      ]
+    },
+    {
+      "id": 2436,
+      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
+      "textContent": "I Dërguari i Allahut e ndaloi kapërcimin e qafave të njerëzve ditën e xhuma dhe ndarjen e dy vetave të ulur bashkë.",
+      "reference": "Transmeton Ebu Davudi",
+      "type": "hadith",
+      "tags": [
+        "xhuma"
+      ]
+    },
+    {
+      "id": 2437,
+      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
+      "textContent": "Në namazin e sabahut të ditës së xhuma i Dërguari i Allahut lexonte suren Es-Sexhde dhe suren El-Insan.",
+      "reference": "Muttefekun alejhi",
+      "type": "hadith",
+      "tags": [
+        "namazi",
+        "xhuma"
+      ]
+    },
+    {
+      "id": 2438,
+      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
+      "textContent": "Kush vdes ditën e xhuma ose natën e saj, Allahu e ruan nga sprova e varrit.",
+      "reference": "Transmeton Ahmedi",
+      "type": "hadith",
+      "tags": [
+        "durimi",
+        "xhuma"
+      ]
+    },
+    {
+      "id": 2439,
+      "entryText": "Nga Ebu Hurejra, Allahu qoftë i kënaqur me të, përcillet se i Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
+      "textContent": "Kush lahet ditën e xhuma dhe shkon në orën e parë, është sikur të ketë dhënë një deve; kush shkon në orën e dytë, sikur të ketë dhënë një lopë; kush shkon në orën e tretë, sikur të ketë dhënë një dash.",
+      "reference": "Muttefekun alejhi",
+      "type": "hadith",
+      "tags": [
+        "xhuma"
+      ]
+    },
+    {
+      "id": 2440,
+      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
+      "textContent": "Kush e lë xhumanë pa arsye, le të japë sadaka.",
+      "reference": "Transmeton Ebu Davudi",
+      "type": "hadith",
+      "tags": [
+        "bamiresia",
+        "xhuma"
+      ]
+    },
+    {
+      "id": 2441,
+      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
+      "textContent": "Njerëzit le të heqin dorë nga lënia e xhumave, ose Allahu do t'ua vulosë zemrat dhe do të bëhen prej të shkujdesurve.",
+      "reference": "Transmeton Muslimi",
+      "type": "hadith",
+      "tags": [
+        "xhuma"
+      ]
+    },
+    {
+      "id": 2442,
+      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
+      "textContent": "Ai që flet ndërsa imami mban hutben, është si gomari që bart libra, dhe nuk ka xhuma të plotë ai që i thotë tjetrit 'hesht'.",
+      "reference": "Transmeton Ahmedi",
+      "type": "hadith",
+      "tags": [
+        "xhuma"
+      ]
+    },
+    {
+      "id": 2443,
+      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
+      "textContent": "Kush merr abdes dhe e përsos atë, pastaj vjen në xhuma, afrohet, dëgjon dhe hesht, i falet ajo që është mes asaj xhumaje dhe tjetrës; e kush luan me guralecat, ka bërë kot.",
+      "reference": "Transmeton Muslimi",
+      "type": "hadith",
+      "tags": [
+        "namazi",
+        "xhuma"
+      ]
+    },
+    {
+      "id": 2444,
+      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
+      "textContent": "Nuk ka ditë më të vlefshme te Allahu se dita e xhuma; në të ka një orë në të cilën nuk e takon robi musliman duke kërkuar prej Allahut, pa i dhënë Ai atë që kërkon.",
+      "reference": "Transmeton Ibn Maxhe",
+      "type": "hadith",
+      "tags": [
+        "xhuma"
+      ]
+    },
+    {
+      "id": 2445,
+      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
+      "textContent": "Ditën e xhuma melekët ulen te dyert e xhamisë me fletushka dhe shkruajnë kush hyn i pari; kur ulet imami, i mbyllin fletushkat dhe dëgjojnë përkujtimin.",
+      "reference": "Transmeton Nesaiu",
+      "type": "hadith",
+      "tags": [
+        "xhuma"
+      ]
+    },
+    {
+      "id": 2446,
+      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
+      "textContent": "Shtojini lutjet dhe salavatet ditën e xhuma, sepse ajo është ditë e dëshmuar, në të cilën melekët janë të pranishëm.",
+      "reference": "Transmeton Nesaiu",
+      "type": "hadith",
+      "tags": [
+        "dhikri",
+        "xhuma"
       ]
     }
   ]
