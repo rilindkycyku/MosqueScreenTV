@@ -22,6 +22,20 @@ import { initGA, logPageView, logEvent } from './lib/analytics';
 // Remote control
 import { useMosqueRemote } from './remote/useMosqueRemote';
 
+// On Fridays the screen shows only the Jumu'ah-tagged verses and narrations.
+// Both pools are derived once and cached, since the source list is large.
+const XHUMA_TAG = 'xhuma';
+const allHadithe = haditheData.a ?? [];
+const xhumaHadithe = allHadithe.filter(h => h.tags?.includes(XHUMA_TAG));
+
+/** The entries the display should rotate through today. */
+const getHadithPool = (date = new Date()) => {
+    // Fall back to the full list if the data ever ships without tagged entries,
+    // so the screen is never left blank on a Friday.
+    if (date.getDay() === 5 && xhumaHadithe.length) return xhumaHadithe;
+    return allHadithe;
+};
+
 // Module-level pure utilities (never re-created)
 const neMinuta = (ora) => {
     if (!ora) return 0;
@@ -592,9 +606,10 @@ export default function App() {
             const select = () => {
                 if (!isStillCurrent) return;
                 
-                if (haditheData.a?.length) {
-                    const randomIdx = Math.floor(Math.random() * haditheData.a.length);
-                    const chosen = haditheData.a[randomIdx];
+                const hadithPool = getHadithPool();
+                if (hadithPool.length) {
+                    const randomIdx = Math.floor(Math.random() * hadithPool.length);
+                    const chosen = hadithPool[randomIdx];
                     if (!currentHadithRef.current) {
                         currentHadithRef.current = chosen;
                         setCurrentHadith(chosen);

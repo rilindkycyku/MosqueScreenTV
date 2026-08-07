@@ -122,6 +122,10 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
                         />
                         {/* Grounding gradient for text contrast */}
                         <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-20" />
+                        {/* The gradient above fades out before the top of the card, so a
+                            long verse — which starts higher up — had its first lines
+                            sitting on bright sky with nothing behind them. */}
+                        <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-black/75 via-black/35 to-transparent z-20" />
                     </div>
                 </div>
             )}
@@ -143,7 +147,7 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
                 )}
 
                 {/* 2. Main Content */}
-                <div className="flex-1 flex flex-col justify-center text-center w-full px-2">
+                <div className="flex-1 min-h-0 flex flex-col justify-center text-center w-full px-2">
                     {displayMode === 'custom' ? (
                         <div className="flex flex-col items-center">
                             <h3 className="text-5xl font-black text-emerald-400 leading-tight mb-2 uppercase drop-shadow-lg">Njoftim</h3>
@@ -218,7 +222,7 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
                             </div>
                         </div>
                     ) : currentHadith ? (
-                        <div className="overflow-hidden flex flex-col items-center justify-center w-full px-2">
+                        <div className="h-full min-h-0 overflow-hidden flex flex-col items-center justify-center w-full px-8">
                             {(() => {
                                 const entryLen = currentHadith.entryText?.length || 0;
                                 const contentLen = currentHadith.textContent?.length || 0;
@@ -226,31 +230,41 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
                                 const tot = entryLen + contentLen + referenceLen;
 
                                 const entryClass = tot > 500 ? 'text-lg' : tot > 350 ? 'text-xl' : 'text-2xl';
-                                const contentClass =
-                                    tot > 600 ? 'text-[1.4rem]' :
-                                        tot > 500 ? 'text-[1.6rem]' :
-                                            tot > 400 ? 'text-[1.9rem]' :
-                                                tot > 300 ? 'text-[2.3rem]' :
-                                                    tot > 250 ? 'text-[2.6rem]' :
-                                                        tot > 200 ? 'text-[2.9rem]' :
-                                                            tot > 150 ? 'text-[3.3rem]' :
-                                                                tot > 100 ? 'text-[3.7rem]' :
-                                                                    'text-[4.2rem]';
+                                // Upper bound only. The ladder used to set the final size
+                                // outright, which meant a long narration overflowed its
+                                // container and had its last line clipped — the text was
+                                // simply cut off mid-sentence. FitText starts from this
+                                // size and shrinks until it genuinely fits, so nothing is
+                                // ever lost regardless of length.
+                                const contentMaxPx =
+                                    tot > 600 ? 22 :
+                                        tot > 500 ? 26 :
+                                            tot > 400 ? 30 :
+                                                tot > 300 ? 37 :
+                                                    tot > 250 ? 42 :
+                                                        tot > 200 ? 46 :
+                                                            tot > 150 ? 53 :
+                                                                tot > 100 ? 59 : 67;
 
                                 return (
                                     <>
                                         {currentHadith.entryText && (
-                                            <p className={`text-zinc-200 mb-2 italic font-semibold text-center drop-shadow-sm ${entryClass}`}>
+                                            <p className={`text-zinc-200 mb-2 italic font-semibold text-center drop-shadow-sm shrink-0 ${entryClass}`}>
                                                 {currentHadith.entryText}
                                             </p>
                                         )}
-                                        <h3 className={`leading-[1.1] italic font-bold text-white mb-4 text-center drop-shadow-xl ${contentClass}`}>
-                                            "{currentHadith.textContent}"
-                                        </h3>
+                                        <div className="flex-1 min-h-0 w-full mb-4">
+                                            <FitText
+                                                text={`"${currentHadith.textContent}"`}
+                                                maxPx={contentMaxPx}
+                                                minPx={16}
+                                                className="leading-[1.15] italic font-bold text-white text-center drop-shadow-xl"
+                                            />
+                                        </div>
                                     </>
                                 );
                             })()}
-                            <div className="mt-2 text-center">
+                            <div className="mt-2 text-center shrink-0">
                                 <div className="w-12 h-0.5 bg-emerald-500 rounded-full mb-2 mx-auto opacity-40" />
                                 <p className="text-emerald-400 font-bold text-[1.6rem] leading-none">{currentHadith.reference}</p>
                             </div>
