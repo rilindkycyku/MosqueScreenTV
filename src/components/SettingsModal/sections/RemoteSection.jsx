@@ -45,8 +45,10 @@ function QRPanel({ remoteUrl }) {
   return (
     <div className="flex flex-col gap-6">
       {isLocalhost && (
-        <div className="flex items-start gap-4 px-6 py-5 rounded-[1.5rem] bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xl font-bold leading-relaxed">
-          ⚠ TV po ekzekutohet nga <strong>localhost</strong>. Telefoni nuk e hap dot këtë QR. Hape me adresën IP të rrjetit (p.sh. <strong>192.168.x.x:5173</strong>) ose me adresën e hostuar (Vercel).
+        <div className="flex items-center gap-4 px-6 py-5 rounded-[1.5rem] bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xl font-bold leading-relaxed">
+          <span>
+            ⚠ TV po ekzekutohet nga <strong className="font-black text-amber-300">localhost</strong>. Telefoni nuk e hap dot këtë QR. Hape me adresën IP të rrjetit (p.sh. <strong className="font-black text-amber-300">192.168.1.240:5173</strong>) ose me adresën e hostuar (Vercel).
+          </span>
         </div>
       )}
       <div className="flex gap-10 items-center">
@@ -191,27 +193,41 @@ export default function RemoteSection({ remoteUrl, connected, remoteName }) {
   }
 
   async function handleSave() {
-    if (newVal.length < 8)        return showFeedback("error", "Minimum 8 karaktere.");
-    if (newVal !== confirmVal)     return showFeedback("error", "Fjalëkalimet nuk përputhen.");
+    const current = currentVal.trim();
+    const next    = newVal.trim();
+    const confirm = confirmVal.trim();
+    if (next.length < 8)   return showFeedback("error", "Minimum 8 karaktere.");
+    if (next !== confirm)  return showFeedback("error", "Fjalëkalimet nuk përputhen.");
     setLoading(true);
-    if (mode === "change") {
-      const ok = await verifyPasscode(currentVal);
-      if (!ok) { setLoading(false); return showFeedback("error", "Fjalëkalimi aktual është i gabuar."); }
+    try {
+      if (mode === "change") {
+        const ok = await verifyPasscode(current);
+        if (!ok) { showFeedback("error", "Fjalëkalimi aktual është i gabuar."); return; }
+      }
+      await savePasscode(next);
+      setPasscodeExists(true);
+      showFeedback("success", mode === "change" ? "Fjalëkalimi u ndryshua." : "Fjalëkalimi u vendos me sukses.");
+    } catch {
+      showFeedback("error", "Diçka shkoi keq. Provo përsëri.");
+    } finally {
+      setLoading(false);
     }
-    await savePasscode(newVal);
-    setPasscodeExists(true);
-    showFeedback("success", mode === "change" ? "Fjalëkalimi u ndryshua." : "Fjalëkalimi u vendos me sukses.");
-    setLoading(false);
   }
 
   async function handleRemove() {
+    const current = currentVal.trim();
     setLoading(true);
-    const ok = await verifyPasscode(currentVal);
-    if (!ok) { setLoading(false); return showFeedback("error", "Fjalëkalimi është i gabuar."); }
-    clearPasscode();
-    setPasscodeExists(false);
-    showFeedback("success", "Fjalëkalimi u hoq. Tani vetëm QR kodi lejohet.");
-    setLoading(false);
+    try {
+      const ok = await verifyPasscode(current);
+      if (!ok) { showFeedback("error", "Fjalëkalimi është i gabuar."); return; }
+      clearPasscode();
+      setPasscodeExists(false);
+      showFeedback("success", "Fjalëkalimi u hoq. Tani vetëm QR kodi lejohet.");
+    } catch {
+      showFeedback("error", "Diçka shkoi keq. Provo përsëri.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   // ── IDLE ───────────────────────────────────────────────────────────────────

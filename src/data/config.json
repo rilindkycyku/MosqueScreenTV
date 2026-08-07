@@ -21,7 +21,9 @@
             "notification": 10,
             "announcement": 1,
             "hadithRefresh": 45,
-            "sabahuOffset": 35
+            "sabahuOffset": 35,
+            "silenceRegular": 10,
+            "silenceXhuma": 30
         },
         "iqamah": {
             "active": false,

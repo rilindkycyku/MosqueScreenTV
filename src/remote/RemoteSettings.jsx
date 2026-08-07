@@ -189,6 +189,16 @@ function DisplayForm({ st, patch }) {
         <>
           <Toggle label="Vërejtja e Heshtjes" hint='Thirrja "FIKNI TELEFONAT" gjatë namazit.'
             value={!!st.showSilenceWarning} onChange={(v) => patch({ showSilenceWarning: v })} />
+          {st.showSilenceWarning !== false && (
+            <>
+              <NumberField label="Heshtja (Vaktet Normale)" unit="min" min={1}
+                value={st.durations?.silenceRegular ?? 10}
+                onChange={(v) => patch({ durations: { ...(st.durations || {}), silenceRegular: v } })} />
+              <NumberField label="Heshtja (Koha e Xhumasë)" unit="min" min={5}
+                value={st.durations?.silenceXhuma ?? 30}
+                onChange={(v) => patch({ durations: { ...(st.durations || {}), silenceXhuma: v } })} />
+            </>
+          )}
           <Toggle label="QR Code" hint="Shfaq kodin QR në ekran?"
             value={!!st.showQr} onChange={(v) => patch({ showQr: v })} />
           {st.showQr && (
@@ -216,7 +226,7 @@ function LocationForm({ st, patch }) {
           <div style={s.groupTitle}>Konfigurimi i Namazeve</div>
           <NumberField label="Sabahu (min para Lindjes)" unit="min" min={0}
             value={st.durations?.sabahuOffset ?? 35}
-            onChange={(v) => patch({ durations: { sabahuOffset: v } })} />
+            onChange={(v) => patch({ durations: { ...(st.durations || {}), sabahuOffset: v } })} />
           <TimeField label="Dreka" hint="00:00 = automatik (12:55)."
             value={st.manualDreka} onChange={(v) => patch({ manualDreka: v === "00:00" ? "" : v })} />
           <TimeField label="Xhumaja I" hint="00:00 = përdoret Dreka."
@@ -232,15 +242,15 @@ function LocationForm({ st, patch }) {
 
           <div style={s.groupTitle}>Koha e Ikametit (Xhematit)</div>
           <Toggle label="Aktivizo Ikametin" hint="Shton +minuta pas Ezanit."
-            value={!!iq.active} onChange={(v) => patch({ iqamah: { active: v } })}
+            value={!!iq.active} onChange={(v) => patch({ iqamah: { ...iq, active: v } })}
             onText="Po" offText="Jo" />
           {iq.active && (
             <>
-              <NumberField label="Sabahu" unit="min" value={iq.sabahu ?? 30} onChange={(v) => patch({ iqamah: { sabahu: v } })} />
-              <NumberField label="Dreka" unit="min" value={iq.dreka ?? 15} onChange={(v) => patch({ iqamah: { dreka: v } })} />
-              <NumberField label="Ikindia" unit="min" value={iq.ikindia ?? 15} onChange={(v) => patch({ iqamah: { ikindia: v } })} />
-              <NumberField label="Akshami" unit="min" value={iq.akshami ?? 5} onChange={(v) => patch({ iqamah: { akshami: v } })} />
-              <NumberField label="Jacia" unit="min" value={iq.jacia ?? 10} onChange={(v) => patch({ iqamah: { jacia: v } })} />
+              <NumberField label="Sabahu" unit="min" value={iq.sabahu ?? 30} onChange={(v) => patch({ iqamah: { ...iq, sabahu: v } })} />
+              <NumberField label="Dreka" unit="min" value={iq.dreka ?? 15} onChange={(v) => patch({ iqamah: { ...iq, dreka: v } })} />
+              <NumberField label="Ikindia" unit="min" value={iq.ikindia ?? 15} onChange={(v) => patch({ iqamah: { ...iq, ikindia: v } })} />
+              <NumberField label="Akshami" unit="min" value={iq.akshami ?? 5} onChange={(v) => patch({ iqamah: { ...iq, akshami: v } })} />
+              <NumberField label="Jacia" unit="min" value={iq.jacia ?? 10} onChange={(v) => patch({ iqamah: { ...iq, jacia: v } })} />
             </>
           )}
         </>
@@ -269,7 +279,7 @@ function DurationsForm({ st, patch }) {
           onChange={(val) => {
             let v = Math.max(0, val);
             if (f.id === "hadithRefresh") v = Math.max(Math.max(1, toMin(d.hadith)), v);
-            patch({ durations: { [f.id]: v } });
+            patch({ durations: { ...d, [f.id]: v } });
           }}
         />
       ))}
@@ -283,19 +293,19 @@ function RamazanForm({ st, patch }) {
   return (
     <>
       <Toggle label="Statusi i Ramazanit" hint="Gjendja aktuale e shfaqjes."
-        value={!!r.active} onChange={(v) => patch({ ramazan: { active: v } })} />
+        value={!!r.active} onChange={(v) => patch({ ramazan: { ...r, active: v } })} />
       {r.active && st.appMode !== "home" && (
         <>
           <TimeField label="Koha e Teravisë" hint="00:00 për ta ndjekur Jacinë."
             value={r.kohaTeravise || ""}
-            onChange={(v) => patch({ ramazan: { kohaTeravise: v === "00:00" ? "" : v } })} />
+            onChange={(v) => patch({ ramazan: { ...r, kohaTeravise: v === "00:00" ? "" : v } })} />
 
           <div style={s.groupTitle}>Namaz i Natës (Tahajjud)</div>
           <Toggle label="Statusi i Namazit" hint="Aktivizoni namazin e natës."
-            value={!!nn.active} onChange={(v) => patch({ ramazan: { namazNate: { active: v } } })} />
+            value={!!nn.active} onChange={(v) => patch({ ramazan: { ...r, namazNate: { ...nn, active: v } } })} />
           {nn.active && (
             <TimeField label="Koha e Namazit" value={nn.koha || "00:30"}
-              onChange={(v) => patch({ ramazan: { namazNate: { koha: v } } })} />
+              onChange={(v) => patch({ ramazan: { ...r, namazNate: { ...nn, koha: v } } })} />
           )}
         </>
       )}

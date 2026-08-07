@@ -125,6 +125,35 @@ export default function RemotePage() {
   const wireConnection = useCallback((conn, { firstAttempt }) => {
     connRef.current = conn;
 
+    // Idle UDP flows get dropped by NAT/routers on either end after
+    // ~30-60s with no traffic, which silently kills the DataConnection
+    // without "close"/"error" ever firing. Once authenticated we ping over
+    // the channel to keep the NAT mapping alive, and self-heal by silently
+    // reconnecting if the TV goes quiet — instead of forcing a page reload.
+    let lastRx = Date.now();
+    let healthId = null;
+    let reconnected = false;
+
+    function stopHealthCheck() {
+      if (healthId) { clearInterval(healthId); healthId = null; }
+    }
+
+    function reconnectSilently() {
+      if (reconnected) return;
+      reconnected = true;
+      stopHealthCheck();
+      try { conn.close(); } catch { /* noop */ }
+      const peer = peerRef.current;
+      if (peer && !peer.destroyed && peer.open) {
+        setPhase((prev) => (prev === "connected" ? "connecting" : prev));
+        const fresh = peer.connect(`${PEER_PREFIX}${guidRef.current}`, { reliable: true });
+        wireConnection(fresh, { firstAttempt: true });
+      } else {
+        setPhase((prev) => (prev === "connected" ? "error" : prev));
+        setErrorMsg("Lidhja u ndërpre. Skanoni QR kodin përsëri.");
+      }
+    }
+
     const timeoutId = setTimeout(() => {
       if (conn.open) return;
       try { conn.close(); } catch { /* noop */ }
@@ -143,6 +172,8 @@ export default function RemotePage() {
 
     conn.on("data", (data) => {
       if (!data || typeof data !== "object") return;
+      lastRx = Date.now();
+      if (data.type === "PING") return;
       console.log("[Remote] received:", data?.type, data?.payload);
 
       if (data.type === "SETTINGS_SYNC") {
@@ -160,6 +191,12 @@ export default function RemotePage() {
         setPhase("connected");
         setPasscodeError("");
         setLoading(false);
+        stopHealthCheck();
+        healthId = setInterval(() => {
+          if (!conn.open) return;
+          if (Date.now() - lastRx > 30000) { reconnectSilently(); return; }
+          try { conn.send({ type: "PING" }); } catch { /* noop */ }
+        }, 10000);
       } else if (data.type === "AUTH_FAIL") {
         setLoading(false);
         const canUsePasscode = data.payload?.canUsePasscode;
@@ -177,6 +214,8 @@ export default function RemotePage() {
 
     conn.on("close", () => {
       clearTimeout(timeoutId);
+      stopHealthCheck();
+      if (reconnected) return;
       setPhase((prev) => {
         if (prev === "connected") {
           setErrorMsg("Lidhja u ndërpre. Skanoni QR kodin përsëri.");
@@ -188,6 +227,8 @@ export default function RemotePage() {
 
     conn.on("error", () => {
       clearTimeout(timeoutId);
+      stopHealthCheck();
+      if (reconnected) return;
       setPhase((prev) => {
         if (prev === "connecting") {
           setErrorMsg("Nuk u arrit TV-ja. A është TV aktiv dhe i lidhur me internet?");

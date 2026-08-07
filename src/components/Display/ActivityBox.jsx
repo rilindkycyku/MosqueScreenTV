@@ -3,9 +3,16 @@ import { QRCodeCanvas } from 'qrcode.react';
 import ErrorBoundary from '../ErrorBoundary/ErrorBoundary';
 import FitText from './FitText';
 
-const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHadith, currentEsmaul, vaktiSot, infoTani }) {
-    const { isSilenceMode } = infoTani || {};
-    const showSilence = settings?.showSilenceWarning !== false;
+const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHadith, currentEsmaul, vaktiSot, infoTani, suppressTakeover }) {
+    // Full-screen silence takeover is capped to a short window (see App.jsx) so
+    // the Xhuma-tagged Hadith/Ajet content isn't hidden behind the reminder for
+    // the whole extended post-Xhuma silence period — that's when most people
+    // are actually in the room to read it.
+    // `suppressTakeover` is set during the Friday silence-focus layout, where
+    // the warning has already moved to the top-left slot (SilenceNotice) —
+    // this box stays on Hadith duty the whole time instead of also taking over.
+    const { isSilenceTakeover } = infoTani || {};
+    const showSilence = settings?.showSilenceWarning !== false && !suppressTakeover;
     const customMsg = settings?.customMsg || "";
 
     // REVOLUTIONARY DYNAMIC ROTATION: A fresh image every time the view cycles
@@ -33,7 +40,7 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
     }, [currentHadith?.textContent, vaktiSot?.Shenime, vaktiSot?.Festat, currentEsmaul?.arabic]);
 
     // 1. SILENCE MODE (Highest Priority)
-    if (isSilenceMode && showSilence) {
+    if (isSilenceTakeover && showSilence) {
         return (
             <div className="bg-zinc-900 border-4 border-amber-500/50 rounded-[3.5rem] p-4 relative overflow-hidden flex flex-col items-center justify-center animate-pulse text-center h-full shadow-[0_0_60px_rgba(245,158,11,0.15)]">
                 <div className="text-amber-500 mb-0">

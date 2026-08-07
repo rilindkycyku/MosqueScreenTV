@@ -29,7 +29,6 @@ export default function SettingsModal({
     resetCategory,
     resetToFactory,
     remoteUrl,
-    timeLeft,
     connected,
     remoteName,
 }) {
@@ -165,7 +164,7 @@ export default function SettingsModal({
                         {activeTab === 'durations' && <DurationsSection settings={tempSettings} setSettings={setTempSettings} triggerConfirm={triggerConfirm} onReset={() => resetCategory('durations')} />}
                         {activeTab === 'ramazan'   && <RamazanSection   settings={tempSettings} setSettings={setTempSettings} triggerConfirm={triggerConfirm} onReset={() => resetCategory('ramazan')} />}
                         {activeTab === 'message'   && <MessageSection   settings={tempSettings} setSettings={setTempSettings} triggerConfirm={triggerConfirm} onReset={() => resetCategory('message')} />}
-                        {activeTab === 'remote'    && <RemoteSection remoteUrl={remoteUrl} timeLeft={timeLeft} connected={connected} remoteName={remoteName} />}
+                        {activeTab === 'remote'    && <RemoteSection remoteUrl={remoteUrl} connected={connected} remoteName={remoteName} />}
                     </div>
                 </main>
             </div>

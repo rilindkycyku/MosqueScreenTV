@@ -15,6 +15,7 @@ import Clock from './components/Display/Clock';
 import PrayerGrid from './components/Display/PrayerGrid';
 import NextPrayer from './components/Display/NextPrayer';
 import ActivityBox from './components/Display/ActivityBox';
+import SilenceNotice from './components/Display/SilenceNotice';
 // Vercel Analytics
 import { Analytics } from '@vercel/analytics/react';
 // Google Analytics
@@ -198,6 +199,7 @@ export default function App() {
                     setSettings(updated);
                     setTempSettings(updated);
                     localStorage.setItem('tv_settings', JSON.stringify(updated));
+                    setTimeout(updateNextPrayer, 0);
                 }
                 break;
             case 'SETTINGS_RESET':
@@ -219,7 +221,7 @@ export default function App() {
         sendToRemoteRef.current = send;
         send({ type: 'SETTINGS_SYNC', payload: settingsRef.current });
     }, []);
-    const { remoteUrl, timeLeft, connected, remoteName, sendToRemote } = useMosqueRemote({
+    const { remoteUrl, connected, remoteName, sendToRemote } = useMosqueRemote({
         onCommand: stableHandleRemoteCommand,
         onConnect: stableHandleRemoteConnect,
     });
@@ -465,9 +467,13 @@ export default function App() {
         try {
             navigator.mediaSession.metadata = null;
             navigator.mediaSession.playbackState = 'none';
+            // Android TV Chrome falls back to its native media-transport overlay
+            // when a registered action has no handler (i.e. handler === null).
+            // A no-op function fully swallows the remote's media keys instead.
+            const noop = () => {};
             ['play', 'pause', 'stop', 'seekbackward', 'seekforward', 'seekto', 'previoustrack', 'nexttrack']
                 .forEach(action => {
-                    try { navigator.mediaSession.setActionHandler(action, null); } catch (e) { /* unsupported action */ }
+                    try { navigator.mediaSession.setActionHandler(action, noop); } catch (e) { /* unsupported action */ }
                 });
         } catch (e) { /* mediaSession not fully supported */ }
     }, []);
@@ -874,14 +880,29 @@ export default function App() {
             const diffT = nextInfo.tani?.kohe ? nowMin - neMinuta(nextInfo.tani.kohe) : 999;
             // Remote "silence +10 min" boost forces silence mode on until it expires.
             const boosted = silenceBoostUntil != null && Date.now() < silenceBoostUntil;
-            const isSilenceMode = boosted || (diffA <= 5 && diffA >= 0) || (diffT >= 0 && diffT <= 10);
+            // On Friday in mosque mode, "Dreka" is never the active prayer id —
+            // it's always replaced by "Xhuma1"/"Xhuma2" (see prayerKeys above).
+            const isXhuma = nextInfo.tani?.id === "Xhuma1" || nextInfo.tani?.id === "Xhuma2";
+            const silenceRegular = Number(settings.durations?.silenceRegular) || 10;
+            const silenceXhuma = Number(settings.durations?.silenceXhuma) || 30;
+            const postSilenceLimit = isXhuma ? silenceXhuma : silenceRegular;
+            const isSilenceMode = boosted || (diffA <= 5 && diffA >= 0) || (diffT >= 0 && diffT <= postSilenceLimit);
+            // isSilenceMode drives the badge/glow for the whole configured window
+            // (up to 30 min after Xhuma). But ActivityBox uses isSilenceTakeover
+            // to decide whether to blank out the Hadith/Ajet in favor of the
+            // "silence your phone" screen — capping that to a short window keeps
+            // the Xhuma-tagged hadith visible to the people actually arriving for
+            // Friday prayer, instead of it being hidden behind the reminder for
+            // the entire extended silenceXhuma period.
+            const SILENCE_TAKEOVER_CAP_MIN = 5;
+            const isSilenceTakeover = boosted || (diffA <= 5 && diffA >= 0) || (diffT >= 0 && diffT <= Math.min(postSilenceLimit, SILENCE_TAKEOVER_CAP_MIN));
 
-            if (prev && prev.mbetur === nextInfo.mbetur && prev.isSilenceMode === isSilenceMode && prev.ardhshëm?.id === nextInfo.ardhshëm?.id) {
+            if (prev && prev.mbetur === nextInfo.mbetur && prev.isSilenceMode === isSilenceMode && prev.isSilenceTakeover === isSilenceTakeover && prev.ardhshëm?.id === nextInfo.ardhshëm?.id) {
                 return prev;
             }
-            return { ...nextInfo, isSilenceMode, nowMin };
+            return { ...nextInfo, isSilenceMode, isSilenceTakeover, nowMin };
         });
-    }, [vaktiSot, vaktet, settings.appMode, settings.ramazan, settings.xhuma2Active, xhemati, silenceBoostUntil]);
+    }, [vaktiSot, vaktet, settings.appMode, settings.ramazan, settings.xhuma2Active, settings.durations?.silenceRegular, settings.durations?.silenceXhuma, xhemati, silenceBoostUntil]);
 
     // Sync currentHadith state into ref so refresh timer can check it without being a dep
     useEffect(() => { currentHadithRef.current = currentHadith; }, [currentHadith]);
@@ -926,6 +947,13 @@ export default function App() {
 
     if (!vaktiSot) return <div className="h-screen bg-black flex items-center justify-center text-white text-3xl font-bold animate-pulse">Duke ngarkuar...</div>;
 
+    // During any prayer's silence window (people are actually in the room),
+    // swap the layout: the silence reminder takes the next-prayer slot, the
+    // next-prayer countdown moves down to replace the full prayer-times grid,
+    // and the Hadith/Ajet panel keeps showing throughout instead of being
+    // hidden behind the reminder. Outside a silence window, layout is normal.
+    const isSilenceFocus = !!infoTani?.isSilenceMode;
+
     return (
         <>
         <div className="fixed top-0 left-0 w-full h-full bg-black z-[50] overflow-hidden">
@@ -954,6 +982,8 @@ export default function App() {
                     tabIndex={-1}
                     aria-hidden="true"
                     src="/silent.mp4"
+                    onLoadedMetadata={suppressMediaSessionUi}
+                    onPlay={suppressMediaSessionUi}
                     style={{ position: 'absolute', width: '1px', height: '1px', opacity: 0, pointerEvents: 'none' }}
                 />
                 {/* Static CSS is in index.css */}
@@ -1029,10 +1059,18 @@ export default function App() {
                 <ErrorBoundary fallback={<div className="flex-1 bg-black/40 flex items-center justify-center text-zinc-500 font-black uppercase">Gabim në shfaqjen e vaktisë</div>}>
                     <main className="flex-1 flex flex-col gap-6 min-h-0" style={{ contain: 'layout style paint' }}>
                         <div className="flex-[1.4] grid grid-cols-2 gap-6 relative z-10 min-h-0">
-                            <NextPrayer infoTani={infoTani} ne24hFn={ne24h} formatDallimFn={formatDallim} settings={settings} />
-                            <ActivityBox displayMode={displayMode} settings={settings} currentHadith={currentHadith} currentEsmaul={currentEsmaul} vaktiSot={vaktiSot} infoTani={infoTani} />
+                            {isSilenceFocus
+                                ? <SilenceNotice />
+                                : <NextPrayer infoTani={infoTani} ne24hFn={ne24h} formatDallimFn={formatDallim} settings={settings} />}
+                            <ActivityBox displayMode={displayMode} settings={settings} currentHadith={currentHadith} currentEsmaul={currentEsmaul} vaktiSot={vaktiSot} infoTani={infoTani} suppressTakeover={isSilenceFocus} />
                         </div>
-                        <PrayerGrid listaNamazeve={listaNamazeve} vaktiSot={vaktiSot} infoTani={infoTani} xhematiFn={xhemati} ne24hFn={ne24h} isRamazan={settings.ramazan?.active} settings={settings} />
+                        {isSilenceFocus
+                            ? (
+                                <div className="flex-1 min-h-0 relative z-10">
+                                    <NextPrayer compact infoTani={infoTani} ne24hFn={ne24h} formatDallimFn={formatDallim} settings={settings} />
+                                </div>
+                            )
+                            : <PrayerGrid listaNamazeve={listaNamazeve} vaktiSot={vaktiSot} infoTani={infoTani} xhematiFn={xhemati} ne24hFn={ne24h} isRamazan={settings.ramazan?.active} settings={settings} />}
                     </main>
                 </ErrorBoundary>
 
@@ -1050,7 +1088,6 @@ export default function App() {
                     resetCategory={resetCategory}
                     resetToFactory={resetToFactory}
                     remoteUrl={remoteUrl}
-                    timeLeft={timeLeft}
                     connected={connected}
                     remoteName={remoteName}
                 />

@@ -1,3 +1,4 @@
+
 // remote/useMosqueRemote.js  — TV-side hook
 //
 // Transport: WebRTC via PeerJS (uses the free public PeerJS broker for
@@ -18,7 +19,7 @@ import Peer from "peerjs";
 import { hasPasscode, verifyPasscode } from "./passcodeUtils";
 
 const TOKEN_TTL_MS = 5 * 60 * 1000;
-const TOKEN_CHARS  = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const TOKEN_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
 // PeerJS rejects ids with characters outside [A-Za-z0-9_-], so the raw UUID
 // (which contains dashes — allowed) is fine, but we prefix to avoid collisions
@@ -58,16 +59,20 @@ function loadOrCreateToken() {
 }
 
 export function useMosqueRemote({ onCommand, onConnect, baseUrl = window.location.origin }) {
-  const [remoteUrl, setRemoteUrl]   = useState(null);
-  const [timeLeft, setTimeLeft]     = useState(TOKEN_TTL_MS);
-  const [connected, setConnected]   = useState(false);
+  const [remoteUrl, setRemoteUrl] = useState(null);
+  const [connected, setConnected] = useState(false);
   const [remoteName, setRemoteName] = useState(null);
 
-  const peerRef      = useRef(null);
-  const connRef      = useRef(null); // current authenticated phone DataConnection
-  const tokenRef     = useRef(null);
-  const guidRef      = useRef(null);
-  const authRef      = useRef(false); // true while a phone is authenticated
+  const peerRef = useRef(null);
+  const connRef = useRef(null); // current authenticated phone DataConnection
+  const tokenRef = useRef(null);
+  const guidRef = useRef(null);
+  const authRef = useRef(false); // true while a phone is authenticated
+  const onCommandRef = useRef(onCommand);
+  const onConnectRef = useRef(onConnect);
+
+  useEffect(() => { onCommandRef.current = onCommand; }, [onCommand]);
+  useEffect(() => { onConnectRef.current = onConnect; }, [onConnect]);
 
   const buildUrl = useCallback(
     (guid, token) => `${baseUrl}/remote?room=${guid}&token=${token}`,
@@ -80,17 +85,38 @@ export function useMosqueRemote({ onCommand, onConnect, baseUrl = window.locatio
     let currentGuid = loadOrCreateGuid();
     guidRef.current = currentGuid;
     localStorage.setItem("mosque_room_guid", currentGuid);
-    setRemoteUrl(null);
+
+    // Initial token setup
+    const { token } = loadOrCreateToken();
+    tokenRef.current = token;
+    setRemoteUrl(buildUrl(currentGuid, token));
 
     let retryCount = 0;
     const MAX_RETRIES = 5;
+    let idRetryCount = 0;
+    const MAX_ID_RETRIES = 4;
+    let longCycleCount = 0;
+    const MAX_LONG_CYCLE_DELAY = 300000; // 5 min ceiling
+
+    // +/-20% jitter so many TVs sharing the public broker don't all retry
+    // in lockstep and re-trigger the same rate limit together.
+    function withJitter(ms) {
+      const jitter = ms * 0.2;
+      return Math.round(ms + (Math.random() * 2 - 1) * jitter);
+    }
+
+    function longCycleDelay() {
+      const delay = Math.min(60000 * Math.pow(2, longCycleCount), MAX_LONG_CYCLE_DELAY);
+      longCycleCount++;
+      return withJitter(delay);
+    }
 
     function connect() {
       if (destroyed) return;
 
       currentGuid = loadOrCreateGuid();
       guidRef.current = currentGuid;
-      
+
       // Peer id == prefixed guid, so the phone reaches us via the room guid.
       const peer = new Peer(`${PEER_PREFIX}${currentGuid}`);
       peerRef.current = peer;
@@ -98,23 +124,52 @@ export function useMosqueRemote({ onCommand, onConnect, baseUrl = window.locatio
       peer.on("open", () => {
         if (destroyed) { peer.destroy(); return; }
         retryCount = 0; // reset on success
+        idRetryCount = 0;
+        longCycleCount = 0;
         console.log("[MosqueRemote] peer open, guid:", currentGuid);
-        // Show QR now that the peer is registered with the broker.
-        const { token, expiresAt } = loadOrCreateToken();
-        tokenRef.current = token;
-        setRemoteUrl(buildUrl(currentGuid, token));
-        setTimeLeft(Math.max(0, expiresAt - Date.now()));
+        const { token: t } = loadOrCreateToken();
+        tokenRef.current = t;
+        setRemoteUrl(buildUrl(currentGuid, t));
       });
 
       peer.on("connection", (conn) => {
         if (destroyed) { conn.close(); return; }
 
+        // Per-connection data-channel keepalive. Idle UDP flows get dropped
+        // by NAT/routers on both ends after ~30-60s with no traffic, which
+        // silently kills the DataConnection without a "close"/"error" event
+        // ever firing — leaving the TV stuck thinking a dead phone is still
+        // connected. Pinging over the channel itself (not just the broker
+        // socket) keeps the NAT mapping alive and lets us detect real death.
+        let lastRx = Date.now();
+        let healthId = null;
+
+        function startHealthCheck() {
+          if (healthId) clearInterval(healthId);
+          healthId = setInterval(() => {
+            if (!conn.open) return;
+            if (Date.now() - lastRx > 30000) {
+              try { conn.close(); } catch { /* noop */ }
+              return;
+            }
+            try { conn.send({ type: "PING" }); } catch { /* noop */ }
+          }, 10000);
+        }
+
+        function stopHealthCheck() {
+          if (healthId) { clearInterval(healthId); healthId = null; }
+        }
+
         conn.on("data", async (data) => {
           if (destroyed || !data || typeof data !== "object") return;
+          lastRx = Date.now();
+          if (data.type === "PING") return;
 
           // Authenticated command
           if (data.type !== "AUTH") {
-            if (authRef.current && connRef.current === conn) onCommand(data);
+            if (authRef.current && connRef.current === conn) {
+              onCommandRef.current?.(data);
+            }
             return;
           }
 
@@ -124,12 +179,13 @@ export function useMosqueRemote({ onCommand, onConnect, baseUrl = window.locatio
 
           if (sentToken && sentToken === tokenRef.current) {
             _acceptPhone(conn);
+            startHealthCheck();
             return;
           }
 
           if (sentPasscode && hasPasscode()) {
             const ok = await verifyPasscode(sentPasscode);
-            if (ok) { _acceptPhone(conn); return; }
+            if (ok) { _acceptPhone(conn); startHealthCheck(); return; }
             conn.send({ type: "AUTH_FAIL", payload: { reason: "Fjalëkalimi është i gabuar." } });
             return;
           }
@@ -141,6 +197,7 @@ export function useMosqueRemote({ onCommand, onConnect, baseUrl = window.locatio
         });
 
         conn.on("close", () => {
+          stopHealthCheck();
           if (connRef.current !== conn) return;
           connRef.current = null;
           authRef.current = false;
@@ -149,6 +206,7 @@ export function useMosqueRemote({ onCommand, onConnect, baseUrl = window.locatio
         });
 
         conn.on("error", () => {
+          stopHealthCheck();
           if (connRef.current !== conn) return;
           connRef.current = null;
           authRef.current = false;
@@ -159,15 +217,25 @@ export function useMosqueRemote({ onCommand, onConnect, baseUrl = window.locatio
 
       peer.on("error", (err) => {
         if (err?.type === "network") {
-          // Broker is unreachable — don't spam reconnect, let the
-          // "disconnected" handler deal with backoff.
           return;
         }
         console.warn("[MosqueRemote] peer error:", err?.type || err?.message);
         if (!destroyed && err?.type === "unavailable-id") {
           try { peer.destroy(); } catch { /* noop */ }
-          localStorage.removeItem("mosque_room_guid");
-          setTimeout(connect, 1500);
+          idRetryCount++;
+          if (idRetryCount <= MAX_ID_RETRIES) {
+            // The broker likely hasn't released our own previous registration
+            // yet (e.g. after a brief network blip) — retry the SAME id with
+            // backoff instead of abandoning it, so an already-scanned QR code
+            // / already-connected phone doesn't get orphaned by a guid change.
+            setTimeout(connect, Math.min(2000 * idRetryCount, 10000));
+          } else {
+            // Truly stuck (id genuinely taken elsewhere) — fall back to a
+            // fresh guid so the TV can come back online at all.
+            idRetryCount = 0;
+            localStorage.removeItem("mosque_room_guid");
+            setTimeout(connect, 1500);
+          }
         }
       });
 
@@ -175,17 +243,17 @@ export function useMosqueRemote({ onCommand, onConnect, baseUrl = window.locatio
         if (destroyed) return;
         retryCount++;
         if (retryCount > MAX_RETRIES) {
-          console.warn("[MosqueRemote] broker unreachable after", MAX_RETRIES, "retries — will retry in 60s");
-          // Long cooldown, then reset counter and try fresh
+          const delay = longCycleDelay();
+          console.warn("[MosqueRemote] broker unreachable after", MAX_RETRIES, "retries — will retry in", Math.round(delay / 1000) + "s");
           setTimeout(() => {
             if (destroyed) return;
             retryCount = 0;
-            try { peer.destroy(); } catch {}
+            try { peer.destroy(); } catch { }
             connect();
-          }, 60000);
+          }, delay);
           return;
         }
-        const delay = Math.min(5000 * Math.pow(2, retryCount - 1), 30000);
+        const delay = withJitter(Math.min(5000 * Math.pow(2, retryCount - 1), 30000));
         setTimeout(() => {
           if (!destroyed && peer && !peer.destroyed) {
             try { peer.reconnect(); } catch { /* peer may be destroyed */ }
@@ -199,18 +267,16 @@ export function useMosqueRemote({ onCommand, onConnect, baseUrl = window.locatio
         connRef.current = null;
         setConnected(false);
         setRemoteName(null);
-        setRemoteUrl(null);
         retryCount++;
         if (retryCount > MAX_RETRIES) {
-          setTimeout(() => { if (!destroyed) { retryCount = 0; connect(); } }, 60000);
+          setTimeout(() => { if (!destroyed) { retryCount = 0; connect(); } }, longCycleDelay());
           return;
         }
-        setTimeout(connect, Math.min(5000 * Math.pow(2, retryCount - 1), 30000));
+        setTimeout(connect, withJitter(Math.min(5000 * Math.pow(2, retryCount - 1), 30000)));
       });
     }
 
     function _acceptPhone(conn) {
-      // Replace any previous phone.
       if (connRef.current && connRef.current !== conn) {
         try { connRef.current.close(); } catch { /* already gone */ }
       }
@@ -219,8 +285,7 @@ export function useMosqueRemote({ onCommand, onConnect, baseUrl = window.locatio
       setConnected(true);
       setRemoteName("Remote");
       conn.send({ type: "AUTH_OK" });
-      // Let the app push initial state (e.g. full settings) to the new phone.
-      onConnect?.((data) => { if (conn.open) conn.send(data); });
+      onConnectRef.current?.((data) => { if (conn.open) conn.send(data); });
     }
 
     connect();
@@ -228,41 +293,42 @@ export function useMosqueRemote({ onCommand, onConnect, baseUrl = window.locatio
     return () => {
       destroyed = true;
       try { connRef.current?.close(); } catch { /* noop */ }
+      // Destroy immediately, even if the peer hasn't finished opening yet —
+      // Peer#destroy() closes the broker socket synchronously either way.
+      // Deferring until "open"/"error" (as this used to do) leaves the old
+      // peer alive long enough to race a freshly-mounted one for the same
+      // room id under React StrictMode's mount→unmount→remount cycle,
+      // which the broker resolves by rejecting one side with "unavailable-id"
+      // — producing a spurious QR/guid churn loop that looks like constant
+      // disconnects even though nothing is actually wrong.
       const p = peerRef.current;
       if (p && !p.destroyed) {
-        if (!p.open && !p.disconnected) {
-          p.on("open", () => { try { p.destroy(); } catch {} });
-          p.on("error", () => { try { p.destroy(); } catch {} });
-        } else {
-          try { p.destroy(); } catch {}
-        }
+        try { p.destroy(); } catch { /* noop */ }
       }
     };
-  }, [buildUrl, onCommand, onConnect]);
+  }, [buildUrl]);
 
-  // ── Token countdown ──────────────────────────────────────────────────────
+  // ── Token expiry watcher ─────────────────────────────────────────────────
+  // Runs every second but only touches React state when the token actually
+  // needs regenerating (every TOKEN_TTL_MS) — the live per-second countdown
+  // UI (QRPanel) reads localStorage directly via a ref instead of state, so
+  // this never needs to re-render the whole app tree just for a tick.
   useEffect(() => {
-    let rafId;
+    let intervalId;
     function tick() {
       const raw = localStorage.getItem("mosque_room_token");
       if (raw) {
         const { expiresAt } = JSON.parse(raw);
-        const remaining = expiresAt - Date.now();
-        if (remaining <= 0) {
-          if (!authRef.current) {
-            const { token, expiresAt: newExp } = loadOrCreateToken();
-            tokenRef.current = token;
-            setRemoteUrl(buildUrl(guidRef.current, token));
-            setTimeLeft(Math.max(0, newExp - Date.now()));
-          }
-        } else {
-          setTimeLeft(remaining);
+        if (Date.now() >= expiresAt && !authRef.current) {
+          const { token } = loadOrCreateToken();
+          tokenRef.current = token;
+          setRemoteUrl(buildUrl(guidRef.current, token));
         }
       }
-      rafId = requestAnimationFrame(tick);
     }
-    rafId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafId);
+    tick();
+    intervalId = setInterval(tick, 1000);
+    return () => clearInterval(intervalId);
   }, [buildUrl]);
 
   const sendToRemote = (data) => {
@@ -271,5 +337,5 @@ export function useMosqueRemote({ onCommand, onConnect, baseUrl = window.locatio
     }
   };
 
-  return { remoteUrl, timeLeft, connected, remoteName, sendToRemote };
+  return { remoteUrl, connected, remoteName, sendToRemote };
 }

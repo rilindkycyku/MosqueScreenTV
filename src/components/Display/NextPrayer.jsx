@@ -2,7 +2,7 @@ import { memo } from 'react';
 
 const BN = { fontFamily: "'Bebas Neue', sans-serif" };
 
-const NextPrayer = memo(function NextPrayer({ infoTani, ne24hFn, formatDallimFn, settings }) {
+const NextPrayer = memo(function NextPrayer({ infoTani, ne24hFn, formatDallimFn, settings, compact }) {
     if (!infoTani?.ardhshëm) {
         return (
             <div className="bg-zinc-900/80 backdrop-blur-sm border-2 border-white/5 rounded-[3.5rem] p-4 relative overflow-hidden flex flex-col items-center justify-center shadow-2xl">
@@ -15,6 +15,35 @@ const NextPrayer = memo(function NextPrayer({ infoTani, ne24hFn, formatDallimFn,
     const showSilence = settings?.showSilenceWarning !== false;
     const isXh = infoTani.ardhshëm.isXh;
     const labelMain = infoTani.ardhshëm.label.replace('ME XHEMAT: ', '');
+
+    // Compact variant: the short, wide strip this takes when it swaps places
+    // with the prayer-times grid during a silence window. The tall-card sizes
+    // below (up to text-[17rem]) badly overflow that shape, so this is a
+    // separate, single-row layout sized for it instead of reusing them.
+    if (compact) {
+        const displayName = labelMain.split(' (')[0];
+        return (
+            <div className="next-prayer-box bg-gradient-to-br from-zinc-800 to-zinc-950 rounded-[3.5rem] px-14 relative overflow-hidden flex items-center justify-between h-full shadow-2xl">
+                <div className="flex items-center gap-8 min-w-0">
+                    <div className={`w-4 h-4 rounded-full shrink-0 ${isXh ? 'bg-emerald-400 animate-pulse' : 'bg-emerald-600'}`} />
+                    <div className="flex flex-col min-w-0">
+                        <p className="text-emerald-500 font-bold uppercase tracking-[0.3em] text-xl leading-none mb-2">Vakti i radhës</p>
+                        <h2 className="font-bold text-white tracking-[0.03em] uppercase leading-none whitespace-nowrap text-8xl" style={BN}>
+                            {displayName}
+                        </h2>
+                    </div>
+                </div>
+                <div className="flex items-center gap-6 shrink-0">
+                    <p className="text-zinc-400 text-3xl uppercase font-bold tracking-widest leading-[1.05] text-right" style={BN}>
+                        koha e <br /> mbetur
+                    </p>
+                    <div className={`text-8xl font-bold tabular-nums leading-none whitespace-nowrap ${infoTani.mbetur <= 15 ? 'text-amber-400 animate-pulse' : 'text-emerald-400'}`} style={BN}>
+                        {formatDallimFn(infoTani.mbetur)}
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className={`next-prayer-box bg-gradient-to-br from-zinc-800 to-zinc-950 rounded-[3.5rem] p-2 relative overflow-hidden flex flex-col transition-all duration-500 h-full ${isSilenceMode && showSilence ? 'shadow-[0_0_50px_rgba(245,158,11,0.1)]' : 'shadow-2xl'}`}>

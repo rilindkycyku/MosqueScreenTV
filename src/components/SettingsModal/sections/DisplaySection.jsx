@@ -1,5 +1,5 @@
 import { HiGlobeAlt, HiVolumeUp, HiVolumeOff, HiDesktopComputer } from "react-icons/hi";
-import { SectionHeader } from "./shared";
+import { SectionHeader, NumberInput } from "./shared";
 
 export default function DisplaySection({ settings, setSettings, triggerConfirm, onReset }) {
     return (
@@ -112,6 +112,36 @@ export default function DisplaySection({ settings, setSettings, triggerConfirm, 
                             </div>
                         </div>
                     </div>
+
+                    {/* Full Silence Duration NumberInput Cards (Rendered under Vërejtja e Heshtjes when active) */}
+                    {settings.showSilenceWarning !== false && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 animate-in fade-in zoom-in-95 duration-500">
+                            <NumberInput
+                                label="Heshtja (Vaktet Normale)"
+                                description='Kohëzgjatja (minuta) e "Fikni Telefonat" pas hyrjes së vaktit normal.'
+                                value={settings.durations?.silenceRegular || 10}
+                                onChange={(val) => {
+                                    const adjustedVal = Math.max(1, parseInt(val) || 1);
+                                    setSettings(p => ({
+                                        ...p,
+                                        durations: { ...p.durations, silenceRegular: adjustedVal }
+                                    }));
+                                }}
+                            />
+                            <NumberInput
+                                label="Heshtja (Koha e Xhumasë)"
+                                description='Kohëzgjatja (minuta) e "Fikni Telefonat" gjatë Xhumasë dhe Hutbes.'
+                                value={settings.durations?.silenceXhuma || 30}
+                                onChange={(val) => {
+                                    const adjustedVal = Math.max(5, parseInt(val) || 5);
+                                    setSettings(p => ({
+                                        ...p,
+                                        durations: { ...p.durations, silenceXhuma: adjustedVal }
+                                    }));
+                                }}
+                            />
+                        </div>
+                    )}
 
                     <div className={`mt-8 p-10 bg-white/5 rounded-[3rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group ${!settings.showQr ? 'opacity-30 pointer-events-none grayscale' : ''}`}>
                         <div className="flex flex-col items-center gap-6">
