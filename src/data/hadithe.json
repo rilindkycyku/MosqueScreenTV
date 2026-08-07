@@ -24334,16 +24334,6 @@
     {
       "id": 2351,
       "entryText": "Nga Ebu Hurejra, Allahu qoftë i kënaqur me të, përcillet se i Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
-      "textContent": "Dita më e mirë në të cilën lind dielli është dita e xhuma.",
-      "reference": "Transmeton Muslimi",
-      "type": "hadith",
-      "tags": [
-        "xhuma"
-      ]
-    },
-    {
-      "id": 2352,
-      "entryText": "Nga Ebu Hurejra, Allahu qoftë i kënaqur me të, përcillet se i Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Në ditën e xhuma ka një çast në të cilin robi musliman, nëse i lutet Allahut duke qenë në namaz, i jepet ajo që kërkon.",
       "reference": "Muttefekun alejhi",
       "type": "hadith",
@@ -24353,7 +24343,7 @@
       ]
     },
     {
-      "id": 2353,
+      "id": 2352,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Shtoni salavatet mbi mua ditën e xhuma, sepse salavatet tuaja më paraqiten.",
       "reference": "Transmeton Ebu Davudi",
@@ -24363,7 +24353,7 @@
       ]
     },
     {
-      "id": 2354,
+      "id": 2353,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kush e lexon suren El-Kehf ditën e xhuma, atij i ndriçohet drita mes dy xhumave.",
       "reference": "Transmeton Bejhekiu",
@@ -24373,7 +24363,7 @@
       ]
     },
     {
-      "id": 2355,
+      "id": 2354,
       "entryText": "Nga Ebu Hurejra, Allahu qoftë i kënaqur me të, përcillet se i Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Pesë kohët e namazit, xhumaja deri në xhuma dhe Ramazani deri në Ramazan janë shlyerje për mëkatet që bëhen ndërmjet tyre, nëse largohesh nga mëkatet e mëdha.",
       "reference": "Transmeton Muslimi",
@@ -24386,7 +24376,7 @@
       ]
     },
     {
-      "id": 2356,
+      "id": 2355,
       "entryText": "Nga Ebu Hurejra, Allahu qoftë i kënaqur me të, përcillet se i Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kur të vijë dita e xhuma, melekët qëndrojnë te çdo derë e xhamisë dhe shënojnë ata që vijnë, njërin pas tjetrit; e kur del imami, i mbyllin fletushkat dhe vijnë ta dëgjojnë hutben.",
       "reference": "Muttefekun alejhi",
@@ -24396,19 +24386,7 @@
       ]
     },
     {
-      "id": 2357,
-      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
-      "textContent": "Kush merr abdes mirë, pastaj vjen në xhuma, dëgjon dhe hesht, i falen mëkatet mes asaj xhumaje dhe xhumasë tjetër, plus edhe tri ditë.",
-      "reference": "Transmeton Muslimi",
-      "type": "hadith",
-      "tags": [
-        "meshira",
-        "namazi",
-        "xhuma"
-      ]
-    },
-    {
-      "id": 2358,
+      "id": 2356,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kush lan trupin ditën e xhuma dhe shkon herët në xhami, sikur të kishte dhënë kurban; e kush vjen më vonë, shpërblimi i tij zvogëlohet sipas radhës së ardhjes.",
       "reference": "Muttefekun alejhi",
@@ -24418,7 +24396,7 @@
       ]
     },
     {
-      "id": 2359,
+      "id": 2357,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kur t'i thuash shokut tënd 'hesht' ndërsa imami mban hutben ditën e xhuma, ke folur kot.",
       "reference": "Muttefekun alejhi",
@@ -24428,7 +24406,7 @@
       ]
     },
     {
-      "id": 2360,
+      "id": 2358,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kush i lë tri xhuma nga pakujdesia, Allahu ia vulos zemrën.",
       "reference": "Transmeton Tirmidhiu",
@@ -24438,7 +24416,7 @@
       ]
     },
     {
-      "id": 2361,
+      "id": 2359,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Larja ditën e xhuma është detyrë për çdo të rritur, si dhe pastrimi i dhëmbëve dhe përdorimi i erës së mirë nëse ka mundësi.",
       "reference": "Muttefekun alejhi",
@@ -24448,7 +24426,7 @@
       ]
     },
     {
-      "id": 2362,
+      "id": 2360,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Njerëzit më të afërt me mua në Ditën e Kiametit do të jenë ata që kanë dërguar më së shumti salavate mbi mua.",
       "reference": "Transmeton Tirmidhiu",
@@ -24458,7 +24436,7 @@
       ]
     },
     {
-      "id": 2363,
+      "id": 2361,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Mos e veçoni natën e xhumasë me namaz nate mbi netët e tjera, dhe mos e veçoni ditën e xhuma me agjërim mbi ditët e tjera.",
       "reference": "Transmeton Muslimi",
@@ -24470,7 +24448,7 @@
       ]
     },
     {
-      "id": 2364,
+      "id": 2362,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Veprat vlerësohen sipas qëllimeve, dhe secilit njeri i takon ajo që ka pasur për qëllim.",
       "reference": "Muttefekun alejhi",
@@ -24480,7 +24458,7 @@
       ]
     },
     {
-      "id": 2365,
+      "id": 2363,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Askush prej jush nuk beson me të vërtetë derisa të dojë për vëllain e vet atë që e do për vete.",
       "reference": "Muttefekun alejhi",
@@ -24491,7 +24469,7 @@
       ]
     },
     {
-      "id": 2366,
+      "id": 2364,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kush beson në Allahun dhe në Ditën e Fundit, le të flasë mirë ose le të heshtë.",
       "reference": "Muttefekun alejhi",
@@ -24502,7 +24480,7 @@
       ]
     },
     {
-      "id": 2367,
+      "id": 2365,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "I fortë nuk është ai që i mund të tjerët me forcë, por ai që e përmban veten kur zemërohet.",
       "reference": "Muttefekun alejhi",
@@ -24512,7 +24490,7 @@
       ]
     },
     {
-      "id": 2368,
+      "id": 2366,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Allahu nuk shikon në pamjen dhe në pasurinë tuaj, por shikon në zemrat dhe në veprat tuaja.",
       "reference": "Transmeton Muslimi",
@@ -24523,18 +24501,7 @@
       ]
     },
     {
-      "id": 2369,
-      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
-      "textContent": "Më i miri prej jush është ai që është më i mirë ndaj familjes së vet.",
-      "reference": "Transmeton Tirmidhiu",
-      "type": "hadith",
-      "tags": [
-        "familja",
-        "morali"
-      ]
-    },
-    {
-      "id": 2370,
+      "id": 2367,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Sadakaja nuk e pakëson pasurinë, dhe Allahu ia shton nderin atij që fal.",
       "reference": "Transmeton Muslimi",
@@ -24545,7 +24512,7 @@
       ]
     },
     {
-      "id": 2371,
+      "id": 2368,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Buzëqeshja jote në fytyrën e vëllait tënd është sadaka.",
       "reference": "Transmeton Tirmidhiu",
@@ -24556,7 +24523,7 @@
       ]
     },
     {
-      "id": 2372,
+      "id": 2369,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kush ia largon një besimtari një brengë të kësaj bote, Allahu do t'ia largojë atij një brengë të Ditës së Kiametit.",
       "reference": "Transmeton Muslimi",
@@ -24568,7 +24535,7 @@
       ]
     },
     {
-      "id": 2373,
+      "id": 2370,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Nuk e falënderon Allahun ai që nuk i falënderon njerëzit.",
       "reference": "Transmeton Ebu Davudi",
@@ -24579,7 +24546,7 @@
       ]
     },
     {
-      "id": 2374,
+      "id": 2371,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Veprat më të dashura tek Allahu janë ato të vazhdueshmet, edhe nëse janë të pakta.",
       "reference": "Muttefekun alejhi",
@@ -24590,7 +24557,7 @@
       ]
     },
     {
-      "id": 2375,
+      "id": 2372,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Pastërtia është gjysma e besimit.",
       "reference": "Transmeton Muslimi",
@@ -24600,7 +24567,7 @@
       ]
     },
     {
-      "id": 2376,
+      "id": 2373,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kush shkon në xhami në mëngjes e në mbrëmje, Allahu i përgatit një vend në Xhennet sa herë që shkon.",
       "reference": "Muttefekun alejhi",
@@ -24611,7 +24578,7 @@
       ]
     },
     {
-      "id": 2377,
+      "id": 2374,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Namazi me xhemat është njëzet e shtatë herë më i vlefshëm se namazi i falur vetëm.",
       "reference": "Muttefekun alejhi",
@@ -24621,7 +24588,7 @@
       ]
     },
     {
-      "id": 2378,
+      "id": 2375,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Dy rekatet e sabahut janë më të mira se dynjaja dhe gjithçka që gjendet në të.",
       "reference": "Transmeton Muslimi",
@@ -24631,7 +24598,7 @@
       ]
     },
     {
-      "id": 2379,
+      "id": 2376,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kush i fal dy namazet e freskëta, sabahun dhe ikindinë, hyn në Xhennet.",
       "reference": "Muttefekun alejhi",
@@ -24642,7 +24609,7 @@
       ]
     },
     {
-      "id": 2380,
+      "id": 2377,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Allahu është i Bukur dhe e do bukurinë.",
       "reference": "Transmeton Muslimi",
@@ -24652,7 +24619,7 @@
       ]
     },
     {
-      "id": 2381,
+      "id": 2378,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Përmendja e Allahut e qetëson zemrën; shembulli i atij që e përmend Zotin e vet dhe i atij që nuk e përmend është si i gjallit me të vdekurin.",
       "reference": "Transmeton Buhariu",
@@ -24663,7 +24630,7 @@
       ]
     },
     {
-      "id": 2382,
+      "id": 2379,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Allahu i Lartësuar thotë: Unë jam ashtu si mendon robi Im për Mua, dhe jam me të kur më kujton.",
       "reference": "Muttefekun alejhi",
@@ -24674,7 +24641,7 @@
       ]
     },
     {
-      "id": 2383,
+      "id": 2380,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kur Allahu e krijoi krijesën, shkroi në Librin e Vet: Mëshira Ime ia kalon zemërimit Tim.",
       "reference": "Muttefekun alejhi",
@@ -24687,7 +24654,7 @@
       ]
     },
     {
-      "id": 2384,
+      "id": 2381,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Dy fjalë të lehta për gjuhën, të rënda në peshore dhe të dashura për të Gjithëmëshirshmin: Subhanallahi ue bihamdihi, Subhanallahil-Adhim.",
       "reference": "Muttefekun alejhi",
@@ -24698,7 +24665,7 @@
       ]
     },
     {
-      "id": 2385,
+      "id": 2382,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Përtërijeni besimin tuaj duke thënë shpesh: nuk ka zot tjetër përveç Allahut.",
       "reference": "Transmeton Ahmedi",
@@ -24709,7 +24676,7 @@
       ]
     },
     {
-      "id": 2386,
+      "id": 2383,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Mes njeriut dhe mosbesimit qëndron lënia e namazit.",
       "reference": "Transmeton Muslimi",
@@ -24720,7 +24687,7 @@
       ]
     },
     {
-      "id": 2387,
+      "id": 2384,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Sikur para derës së njërit prej jush të kalonte një lumë dhe ai të lahej në të pesë herë në ditë, a do t'i mbetej ndonjë papastërti? Ashtu janë edhe pesë kohët e namazit: me to Allahu i shlyen gabimet.",
       "reference": "Muttefekun alejhi",
@@ -24731,7 +24698,7 @@
       ]
     },
     {
-      "id": 2388,
+      "id": 2385,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kush i fal dymbëdhjetë rekate vullnetare gjatë ditës dhe natës, Allahu ia ndërton një shtëpi në Xhennet.",
       "reference": "Transmeton Muslimi",
@@ -24742,7 +24709,7 @@
       ]
     },
     {
-      "id": 2389,
+      "id": 2386,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Drejtoni rreshtat tuaj, sepse drejtimi i rreshtave është pjesë e plotësimit të namazit.",
       "reference": "Muttefekun alejhi",
@@ -24752,7 +24719,7 @@
       ]
     },
     {
-      "id": 2390,
+      "id": 2387,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Më afër se kurrë është robi me Zotin e vet kur bie në sexhde, prandaj shtoni lutjet në të.",
       "reference": "Transmeton Muslimi",
@@ -24763,7 +24730,7 @@
       ]
     },
     {
-      "id": 2391,
+      "id": 2388,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Përgëzoji ata që ecin nëpër errësirë drejt xhamive me dritë të plotë në Ditën e Kiametit.",
       "reference": "Transmeton Ebu Davudi",
@@ -24774,7 +24741,7 @@
       ]
     },
     {
-      "id": 2392,
+      "id": 2389,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Vendet më të dashura te Allahu janë xhamitë, kurse vendet më të papëlqyera janë tregjet.",
       "reference": "Transmeton Muslimi",
@@ -24784,7 +24751,7 @@
       ]
     },
     {
-      "id": 2393,
+      "id": 2390,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Ruajuni nga dyshimi, sepse dyshimi është fjala më e rreme. Mos e hulumtoni njëri-tjetrin, mos ia lakmoni njëri-tjetrit dhe mos e urreni njëri-tjetrin; jini robër të Allahut si vëllezër.",
       "reference": "Muttefekun alejhi",
@@ -24794,7 +24761,7 @@
       ]
     },
     {
-      "id": 2394,
+      "id": 2391,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Nuk është prej nesh ai që nuk i mëshiron të vegjlit tanë dhe nuk e njeh vlerën e të mëdhenjve tanë.",
       "reference": "Transmeton Tirmidhiu",
@@ -24806,7 +24773,7 @@
       ]
     },
     {
-      "id": 2395,
+      "id": 2392,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Allahu është i Butë dhe e do butësinë; butësia nuk gjendet në asgjë pa e zbukuruar atë, dhe nuk hiqet nga asgjë pa e shëmtuar.",
       "reference": "Transmeton Muslimi",
@@ -24816,7 +24783,7 @@
       ]
     },
     {
-      "id": 2396,
+      "id": 2393,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kush ia mbulon të metën një muslimani, Allahu do t'ia mbulojë të metat e tij në këtë botë dhe në tjetrën.",
       "reference": "Transmeton Muslimi",
@@ -24827,7 +24794,7 @@
       ]
     },
     {
-      "id": 2397,
+      "id": 2394,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Besimtarët me besimin më të plotë janë ata që kanë moralin më të bukur.",
       "reference": "Transmeton Tirmidhiu",
@@ -24838,7 +24805,7 @@
       ]
     },
     {
-      "id": 2398,
+      "id": 2395,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Sinqeriteti të çon te mirësia, dhe mirësia të çon në Xhennet; njeriu vazhdon të flasë të vërtetën derisa te Allahu shkruhet i sinqertë.",
       "reference": "Muttefekun alejhi",
@@ -24849,17 +24816,7 @@
       ]
     },
     {
-      "id": 2399,
-      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
-      "textContent": "Kush na mashtron, nuk është prej nesh.",
-      "reference": "Transmeton Muslimi",
-      "type": "hadith",
-      "tags": [
-        "morali"
-      ]
-    },
-    {
-      "id": 2400,
+      "id": 2396,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Largoje pengesën nga rruga e njerëzve, sepse edhe ajo është sadaka.",
       "reference": "Muttefekun alejhi",
@@ -24870,7 +24827,7 @@
       ]
     },
     {
-      "id": 2401,
+      "id": 2397,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Çdo vepër e mirë është sadaka.",
       "reference": "Muttefekun alejhi",
@@ -24881,7 +24838,7 @@
       ]
     },
     {
-      "id": 2402,
+      "id": 2398,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Dora e sipërme që jep është më e mirë se dora e poshtme që merr.",
       "reference": "Muttefekun alejhi",
@@ -24891,7 +24848,7 @@
       ]
     },
     {
-      "id": 2403,
+      "id": 2399,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Allahu është në ndihmë të robit për sa kohë që robi është në ndihmë të vëllait të vet.",
       "reference": "Transmeton Muslimi",
@@ -24902,7 +24859,7 @@
       ]
     },
     {
-      "id": 2404,
+      "id": 2400,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kush e ushqen një agjërues për iftar, ka shpërblimin e tij, pa iu pakësuar agjëruesit asgjë nga shpërblimi i vet.",
       "reference": "Transmeton Tirmidhiu",
@@ -24913,7 +24870,7 @@
       ]
     },
     {
-      "id": 2405,
+      "id": 2401,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Shikoni atë që është nën ju e mos shikoni atë që është mbi ju, sepse kjo është më e përshtatshme që të mos e nënçmoni begatinë e Allahut ndaj jush.",
       "reference": "Muttefekun alejhi",
@@ -24924,7 +24881,7 @@
       ]
     },
     {
-      "id": 2406,
+      "id": 2402,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kërkimi i diturisë është detyrë për çdo musliman.",
       "reference": "Transmeton Ibn Maxhe",
@@ -24934,7 +24891,7 @@
       ]
     },
     {
-      "id": 2407,
+      "id": 2403,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Më i miri prej jush është ai që e mëson Kur'anin dhe ua mëson atë të tjerëve.",
       "reference": "Transmeton Buhariu",
@@ -24945,7 +24902,7 @@
       ]
     },
     {
-      "id": 2408,
+      "id": 2404,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kur të vdesë njeriu, i ndërpriten veprat përveç tri gjërave: një sadakaje së vazhdueshme, një dituri prej së cilës përfitohet dhe një fëmije të mirë që lutet për të.",
       "reference": "Transmeton Muslimi",
@@ -24958,7 +24915,7 @@
       ]
     },
     {
-      "id": 2409,
+      "id": 2405,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Atij që Allahu ia do të mirën, ia jep kuptimin e drejtë të fesë.",
       "reference": "Muttefekun alejhi",
@@ -24968,7 +24925,7 @@
       ]
     },
     {
-      "id": 2410,
+      "id": 2406,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kënaqësia e Zotit është në kënaqësinë e prindit, dhe zemërimi i Zotit është në zemërimin e prindit.",
       "reference": "Transmeton Tirmidhiu",
@@ -24979,7 +24936,7 @@
       ]
     },
     {
-      "id": 2411,
+      "id": 2407,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Secili prej jush është bari dhe secili është përgjegjës për tufën e vet.",
       "reference": "Muttefekun alejhi",
@@ -24990,7 +24947,7 @@
       ]
     },
     {
-      "id": 2412,
+      "id": 2408,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kush kujdeset për dy vajza derisa të rriten, do të vijë në Ditën e Kiametit unë dhe ai kështu — dhe i bashkoi gishtat e vet.",
       "reference": "Transmeton Muslimi",
@@ -25001,7 +24958,7 @@
       ]
     },
     {
-      "id": 2413,
+      "id": 2409,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Sa i mrekullueshëm është gjendja e besimtarit: çdo gjendje e tij është e mirë. Nëse i vjen e mira, falënderon dhe kjo është mirë për të; e nëse e godet e keqja, duron dhe kjo është mirë për të.",
       "reference": "Transmeton Muslimi",
@@ -25013,7 +24970,7 @@
       ]
     },
     {
-      "id": 2414,
+      "id": 2410,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Ruaje Allahun dhe Ai të ruan ty; ruaje Allahun dhe do ta gjesh përpara teje. Dije se ajo që të ka kaluar, nuk kishte për të të goditur, dhe ajo që të ka goditur, nuk kishte për të të kaluar.",
       "reference": "Transmeton Tirmidhiu",
@@ -25024,7 +24981,7 @@
       ]
     },
     {
-      "id": 2415,
+      "id": 2411,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Sa më i madh shpërblimi, aq më e madhe sprova; kur Allahu i do njerëzit, i sprovon ata.",
       "reference": "Transmeton Tirmidhiu",
@@ -25034,7 +24991,7 @@
       ]
     },
     {
-      "id": 2416,
+      "id": 2412,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Lutja është vetë adhurimi.",
       "reference": "Transmeton Tirmidhiu",
@@ -25044,7 +25001,7 @@
       ]
     },
     {
-      "id": 2417,
+      "id": 2413,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Zoti juaj është i Turpshëm dhe Bujar: kur robi i ngre duart nga Ai, ka turp t'ia kthejë ato bosh.",
       "reference": "Transmeton Tirmidhiu",
@@ -25055,7 +25012,7 @@
       ]
     },
     {
-      "id": 2418,
+      "id": 2414,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Tri lutje pranohen pa dyshim: lutja e prindit për fëmijën, lutja e udhëtarit dhe lutja e atij që i është bërë padrejtësi.",
       "reference": "Transmeton Ebu Davudi",
@@ -25067,7 +25024,7 @@
       ]
     },
     {
-      "id": 2419,
+      "id": 2415,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Zoti ynë zbret çdo natë në qiellin e dynjasë kur mbetet një e treta e fundit e natës dhe thotë: Kush më lutet që t'i përgjigjem? Kush më kërkon që t'i jap? Kush më kërkon falje që ta fal?",
       "reference": "Muttefekun alejhi",
@@ -25078,7 +25035,7 @@
       ]
     },
     {
-      "id": 2420,
+      "id": 2416,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Agjërimi është mburojë.",
       "reference": "Muttefekun alejhi",
@@ -25088,7 +25045,7 @@
       ]
     },
     {
-      "id": 2421,
+      "id": 2417,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Agjëruesi ka dy gëzime: gëzimin kur çel iftarin dhe gëzimin kur ta takojë Zotin e vet.",
       "reference": "Muttefekun alejhi",
@@ -25099,7 +25056,7 @@
       ]
     },
     {
-      "id": 2422,
+      "id": 2418,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Hani syfyr, sepse në syfyr ka bereqet.",
       "reference": "Muttefekun alejhi",
@@ -25109,7 +25066,7 @@
       ]
     },
     {
-      "id": 2423,
+      "id": 2419,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Lexoni Kur'anin, sepse ai do të vijë Ditën e Kiametit si ndërmjetësues për shokët e vet.",
       "reference": "Transmeton Muslimi",
@@ -25120,7 +25077,7 @@
       ]
     },
     {
-      "id": 2424,
+      "id": 2420,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kush lexon një shkronjë nga Libri i Allahut, ka një shpërblim, dhe shpërblimi shumëfishohet dhjetë herë.",
       "reference": "Transmeton Tirmidhiu",
@@ -25130,7 +25087,7 @@
       ]
     },
     {
-      "id": 2425,
+      "id": 2421,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Dy begati për të cilat shumë njerëz janë të mashtruar: shëndeti dhe koha e lirë.",
       "reference": "Transmeton Buhariu",
@@ -25142,7 +25099,7 @@
       ]
     },
     {
-      "id": 2426,
+      "id": 2422,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Ji në këtë botë sikur të ishe i huaj ose udhëtar që kalon rrugës.",
       "reference": "Transmeton Buhariu",
@@ -25152,7 +25109,7 @@
       ]
     },
     {
-      "id": 2427,
+      "id": 2423,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Shtoni përmendjen e shkatërruesit të kënaqësive — vdekjes.",
       "reference": "Transmeton Tirmidhiu",
@@ -25163,7 +25120,7 @@
       ]
     },
     {
-      "id": 2428,
+      "id": 2424,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Besimtari për besimtarin është si ndërtesa: pjesët e saj e forcojnë njëra-tjetrën.",
       "reference": "Muttefekun alejhi",
@@ -25174,7 +25131,7 @@
       ]
     },
     {
-      "id": 2429,
+      "id": 2425,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Përhapeni selamin mes jush dhe do të doni njëri-tjetrin.",
       "reference": "Transmeton Muslimi",
@@ -25184,7 +25141,7 @@
       ]
     },
     {
-      "id": 2430,
+      "id": 2426,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Ne jemi të fundit, por të parët në Ditën e Kiametit; atyre para nesh iu dha Libri para nesh, kurse kjo ditë u bë obligim për ta e ata u përçanë rreth saj, ndërsa Allahu na udhëzoi ne drejt saj.",
       "reference": "Muttefekun alejhi",
@@ -25195,7 +25152,7 @@
       ]
     },
     {
-      "id": 2431,
+      "id": 2427,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Dita e xhuma është ditë feste për muslimanët, prandaj mos e bëni ditën e festës suaj ditë agjërimi, përveç nëse agjëroni edhe një ditë para ose pas saj.",
       "reference": "Transmeton Ibn Maxhe",
@@ -25206,7 +25163,7 @@
       ]
     },
     {
-      "id": 2432,
+      "id": 2428,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kush lahet ditën e xhuma, pastrohet sa ka mundësi, lyhet me vaj ose parfum, del nga shtëpia dhe nuk i ndan dy veta të ulur, fal atë që i është caktuar dhe pastaj hesht kur flet imami, i falen mëkatet mes asaj xhumaje dhe xhumasë së kaluar.",
       "reference": "Transmeton Buhariu",
@@ -25217,7 +25174,7 @@
       ]
     },
     {
-      "id": 2433,
+      "id": 2429,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kur të vijë ndonjëri prej jush në xhuma dhe imami është në minber, le t'i falë dy rekate të shkurtra para se të ulet.",
       "reference": "Muttefekun alejhi",
@@ -25227,7 +25184,7 @@
       ]
     },
     {
-      "id": 2434,
+      "id": 2430,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Zgjatja e namazit dhe shkurtimi i hutbes janë shenjë e kuptimit të thellë të fesë; prandaj zgjateni namazin dhe shkurtojeni hutben.",
       "reference": "Transmeton Muslimi",
@@ -25238,7 +25195,7 @@
       ]
     },
     {
-      "id": 2435,
+      "id": 2431,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kush prej jush fal namaz pas xhumasë, le të falë katër rekate.",
       "reference": "Transmeton Muslimi",
@@ -25249,7 +25206,7 @@
       ]
     },
     {
-      "id": 2436,
+      "id": 2432,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "I Dërguari i Allahut e ndaloi kapërcimin e qafave të njerëzve ditën e xhuma dhe ndarjen e dy vetave të ulur bashkë.",
       "reference": "Transmeton Ebu Davudi",
@@ -25259,7 +25216,7 @@
       ]
     },
     {
-      "id": 2437,
+      "id": 2433,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Në namazin e sabahut të ditës së xhuma i Dërguari i Allahut lexonte suren Es-Sexhde dhe suren El-Insan.",
       "reference": "Muttefekun alejhi",
@@ -25270,7 +25227,17 @@
       ]
     },
     {
-      "id": 2438,
+      "id": 2434,
+      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
+      "textContent": "Dita më e mirë në të cilën ka lindur dielli është e xhuma: në të do të ndodhë edhe Kiameti.",
+      "reference": "Transmeton Muslimi",
+      "type": "hadith",
+      "tags": [
+        "xhuma"
+      ]
+    },
+    {
+      "id": 2435,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kush vdes ditën e xhuma ose natën e saj, Allahu e ruan nga sprova e varrit.",
       "reference": "Transmeton Ahmedi",
@@ -25281,7 +25248,7 @@
       ]
     },
     {
-      "id": 2439,
+      "id": 2436,
       "entryText": "Nga Ebu Hurejra, Allahu qoftë i kënaqur me të, përcillet se i Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kush lahet ditën e xhuma dhe shkon në orën e parë, është sikur të ketë dhënë një deve; kush shkon në orën e dytë, sikur të ketë dhënë një lopë; kush shkon në orën e tretë, sikur të ketë dhënë një dash.",
       "reference": "Muttefekun alejhi",
@@ -25291,7 +25258,7 @@
       ]
     },
     {
-      "id": 2440,
+      "id": 2437,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kush e lë xhumanë pa arsye, le të japë sadaka.",
       "reference": "Transmeton Ebu Davudi",
@@ -25302,7 +25269,7 @@
       ]
     },
     {
-      "id": 2441,
+      "id": 2438,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Njerëzit le të heqin dorë nga lënia e xhumave, ose Allahu do t'ua vulosë zemrat dhe do të bëhen prej të shkujdesurve.",
       "reference": "Transmeton Muslimi",
@@ -25312,7 +25279,7 @@
       ]
     },
     {
-      "id": 2442,
+      "id": 2439,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Ai që flet ndërsa imami mban hutben, është si gomari që bart libra, dhe nuk ka xhuma të plotë ai që i thotë tjetrit 'hesht'.",
       "reference": "Transmeton Ahmedi",
@@ -25322,7 +25289,7 @@
       ]
     },
     {
-      "id": 2443,
+      "id": 2440,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Kush merr abdes dhe e përsos atë, pastaj vjen në xhuma, afrohet, dëgjon dhe hesht, i falet ajo që është mes asaj xhumaje dhe tjetrës; e kush luan me guralecat, ka bërë kot.",
       "reference": "Transmeton Muslimi",
@@ -25333,7 +25300,7 @@
       ]
     },
     {
-      "id": 2444,
+      "id": 2441,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Nuk ka ditë më të vlefshme te Allahu se dita e xhuma; në të ka një orë në të cilën nuk e takon robi musliman duke kërkuar prej Allahut, pa i dhënë Ai atë që kërkon.",
       "reference": "Transmeton Ibn Maxhe",
@@ -25343,7 +25310,7 @@
       ]
     },
     {
-      "id": 2445,
+      "id": 2442,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Ditën e xhuma melekët ulen te dyert e xhamisë me fletushka dhe shkruajnë kush hyn i pari; kur ulet imami, i mbyllin fletushkat dhe dëgjojnë përkujtimin.",
       "reference": "Transmeton Nesaiu",
@@ -25353,13 +25320,23 @@
       ]
     },
     {
-      "id": 2446,
+      "id": 2443,
       "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
       "textContent": "Shtojini lutjet dhe salavatet ditën e xhuma, sepse ajo është ditë e dëshmuar, në të cilën melekët janë të pranishëm.",
       "reference": "Transmeton Nesaiu",
       "type": "hadith",
       "tags": [
         "dhikri",
+        "xhuma"
+      ]
+    },
+    {
+      "id": 2444,
+      "entryText": "I Dërguari i Allahut, paqja dhe bekimi i Allahut qofshin mbi të, ka thënë:",
+      "textContent": "Vishni rrobat më të bukura që keni ditën e xhuma dhe përdorni erë të mirë, sepse është dita në të cilën mblidheni.",
+      "reference": "Transmeton Ibn Maxhe",
+      "type": "hadith",
+      "tags": [
         "xhuma"
       ]
     }
