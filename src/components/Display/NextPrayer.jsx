@@ -22,23 +22,33 @@ const NextPrayer = memo(function NextPrayer({ infoTani, ne24hFn, formatDallimFn,
     // separate, single-row layout sized for it instead of reusing them.
     if (compact) {
         const displayName = labelMain.split(' (')[0];
+        // Full-width strip has room the square card doesn't — size both the
+        // name and the countdown off their own text length so short labels
+        // (the common case) fill the height instead of leaving it mostly empty.
+        const nameSize = displayName.length > 10 ? 'text-9xl' : displayName.length > 7 ? 'text-[13rem]' : 'text-[15rem]';
+        const countdownStr = formatDallimFn(infoTani.mbetur);
+        const countdownSize = countdownStr.replace(/\s/g, '').length > 5 ? 'text-9xl' : 'text-[15rem]';
+        // Stretched vertically (not scaled up) to eat the leftover gap below the
+        // baseline without widening the glyphs — growing font-size further would
+        // also grow width and start overflowing long names/countdowns.
+        const tallStyle = { ...BN, transform: 'scaleY(1.22)', transformOrigin: 'top' };
         return (
-            <div className="next-prayer-box bg-gradient-to-br from-zinc-800 to-zinc-950 rounded-[3.5rem] px-14 relative overflow-hidden flex items-center justify-between h-full shadow-2xl">
-                <div className="flex items-center gap-8 min-w-0">
-                    <div className={`w-4 h-4 rounded-full shrink-0 ${isXh ? 'bg-emerald-400 animate-pulse' : 'bg-emerald-600'}`} />
+            <div className="next-prayer-box bg-gradient-to-br from-zinc-800 to-zinc-950 rounded-[3.5rem] px-20 relative overflow-hidden flex items-center justify-between h-full shadow-2xl">
+                <div className="flex items-center gap-12 min-w-0">
+                    <div className={`w-8 h-8 rounded-full shrink-0 ${isXh ? 'bg-emerald-400 animate-pulse' : 'bg-emerald-600'}`} />
                     <div className="flex flex-col min-w-0">
-                        <p className="text-emerald-500 font-bold uppercase tracking-[0.3em] text-xl leading-none mb-2">Vakti i radhës</p>
-                        <h2 className="font-bold text-white tracking-[0.03em] uppercase leading-none whitespace-nowrap text-8xl" style={BN}>
+                        <p className="text-emerald-500 font-bold uppercase tracking-[0.3em] text-3xl leading-none mb-4">Vakti i radhës</p>
+                        <h2 className={`font-bold text-white tracking-[0.03em] uppercase leading-none whitespace-nowrap ${nameSize}`} style={tallStyle}>
                             {displayName}
                         </h2>
                     </div>
                 </div>
-                <div className="flex items-center gap-6 shrink-0">
-                    <p className="text-zinc-400 text-3xl uppercase font-bold tracking-widest leading-[1.05] text-right" style={BN}>
+                <div className="flex items-center gap-10 shrink-0">
+                    <p className="text-zinc-400 text-5xl uppercase font-bold tracking-widest leading-[1.05] text-right" style={BN}>
                         koha e <br /> mbetur
                     </p>
-                    <div className={`text-8xl font-bold tabular-nums leading-none whitespace-nowrap ${infoTani.mbetur <= 15 ? 'text-amber-400 animate-pulse' : 'text-emerald-400'}`} style={BN}>
-                        {formatDallimFn(infoTani.mbetur)}
+                    <div className={`${countdownSize} font-bold tabular-nums leading-none whitespace-nowrap ${infoTani.mbetur <= 15 ? 'text-amber-400 animate-pulse' : 'text-emerald-400'}`} style={tallStyle}>
+                        {countdownStr}
                     </div>
                 </div>
             </div>
