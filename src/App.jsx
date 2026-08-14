@@ -855,8 +855,18 @@ export default function App() {
                 tomK = `${String(Math.floor(total / 60)).padStart(2, "0")}:${String(((total % 60) + 60) % 60).padStart(2, "0")}`;
             }
 
+            // Last moment of the day has already passed. `tani` must keep its
+            // `kohe`, otherwise the post-prayer silence window below can never
+            // fire (diffT falls back to 999) and the "fikni telefonat" notice
+            // never shows after the day's final prayer.
+            const lastMoment = uniqueMoments.reduce(
+                (a, b) => (a && neMinuta(a.kohe) >= neMinuta(b.kohe) ? a : b),
+                null
+            );
+            const taniId = lastMoment?.id || "Jacia";
+
             nextInfo = {
-                tani: { id: "Jacia", label: getPrayerLabel("Jacia", labelCtx) },
+                tani: { id: taniId, label: getPrayerLabel(taniId, labelCtx), kohe: lastMoment?.kohe },
                 ardhshëm: { id: tomId, label: getPrayerLabel(tomId, labelCtx), kohe: tomK, isXh: true },
                 mbetur: (24 * 60 - nowMin) + neMinuta(tomK)
             };
