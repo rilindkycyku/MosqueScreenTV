@@ -85,12 +85,18 @@ public/images/             Textures, logo, og-image, silent.mp4
 Prayer times are **data, not a calculation** — the calendars are authored elsewhere and shipped.
 Updating them is a patch release, not a feature.
 
-**`hadithe.json` is generated upstream, not authored here.** It comes from the `KohetENamazitWatchOS`
-repository's `tools/build_hadithe.py`, which writes this file with
-`--tv-out ../MosqueScreenTV/src/data/hadithe.json`. Editing it here is fine for a one-off fix, but
-the next regeneration overwrites it — a lasting change belongs in that repo's `narrations_*.py` or
-its curated seed. The `type` and `tags` fields (including `xhuma`) are produced there, which is why
-the Friday filter works at all.
+**`hadithe.json` originates upstream, not here.** It is written by the `KohetENamazitWatchOS`
+repository's `tools/build_hadithe.py` via `--tv-out ../MosqueScreenTV/src/data/hadithe.json`. The
+`type` and `tags` fields (including `xhuma`) are produced there, which is why the Friday filter
+works at all — so a lasting content change belongs in that repo's `narrations_*.py` or its curated
+seed, not in this file.
+
+Caveat worth knowing before you rely on that: **the upstream generator is currently broken** — it
+still expects a flat `assets/quran.json` that the app replaced with per-language directories, so it
+fails on startup and cannot regenerate anything today. In practice that means an edit made here will
+*not* be overwritten any time soon, but it also means this file has silently drifted from being a
+build artifact to being hand-maintained. Prefer fixing the generator upstream over entrenching edits
+here.
 
 ## Architecture rules
 
