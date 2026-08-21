@@ -35,8 +35,15 @@ npm run preview
 node scripts/convert-to-webp.mjs   # one-off: re-encode public/images scenery to webp
 ```
 
-There is **no test suite and no linter configured**. Verification is manual, in a browser and
-ideally on a real TV, and the commit body is where you say what you checked.
+There is **no test suite and no linter configured** — `npm run build` is the only automated check,
+and it passes. Verification is otherwise manual, in a browser and ideally on a real TV, and the
+commit body is where you say what you checked.
+
+A successful build is worth reading: it emits the modern bundle plus `index-legacy` and
+`polyfills-legacy` chunks (that is `@vitejs/plugin-legacy` doing its job for the old TV browsers),
+and Workbox reports the precache — currently **78 entries, ~32 MB**, most of it scenery. If a build
+of yours drops the legacy chunks or shrinks that precache sharply, something in the PWA or legacy
+config has broken.
 
 ## House style
 
