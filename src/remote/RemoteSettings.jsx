@@ -144,7 +144,7 @@ function IdentityForm({ st, patch }) {
                 "name", "address", "imamName", "location",
                 "manualDreka", "manualXhuma1", "manualXhuma2", "xhuma2Active",
                 "appMode", "showQr", "qrUrl", "showFooter",
-                "showSilenceWarning", "showQuranRadio",
+                "showSilenceWarning", "showProhibitedTimes", "showQuranRadio",
                 "durations", "iqamah", "ramazan",
               ];
               const patchObj = {};
@@ -199,6 +199,8 @@ function DisplayForm({ st, patch }) {
                 onChange={(v) => patch({ durations: { ...(st.durations || {}), silenceXhuma: v } })} />
             </>
           )}
+          <Toggle label="Kohët e Ndaluara" hint="Njoftimi gjatë lindjes, zenithit dhe perëndimit."
+            value={st.showProhibitedTimes !== false} onChange={(v) => patch({ showProhibitedTimes: v })} />
           <Toggle label="QR Code" hint="Shfaq kodin QR në ekran?"
             value={!!st.showQr} onChange={(v) => patch({ showQr: v })} />
           {st.showQr && (

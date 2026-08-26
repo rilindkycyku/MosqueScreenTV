@@ -6,6 +6,7 @@
         "qrUrl": "https://rilindkycyku.dev",
         "showQr": false,
         "showSilenceWarning": true,
+        "showProhibitedTimes": true,
         "appMode": "mosque",
         "location": "ks",
         "showQuranRadio": false,

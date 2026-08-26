@@ -15,6 +15,7 @@ dhe merge-commit-et e PR-ve nuk kanë ngritur version.
 
 | Versioni | Data | Commit | Përshkrimi |
 | --- | --- | --- | --- |
+| 1.17.0 | 2026-08-26 | _ky commit_ | Njoftim për kohët e ndaluara (lindja, zenithi, perëndimi), me hadithin përkatës në vend të rotacionit normal |
 | 1.15.0 | 2026-07-30 | _ky commit_ | Numri i versionit shfaqet në fund të Cilësimeve |
 | 1.14.1 | 2026-07-26 | `8cfd52d` | Përditësim i të dhënave të haditheve |
 | 1.14.0 | 2026-07-25 | `8fc081e` | Gjurmimi real i përdorimit PWA në Google Analytics |

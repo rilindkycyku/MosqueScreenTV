@@ -3,7 +3,21 @@ import { QRCodeCanvas } from 'qrcode.react';
 import ErrorBoundary from '../ErrorBoundary/ErrorBoundary';
 import FitText from './FitText';
 
-const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHadith, currentEsmaul, vaktiSot, infoTani, suppressTakeover }) {
+// Same narration the phone app shows for this window (translations.dart:
+// prohibited_hadith_title/desc, prohibited_asr_hadith_title/desc). Kept as a
+// fixed text rather than picked from hadithe.json, since it must always match
+// the specific window that is active, not the rotating pool.
+const PROHIBITED_HADITH = {
+    title: "Hadith mbi Kohët e Ndaluara",
+    text: "Tre janë kohët në të cilat i Dërguari i Allahut (ﷺ) na e ka ndaluar të falim namaz ose të varrosim të vdekurit tanë: kur lind dielli derisa të ngrihet lart, kur dielli është në zenit derisa të kalojë, dhe kur dielli anon për të perënduar derisa të perëndojë.",
+};
+const IKINDIA_EXCEPTION_HADITH = {
+    title: "Arritja e Ikindisë para perëndimit",
+    text: "I Dërguari i Allahut (ﷺ) ka thënë: «Kush e arrin një rekat të namazit të ikindisë para se të perëndojë dielli, e ka arritur atë (ikindinë).»",
+    reference: "Buhariu",
+};
+
+const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHadith, currentEsmaul, vaktiSot, infoTani, suppressTakeover, isProhibitedFocus }) {
     // Full-screen silence takeover is capped to a short window (see App.jsx) so
     // the Xhuma-tagged Hadith/Ajet content isn't hidden behind the reminder for
     // the whole extended post-Xhuma silence period — that's when most people
@@ -55,6 +69,48 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
                 <div className="mt-6 flex flex-col items-center">
                     <div className="h-1 w-20 bg-amber-500/30 rounded-full mb-4" />
                     <p className="text-amber-500 uppercase tracking-[0.4em] font-black text-3xl">KOHA E NAMAZIT</p>
+                </div>
+            </div>
+        );
+    }
+
+    // 2. PROHIBITED-TIME HADITH (shown in place of the normal rotation while
+    // sunrise/zenith/sunset is active — see isProhibitedFocus in App.jsx)
+    if (isProhibitedFocus) {
+        const isSunset = infoTani?.prohibitedId === 'sunset';
+        return (
+            <div className="activity-box bg-zinc-900 border-2 border-rose-500/20 rounded-[3.5rem] p-4 relative overflow-hidden flex flex-col h-full shadow-premium">
+                <div className="w-full h-full flex flex-col justify-center px-8 py-2">
+                    <div className="w-full flex flex-col items-center mb-4 shrink-0">
+                        <div className="flex items-center gap-4 opacity-90">
+                            <div className="w-3 h-3 rounded-full bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)]" />
+                            <p className="text-white uppercase tracking-[0.4em] text-2xl font-black text-center drop-shadow-md">
+                                {PROHIBITED_HADITH.title}
+                            </p>
+                        </div>
+                    </div>
+                    <div className={`min-h-0 w-full ${isSunset ? 'flex-[2]' : 'flex-1'}`}>
+                        <FitText
+                            text={`"${PROHIBITED_HADITH.text}"`}
+                            maxPx={44}
+                            minPx={18}
+                            className="leading-[1.2] italic font-bold text-white text-center drop-shadow-xl"
+                        />
+                    </div>
+                    {isSunset && (
+                        <div className="flex-1 min-h-0 w-full mt-6 pt-6 border-t border-rose-500/20 flex flex-col items-center justify-center">
+                            <p className="text-amber-400 font-bold text-2xl uppercase tracking-widest mb-3 text-center">{IKINDIA_EXCEPTION_HADITH.title}</p>
+                            <div className="flex-1 min-h-0 w-full">
+                                <FitText
+                                    text={IKINDIA_EXCEPTION_HADITH.text}
+                                    maxPx={32}
+                                    minPx={16}
+                                    className="leading-[1.2] italic font-semibold text-zinc-100 text-center drop-shadow-md"
+                                />
+                            </div>
+                            <p className="text-amber-400/80 font-bold text-xl mt-2">{IKINDIA_EXCEPTION_HADITH.reference}</p>
+                        </div>
+                    )}
                 </div>
             </div>
         );

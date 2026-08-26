@@ -16,6 +16,7 @@ import PrayerGrid from './components/Display/PrayerGrid';
 import NextPrayer from './components/Display/NextPrayer';
 import ActivityBox from './components/Display/ActivityBox';
 import SilenceNotice from './components/Display/SilenceNotice';
+import ProhibitedNotice from './components/Display/ProhibitedNotice';
 // Vercel Analytics
 import { Analytics } from '@vercel/analytics/react';
 // Google Analytics
@@ -48,6 +49,29 @@ const ne24h = (ora) => {
     if (!ora) return "—";
     const [h, m] = ora.split(":").map(Number);
     return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+};
+
+// The three daily windows (in minutes-since-midnight) during which prayer is
+// forbidden: sunrise, solar zenith/Dhuhr, and sunset. Mirrors
+// KohetENamazitWatchOS's AppConstants.getProhibitedTimes — same offsets
+// (~15 min around sunrise/sunset, ~10 min before Dhuhr), same source fields
+// (Lindja/Dreka/Akshami), so the two apps agree on when this window is active.
+const getProhibitedWindows = (vaktiSot) => {
+    if (!vaktiSot) return [];
+    const windows = [];
+    if (vaktiSot.Lindja) {
+        const start = neMinuta(vaktiSot.Lindja);
+        windows.push({ id: "sunrise", label: "Lindja e Diellit", start, end: start + 15 });
+    }
+    if (vaktiSot.Dreka) {
+        const end = neMinuta(vaktiSot.Dreka);
+        windows.push({ id: "zenith", label: "Zenithi (para Drekës)", start: end - 10, end });
+    }
+    if (vaktiSot.Akshami) {
+        const end = neMinuta(vaktiSot.Akshami);
+        windows.push({ id: "sunset", label: "Perëndimi i Diellit", start: end - 15, end });
+    }
+    return windows;
 };
 
 const formatDallim = (min) => {
@@ -553,6 +577,7 @@ export default function App() {
                 showQr: config.tvOptions.showQr,
                 qrUrl: config.tvOptions.qrUrl,
                 showSilenceWarning: config.tvOptions.showSilenceWarning,
+                showProhibitedTimes: config.tvOptions.showProhibitedTimes,
                 showFooter: config.tvOptions.showFooter,
                 showQuranRadio: config.tvOptions.showQuranRadio
             };
@@ -593,6 +618,7 @@ export default function App() {
             showQr: config.tvOptions.showQr,
             showFooter: config.tvOptions.showFooter,
             showSilenceWarning: config.tvOptions.showSilenceWarning,
+            showProhibitedTimes: config.tvOptions.showProhibitedTimes,
             appMode: config.tvOptions.appMode,
             iqamah: { ...config.tvOptions.iqamah }
         };
@@ -887,7 +913,13 @@ export default function App() {
 
         setInfoTani(prev => {
             const diffA = nextInfo.mbetur;
-            const diffT = nextInfo.tani?.kohe ? nowMin - neMinuta(nextInfo.tani.kohe) : 999;
+            // "Lindja" (sunrise) is a display-only substitution for Sabahu once the
+            // sun is up (see the tani swap above) — it is not itself a prayer, so it
+            // must never re-open the post-prayer silence window. Without this guard,
+            // the swapped `kohe` fed straight into diffT and "FIKNI TELEFONAT / KOHA
+            // E NAMAZIT" would falsely reappear for silenceRegular minutes after
+            // every sunrise.
+            const diffT = (nextInfo.tani?.kohe && nextInfo.tani.id !== "Lindja") ? nowMin - neMinuta(nextInfo.tani.kohe) : 999;
             // Remote "silence +10 min" boost forces silence mode on until it expires.
             const boosted = silenceBoostUntil != null && Date.now() < silenceBoostUntil;
             // On Friday in mosque mode, "Dreka" is never the active prayer id —
@@ -907,10 +939,16 @@ export default function App() {
             const SILENCE_TAKEOVER_CAP_MIN = 5;
             const isSilenceTakeover = boosted || (diffA <= 5 && diffA >= 0) || (diffT >= 0 && diffT <= Math.min(postSilenceLimit, SILENCE_TAKEOVER_CAP_MIN));
 
-            if (prev && prev.mbetur === nextInfo.mbetur && prev.isSilenceMode === isSilenceMode && prev.isSilenceTakeover === isSilenceTakeover && prev.ardhshëm?.id === nextInfo.ardhshëm?.id) {
+            // The sunset window overlaps the tail of the pre-Akshami silence window
+            // by design (both end at Akshami) — silence takes priority there since
+            // the call to prayer is imminent, so this is consulted only when
+            // isSilenceMode is false (see isProhibitedFocus in the render below).
+            const activeProhibited = getProhibitedWindows(vaktiSot).find(w => nowMin >= w.start && nowMin < w.end);
+
+            if (prev && prev.mbetur === nextInfo.mbetur && prev.isSilenceMode === isSilenceMode && prev.isSilenceTakeover === isSilenceTakeover && prev.ardhshëm?.id === nextInfo.ardhshëm?.id && prev.prohibitedId === (activeProhibited?.id ?? null)) {
                 return prev;
             }
-            return { ...nextInfo, isSilenceMode, isSilenceTakeover, nowMin };
+            return { ...nextInfo, isSilenceMode, isSilenceTakeover, nowMin, prohibitedLabel: activeProhibited?.label ?? null, prohibitedId: activeProhibited?.id ?? null };
         });
     }, [vaktiSot, vaktet, settings.appMode, settings.ramazan, settings.xhuma2Active, settings.durations?.silenceRegular, settings.durations?.silenceXhuma, xhemati, silenceBoostUntil]);
 
@@ -963,6 +1001,12 @@ export default function App() {
     // and the Hadith/Ajet panel keeps showing throughout instead of being
     // hidden behind the reminder. Outside a silence window, layout is normal.
     const isSilenceFocus = !!infoTani?.isSilenceMode;
+    // Same top-left takeover as the silence notice, but for the sunrise/zenith/
+    // sunset windows nafl prayer is forbidden in — only shown when no prayer is
+    // imminent (silence always wins) and only in mosque mode, mirroring how
+    // showSilenceWarning is scoped.
+    const isProhibitedFocus = !isSilenceFocus && settings.appMode === 'mosque' && settings.showProhibitedTimes !== false && !!infoTani?.prohibitedLabel;
+    const isFocusMode = isSilenceFocus || isProhibitedFocus;
 
     return (
         <>
@@ -1071,10 +1115,12 @@ export default function App() {
                         <div className="flex-[1.4] grid grid-cols-2 gap-6 relative z-10 min-h-0">
                             {isSilenceFocus
                                 ? <SilenceNotice />
-                                : <NextPrayer infoTani={infoTani} ne24hFn={ne24h} formatDallimFn={formatDallim} settings={settings} />}
-                            <ActivityBox displayMode={displayMode} settings={settings} currentHadith={currentHadith} currentEsmaul={currentEsmaul} vaktiSot={vaktiSot} infoTani={infoTani} suppressTakeover={isSilenceFocus} />
+                                : isProhibitedFocus
+                                    ? <ProhibitedNotice label={infoTani.prohibitedLabel} />
+                                    : <NextPrayer infoTani={infoTani} ne24hFn={ne24h} formatDallimFn={formatDallim} settings={settings} />}
+                            <ActivityBox displayMode={displayMode} settings={settings} currentHadith={currentHadith} currentEsmaul={currentEsmaul} vaktiSot={vaktiSot} infoTani={infoTani} suppressTakeover={isFocusMode} isProhibitedFocus={isProhibitedFocus} />
                         </div>
-                        {isSilenceFocus
+                        {isFocusMode
                             ? (
                                 <div className="flex-1 min-h-0 relative z-10">
                                     <NextPrayer compact infoTani={infoTani} ne24hFn={ne24h} formatDallimFn={formatDallim} settings={settings} />

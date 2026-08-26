@@ -93,6 +93,27 @@ export default function DisplaySection({ settings, setSettings, triggerConfirm, 
 
                         <div className="p-10 bg-white/5 rounded-[3rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex flex-col gap-10">
                             <div className="text-center">
+                                <h4 className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight">Kohët e Ndaluara</h4>
+                                <p className="text-xl text-zinc-500 mt-2 font-medium italic opacity-70">Njoftimi gjatë lindjes, zenithit dhe perëndimit të diellit.</p>
+                            </div>
+                            <div className="flex bg-zinc-900 p-2 rounded-[1.8rem] border border-white/10 shadow-2xl relative overflow-hidden">
+                                <button
+                                    onClick={() => setSettings(p => ({ ...p, showProhibitedTimes: false }))}
+                                    className={`flex-1 py-6 rounded-[1.2rem] font-black text-xl uppercase tracking-widest transition-all duration-500 relative z-10 ${!settings.showProhibitedTimes ? 'bg-zinc-800 text-zinc-400 shadow-md scale-[1.02] border border-white/5' : 'text-zinc-600 hover:text-zinc-400'}`}
+                                >
+                                    Jo Aktiv
+                                </button>
+                                <button
+                                    onClick={() => setSettings(p => ({ ...p, showProhibitedTimes: true }))}
+                                    className={`flex-1 py-6 rounded-[1.2rem] font-black text-xl uppercase tracking-widest transition-all duration-500 relative z-10 ${settings.showProhibitedTimes ? 'bg-emerald-500 text-black shadow-lg scale-[1.02]' : 'text-zinc-600 hover:text-emerald-500/50'}`}
+                                >
+                                    Aktiv
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="p-10 bg-white/5 rounded-[3rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex flex-col gap-10">
+                            <div className="text-center">
                                 <h4 className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight">QR Code</h4>
                                 <p className="text-xl text-zinc-500 mt-2 font-medium italic opacity-70">A dëshironi ta shfaqni kodin QR në ekran?</p>
                             </div>
