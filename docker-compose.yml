@@ -1,0 +1,9 @@
+services:
+  mosque-screen-tv:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mosque-screen-tv
+    restart: unless-stopped
+    ports:
+      - "3702:80"
