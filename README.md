@@ -26,7 +26,7 @@ Aplikacioni është "hardened" për hardware të limituar:
 - **Hardware Acceleration:** Çdo komponent shfrytëzon GPU-në e TV për lëvizje të lëmuara.
 - **Data-Driven:** Imsaku, Sabahu, Dreka, Xhumaja, Ikindia, Akshami dhe Jacia llogariten lokalisht pa vonesa rrjeti.
 - **Smart Logic:** Sistemi kupton automatikisht vaktin e radhës, kohën e mbetur dhe prioritetin e njoftimeve.
-- **Ekrani nuk fiket:** Ekrani mbahet ndezur me *Screen Wake Lock*. Vetëm kur browser-i i TV-së nuk e mbështet, përdoret një video e padukshme dhe pa zë — prandaj në Android TV nuk del më player-i i videos në ekran.
+- **Ekrani nuk fiket:** Ekrani mbahet ndezur me *Screen Wake Lock*, pa asnjë video në faqe — prandaj në Android TV nuk del më player-i i videos. Për browser-ët pa Wake Lock ka një video rezervë të padukshme, që aktivizohet te Cilësimet.
 - **Memorie e kursyer:** Fotot e sfondit ruhen në madhësinë që i duhet ekranit (1920×1080), jo në rezolucionin e kamerës — e rëndësishme për TV me vetëm 1 GB RAM.
 
 ### 📺 Android TV: që TV-ja të mos fiket vetë
@@ -78,7 +78,7 @@ Nga paneli mund të ndryshoni:
 - **Modulin e Ramazanit:** Aktivizimi i emërtimit Syfyr/Iftar, kohës së Teravisë dhe Namazit të Natës.
 - Njoftimin e shpejtë të shfaqur në ekran.
 - Lidhjen dhe sigurinë e telekomandës (Remote).
-- **Videon rezervë** që e mban ekranin ndezur kur browser-i nuk e bën vetë — çaktivizojeni nëse browser-i i TV-së e hap videon në player-in e vet. Aty shihet edhe çfarë e mban ekranin ndezur tani.
+- **Videon rezervë** që e mban ekranin ndezur kur browser-i nuk e bën vetë — e çaktivizuar si parazgjedhje, sepse disa browser-a të TV-së e hapin videon në player-in e tyre. Aty shihet edhe çfarë e mban ekranin ndezur tani.
 
 ### 📸 Pamjet e Cilësimeve
 

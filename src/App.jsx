@@ -853,7 +853,7 @@ export default function App() {
         <>
         <div className="fixed top-0 left-0 w-full h-full bg-black z-[50] overflow-hidden">
             {/* Outside the scaled container: its fallback video has to span the real viewport */}
-            <KeepAwake allowVideo={settings.keepaliveVideo !== false} />
+            <KeepAwake allowVideo={settings.keepaliveVideo === true} />
             <div className="tv-container bg-black text-white font-sans overflow-hidden flex flex-col p-1 select-none"
                 style={{
                     width: '1920px',

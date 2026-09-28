@@ -198,7 +198,7 @@ playing `<video>` is what Android TV browsers hang their player UI on (the mosqu
 grants the Wake Lock like Chrome 84+, over HTTPS. Only without a usable Wake Lock (no API, or two
 refusals in a row) does a video take over, and it must meet Chromium's video wake-lock rule
 (audible, or >20% of the viewport and >75% on screen), which is why it is full-screen with opacity 0
-and has no audio track. The `keepaliveVideo` setting switches that fallback off, and the Ekrani
+and has no audio track. That fallback is **off by default** and only runs with `keepaliveVideo: true`, and the Ekrani
 panel shows what is holding the screen right now. webOS/Tizen keep the older tricks unchanged. Android TV's no-input auto power-off ignores
 every wake lock; that one is a TV setting (see the README), not something code can fix.
 

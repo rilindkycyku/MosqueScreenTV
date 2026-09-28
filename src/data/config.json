@@ -11,7 +11,7 @@
         "location": "ks",
         "showQuranRadio": false,
         "showFooter": false,
-        "keepaliveVideo": true,
+        "keepaliveVideo": false,
         "manualDreka": "",
         "manualXhuma1": "",
         "manualXhuma2": "",

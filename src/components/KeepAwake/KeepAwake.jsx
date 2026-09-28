@@ -32,9 +32,11 @@ import { memo, useEffect, useRef, useState } from 'react';
  *     steps aside again as soon as the lock is held.
  *  3. Some TV browsers (the mosque's "Browser", com.internet.tvbrowser) detect any
  *     <video> on a page and open it in their own full-screen player — for those
- *     even the fallback is the problem, so it can be switched off in the settings
- *     (keepaliveVideo). The settings panel also shows which of these is keeping
- *     the screen on (useKeepAwakeStatus), since a TV has no dev tools to check.
+ *     even the fallback is the problem, so it is off unless switched on in the
+ *     settings (keepaliveVideo) — a player in front of the prayer times is worse
+ *     than a TV whose own power settings have to keep it on. The settings panel
+ *     shows which of these is keeping the screen on (useKeepAwakeStatus), since
+ *     a TV has no dev tools to check.
  *
  * webOS and Tizen keep the old behaviour exactly (tiny silent.mp4 with its
  * audio track, pause/resume cycle, silent AudioContext, synthetic input) — that
@@ -343,7 +345,7 @@ function LegacyKeepalive() {
     );
 }
 
-const KeepAwake = memo(function KeepAwake({ allowVideo = true }) {
+const KeepAwake = memo(function KeepAwake({ allowVideo = false }) {
     const [held, setHeld] = useState(false);
     const [refused, setRefused] = useState(false);
     useScreenWakeLock(setHeld, setRefused);
