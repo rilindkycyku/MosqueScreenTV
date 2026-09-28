@@ -1,7 +1,19 @@
 import { HiGlobeAlt, HiVolumeUp, HiVolumeOff, HiDesktopComputer } from "react-icons/hi";
 import { SectionHeader, NumberInput } from "./shared";
+import { useKeepAwakeStatus } from "../../KeepAwake/KeepAwake";
+
+// What is keeping the screen on, shown on the TV itself — there are no dev tools
+// on a TV to check whether the browser granted the Wake Lock or fell back.
+const KEEP_AWAKE_STATUS = {
+    wakelock: { label: "Browser-i (Wake Lock)", className: "text-emerald-400" },
+    video: { label: "Video rezervë", className: "text-emerald-400" },
+    legacy: { label: "Mënyra për LG / Samsung", className: "text-emerald-400" },
+    none: { label: "Asgjë — varet nga cilësimet e TV-së", className: "text-amber-400" },
+};
 
 export default function DisplaySection({ settings, setSettings, triggerConfirm, onReset }) {
+    const keepAwake = KEEP_AWAKE_STATUS[useKeepAwakeStatus()] || KEEP_AWAKE_STATUS.none;
+    const keepaliveVideo = settings.keepaliveVideo !== false;
     return (
         <div className="space-y-12 animate-in fade-in slide-in-from-bottom-10 duration-1000">
             <SectionHeader
@@ -180,6 +192,33 @@ export default function DisplaySection({ settings, setSettings, triggerConfirm, 
                     </div>
                 </div>
             )}
+
+            {/* Keeping the screen on (both modes) — see components/KeepAwake */}
+            <div className="pt-16 border-t border-white/5">
+                <div className="p-10 bg-white/5 rounded-[3rem] border-2 border-white/5 hover:border-emerald-500/40 transition-all group flex flex-col gap-10">
+                    <div className="text-center">
+                        <h4 className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight">Video Rezervë</h4>
+                        <p className="text-xl text-zinc-500 mt-2 font-medium italic opacity-70">Një video e padukshme e mban ekranin ndezur kur browser-i nuk e bën vetë. Çaktivizojeni nëse TV-ja e hap atë në player.</p>
+                        <p className="text-lg text-zinc-500 mt-6 font-bold uppercase tracking-widest">
+                            Ekranin e mban ndezur tani: <span className={`font-black ${keepAwake.className}`}>{keepAwake.label}</span>
+                        </p>
+                    </div>
+                    <div className="flex bg-zinc-900 p-2 rounded-[1.8rem] border border-white/10 shadow-2xl relative overflow-hidden max-w-2xl mx-auto w-full">
+                        <button
+                            onClick={() => setSettings(p => ({ ...p, keepaliveVideo: false }))}
+                            className={`flex-1 py-6 rounded-[1.2rem] font-black text-xl uppercase tracking-widest transition-all duration-500 relative z-10 ${!keepaliveVideo ? 'bg-zinc-800 text-zinc-400 shadow-md scale-[1.02] border border-white/5' : 'text-zinc-600 hover:text-zinc-400'}`}
+                        >
+                            Jo Aktiv
+                        </button>
+                        <button
+                            onClick={() => setSettings(p => ({ ...p, keepaliveVideo: true }))}
+                            className={`flex-1 py-6 rounded-[1.2rem] font-black text-xl uppercase tracking-widest transition-all duration-500 relative z-10 ${keepaliveVideo ? 'bg-emerald-500 text-black shadow-lg scale-[1.02]' : 'text-zinc-600 hover:text-emerald-500/50'}`}
+                        >
+                            Aktiv
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

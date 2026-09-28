@@ -419,7 +419,8 @@ export default function App() {
                 showSilenceWarning: config.tvOptions.showSilenceWarning,
                 showProhibitedTimes: config.tvOptions.showProhibitedTimes,
                 showFooter: config.tvOptions.showFooter,
-                showQuranRadio: config.tvOptions.showQuranRadio
+                showQuranRadio: config.tvOptions.showQuranRadio,
+                keepaliveVideo: config.tvOptions.keepaliveVideo
             };
         } else if (category === 'durations') {
             newSettings = { ...newSettings, durations: config.tvOptions.durations };
@@ -852,7 +853,7 @@ export default function App() {
         <>
         <div className="fixed top-0 left-0 w-full h-full bg-black z-[50] overflow-hidden">
             {/* Outside the scaled container: its fallback video has to span the real viewport */}
-            <KeepAwake />
+            <KeepAwake allowVideo={settings.keepaliveVideo !== false} />
             <div className="tv-container bg-black text-white font-sans overflow-hidden flex flex-col p-1 select-none"
                 style={{
                     width: '1920px',

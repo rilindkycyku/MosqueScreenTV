@@ -36,6 +36,8 @@ Shumë TV Android (p.sh. Dahua LTV43-SD200) kanë një kohëmatës që e fik TV-
 1. **Settings → Device Preferences → Screen saver:** *When to start* → **Never** dhe *Put device to sleep* → **Never**.
 2. **Settings → Device Preferences → Power** (ose *Power & Energy*): çdo opsion si *Auto power off*, *Sleep timer*, *No operation power off* ose *Energy saver* → **Off / Never**.
 
+3. Hapeni faqen me **https://** (linku Live më poshtë) — vetëm ashtu browser-i e mban vetë ekranin ndezur, pa asnjë video. Te **Cilësimet → Ekrani → Video Rezervë** shihet se çfarë e mban ekranin ndezur.
+
 Emrat e menyve ndryshojnë pak nga një TV në tjetrin.
 
 ---
@@ -76,6 +78,7 @@ Nga paneli mund të ndryshoni:
 - **Modulin e Ramazanit:** Aktivizimi i emërtimit Syfyr/Iftar, kohës së Teravisë dhe Namazit të Natës.
 - Njoftimin e shpejtë të shfaqur në ekran.
 - Lidhjen dhe sigurinë e telekomandës (Remote).
+- **Videon rezervë** që e mban ekranin ndezur kur browser-i nuk e bën vetë — çaktivizojeni nëse browser-i i TV-së e hap videon në player-in e vet. Aty shihet edhe çfarë e mban ekranin ndezur tani.
 
 ### 📸 Pamjet e Cilësimeve
 

@@ -21,14 +21,20 @@ import { memo, useEffect, useRef, useState } from 'react';
  * So, everywhere except webOS/Tizen:
  *
  *  1. The Screen Wake Lock is the lock. While it is held there is no media
- *     element on the page at all.
- *  2. Only when the browser has no Wake Lock API, or refuses the lock while the
- *     page is on screen, does a video take over — one that actually qualifies:
- *     full-screen but invisible (opacity 0; IntersectionObserver ignores opacity),
- *     no audio track at all (public/keepalive.mp4), never paused on purpose, and
- *     restarted by a watchdog if the browser stops it. Once it has taken over it
- *     stays until the next reload, so a lock that comes and goes doesn't mount
- *     and unmount media every few seconds.
+ *     element on the page at all. Android WebView grants it like Chrome does
+ *     (since 84), so this covers the WebView-based TV browsers too — as long as
+ *     the page is served over HTTPS.
+ *  2. Only when the browser has no Wake Lock API, or refuses the lock twice in a
+ *     row while the page is on screen, does a video take over — one that actually
+ *     qualifies: full-screen but invisible (opacity 0; IntersectionObserver
+ *     ignores opacity), no audio track at all (public/keepalive.mp4), never
+ *     paused on purpose, and restarted by a watchdog if the browser stops it. It
+ *     steps aside again as soon as the lock is held.
+ *  3. Some TV browsers (the mosque's "Browser", com.internet.tvbrowser) detect any
+ *     <video> on a page and open it in their own full-screen player — for those
+ *     even the fallback is the problem, so it can be switched off in the settings
+ *     (keepaliveVideo). The settings panel also shows which of these is keeping
+ *     the screen on (useKeepAwakeStatus), since a TV has no dev tools to check.
  *
  * webOS and Tizen keep the old behaviour exactly (tiny silent.mp4 with its
  * audio track, pause/resume cycle, silent AudioContext, synthetic input) — that
@@ -65,6 +71,27 @@ const suppressMediaSessionUi = () => {
     } catch (e) { /* mediaSession not fully supported */ }
 };
 
+// What is keeping the screen on right now: 'wakelock' | 'video' | 'legacy' |
+// 'none'. Module-level so the settings panel can read it without KeepAwake
+// re-rendering App.
+let currentStatus = 'none';
+const statusListeners = new Set();
+const publishStatus = (status) => {
+    if (status === currentStatus) return;
+    currentStatus = status;
+    statusListeners.forEach(listener => listener(status));
+};
+
+export function useKeepAwakeStatus() {
+    const [status, setStatus] = useState(currentStatus);
+    useEffect(() => {
+        statusListeners.add(setStatus);
+        setStatus(currentStatus);
+        return () => { statusListeners.delete(setStatus); };
+    }, []);
+    return status;
+}
+
 const playQuietly = (vid) => {
     try {
         const p = vid.play();
@@ -75,9 +102,12 @@ const playQuietly = (vid) => {
 // Screen Wake Lock, held for as long as the page is on screen. The browser drops
 // it whenever the page is hidden; it is taken back as soon as the page is visible
 // again, and straight away if it is ever dropped while still visible.
-function useScreenWakeLock(onRefused) {
-    const onRefusedRef = useRef(onRefused);
-    onRefusedRef.current = onRefused;
+// onHeldChange(bool) follows the lock; onRefusedChange(bool) turns true after two
+// refusals in a row while on screen — one refusal can be a race with a
+// visibility change, and each false alarm would put a video on the page.
+function useScreenWakeLock(onHeldChange, onRefusedChange) {
+    const callbacksRef = useRef({ onHeldChange, onRefusedChange });
+    callbacksRef.current = { onHeldChange, onRefusedChange };
 
     useEffect(() => {
         if (!HAS_WAKE_LOCK_API) return undefined;
@@ -85,6 +115,7 @@ function useScreenWakeLock(onRefused) {
         let pending = false;
         let isActive = true;
         let retryTimeout = null;
+        let refusals = 0;
 
         const isVisible = () => document.visibilityState === 'visible';
         const retryIn = (ms) => {
@@ -101,14 +132,20 @@ function useScreenWakeLock(onRefused) {
                 pending = false;
                 if (!isActive) { sentinel.release().catch(() => {}); return; }
                 lock = sentinel;
+                refusals = 0;
+                callbacksRef.current.onRefusedChange(false);
+                callbacksRef.current.onHeldChange(true);
                 sentinel.addEventListener('release', () => {
                     lock = null;
-                    if (isActive && isVisible()) retryIn(250);
+                    if (!isActive) return;
+                    callbacksRef.current.onHeldChange(false);
+                    if (isVisible()) retryIn(250);
                 });
             }, () => {
                 pending = false;
                 if (!isActive || !isVisible()) return;
-                onRefusedRef.current();
+                refusals += 1;
+                if (refusals >= 2) callbacksRef.current.onRefusedChange(true);
                 retryIn(10000);
             });
         }
@@ -306,11 +343,18 @@ function LegacyKeepalive() {
     );
 }
 
-const KeepAwake = memo(function KeepAwake() {
-    const [needsVideo, setNeedsVideo] = useState(IS_LEGACY_TV_OS || !HAS_WAKE_LOCK_API);
-    useScreenWakeLock(() => setNeedsVideo(true));
+const KeepAwake = memo(function KeepAwake({ allowVideo = true }) {
+    const [held, setHeld] = useState(false);
+    const [refused, setRefused] = useState(false);
+    useScreenWakeLock(setHeld, setRefused);
 
-    if (!needsVideo) return null;
+    const showVideo = IS_LEGACY_TV_OS || (allowVideo && !held && (!HAS_WAKE_LOCK_API || refused));
+
+    useEffect(() => {
+        publishStatus(IS_LEGACY_TV_OS ? 'legacy' : held ? 'wakelock' : showVideo ? 'video' : 'none');
+    }, [held, showVideo]);
+
+    if (!showVideo) return null;
     return IS_LEGACY_TV_OS ? <LegacyKeepalive /> : <KeepaliveVideo />;
 });
 
