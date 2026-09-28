@@ -32,7 +32,7 @@ npm install       # .npmrc sets legacy-peer-deps=true — needed, don't remove i
 npm run dev       # vite --host (the --host matters: you test on a TV on the LAN)
 npm run build
 npm run preview
-node scripts/convert-to-webp.mjs   # one-off: re-encode public/images scenery to webp
+node scripts/convert-to-webp.mjs   # scale src/assets/scenery to cover 1920×1080, re-encode to webp
 ```
 
 There is **no test suite and no linter configured** — `npm run build` is the only automated check,
@@ -41,7 +41,7 @@ commit body is where you say what you checked.
 
 A successful build is worth reading: it emits the modern bundle plus `index-legacy` and
 `polyfills-legacy` chunks (that is `@vitejs/plugin-legacy` doing its job for the old TV browsers),
-and Workbox reports the precache — currently **78 entries, ~32 MB**, most of it scenery. If a build
+and Workbox reports the precache — currently **80 entries, ~13.5 MB** (the `includeAssets` files are listed twice; Workbox dedupes them). If a build
 of yours drops the legacy chunks or shrinks that precache sharply, something in the PWA or legacy
 config has broken.
 
@@ -69,13 +69,16 @@ src/
     Display/               Clock, PrayerGrid, NextPrayer, ActivityBox, SilenceNotice,
                            QuranRadio, FitText
     SettingsModal/         The on-TV settings panel; sections/ is one file per tab
+    KeepAwake/             Screen Wake Lock, with an invisible video as the fallback
     ConfirmDialog/, ErrorBoundary/
   remote/                  The phone remote: TV-side hook, phone-side page, passcode hashing
   data/                    Bundled JSON — prayer times, narrations, names, config, profiles
   lib/                     analytics.js, version.js
   assets/scenery/          Background images (webp)
 scripts/convert-to-webp.mjs
-public/images/             Textures, logo, og-image, silent.mp4
+public/                    favicon, logo, og-image; silent.mp4 (webOS/Tizen keepalive),
+                           keepalive.mp4 (video-only keepalive everywhere else)
+public/images/             Textures
 ```
 
 ### The data files
@@ -174,7 +177,7 @@ peer-to-peer, which is what lets the whole thing live on a static host.
 
 `vite.config.js` is worth reading before you touch the PWA config. Three non-obvious pieces:
 
-- The silent keepalive video is cached through **`RangeRequestsPlugin`**. Without it the service
+- The keepalive videos are cached through **`RangeRequestsPlugin`**. Without it the service
   worker answers `200` where the `<video>` element needs `206`, and the video stalls offline —
   which lets the TV sleep.
 - `maximumFileSizeToCacheInBytes` is raised to 20 MB for the high-resolution scenery.
@@ -185,6 +188,16 @@ peer-to-peer, which is what lets the whole thing live on a static host.
 stamps a hit when it *arrives* — without that, last night's power cut looks like it happened at
 breakfast. It also re-sends `page_view` after the GA4 session timeout and beats a heartbeat, because
 on a screen that is never closed the single mount-time hit is otherwise the only one GA ever sees.
+
+### 8. Keeping the screen on
+
+`components/KeepAwake/KeepAwake.jsx` owns it; its header comment has the details. Outside
+webOS/Tizen the Screen Wake Lock is the lock and **no media element exists while it is held** — a
+playing `<video>` is what Android TV browsers hang their player UI on. Only without a usable Wake
+Lock does a video take over, and it must meet Chromium's video wake-lock rule (audible, or >20% of
+the viewport and >75% on screen), which is why it is full-screen with opacity 0 and has no audio
+track. webOS/Tizen keep the older tricks unchanged. Android TV's no-input auto power-off ignores
+every wake lock; that one is a TV setting (see the README), not something code can fix.
 
 ## Releases
 
@@ -211,4 +224,6 @@ footer shows it.
 - Prayer times are `H:mm` strings, sometimes without a leading zero (`"5:41"`). Parse via the
   existing `neMinuta` / `ne24h` helpers rather than `Date` or string comparison.
 - Scenery images are committed as `.webp`. `scripts/convert-to-webp.mjs` is a manual tool, not part
-  of the build, and its delete-the-original line is commented out on purpose.
+  of the build, and its delete-the-original line is commented out on purpose. Run every new image
+  through it: Chromium decodes a WebP at full size, so a camera-sized photo is a 100 MB+ bitmap —
+  on a 1 GB TV that gets the renderer killed, and a crashed tab lets the TV fall asleep.

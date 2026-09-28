@@ -17,6 +17,7 @@ import NextPrayer from './components/Display/NextPrayer';
 import ActivityBox from './components/Display/ActivityBox';
 import SilenceNotice from './components/Display/SilenceNotice';
 import ProhibitedNotice from './components/Display/ProhibitedNotice';
+import KeepAwake from './components/KeepAwake/KeepAwake';
 // Vercel Analytics
 import { Analytics } from '@vercel/analytics/react';
 // Google Analytics
@@ -379,167 +380,6 @@ export default function App() {
         window.addEventListener('keydown', handleKeyDown, { passive: true });
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [handleKeyDown]);
-
-    // Screen Wake Lock: Prevent TV from going to sleep (Hardened Heartbeat Version)
-    useEffect(() => {
-        let wakeLock = null;
-        let isActive = true;
-        let retryTimeout = null;
-        let heartbeatInterval = null;
-
-        const requestWakeLock = async () => {
-            if (!isActive || !('wakeLock' in navigator) || document.visibilityState !== 'visible') return;
-            try {
-                if (wakeLock) {
-                    await wakeLock.release().catch(() => {});
-                    wakeLock = null;
-                }
-                wakeLock = await navigator.wakeLock.request('screen');
-                wakeLock.addEventListener('release', () => {
-                    wakeLock = null;
-                    if (isActive && document.visibilityState === 'visible') {
-                        if (retryTimeout) clearTimeout(retryTimeout);
-                        retryTimeout = setTimeout(requestWakeLock, 2000);
-                    }
-                });
-            } catch (err) {
-                if (isActive && document.visibilityState === 'visible') {
-                    if (retryTimeout) clearTimeout(retryTimeout);
-                    retryTimeout = setTimeout(requestWakeLock, 10000);
-                }
-            }
-        };
-
-        requestWakeLock();
-        
-        heartbeatInterval = setInterval(() => {
-            if (isActive && document.visibilityState === 'visible' && !wakeLock) {
-                requestWakeLock();
-            }
-        }, 30000);
-
-        const handleVisibilityChange = () => { if (document.visibilityState === 'visible') requestWakeLock(); };
-        document.addEventListener('visibilitychange', handleVisibilityChange);
-
-        return () => {
-            isActive = false;
-            if (retryTimeout) clearTimeout(retryTimeout);
-            if (heartbeatInterval) clearInterval(heartbeatInterval);
-            document.removeEventListener('visibilitychange', handleVisibilityChange);
-            if (wakeLock) {
-                wakeLock.release().catch(() => {});
-                wakeLock = null;
-            }
-        };
-    }, []);
-
-    // Synthetic Pointer Move: Defeat screensavers on Tizen/WebOS browsers
-    useEffect(() => {
-        const interval = setInterval(() => {
-            const x = Math.floor(Math.random() * window.innerWidth);
-            const y = Math.floor(Math.random() * window.innerHeight);
-            const event = new MouseEvent('mousemove', {
-                bubbles: true,
-                cancelable: true,
-                clientX: x,
-                clientY: y
-            });
-            window.dispatchEvent(event);
-        }, 60000); // 1 minute — LG WebOS inactivity threshold is ~90s
-
-        return () => clearInterval(interval);
-    }, []);
-
-    // Silent Audio Heartbeat: Keep audio pipeline alive on WebOS
-    useEffect(() => {
-        let audioCtx = null;
-        try {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            if (AudioContext) {
-                audioCtx = new AudioContext();
-                const oscillator = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-                gainNode.gain.value = 0; // Completely silent
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                oscillator.start();
-            }
-        } catch (e) { /* Ignore audio context errors */ }
-
-        // Browsers can start (or autoplay-suspend) the context in a "suspended"
-        // state, which silently defeats this heartbeat — resume whenever the
-        // screen becomes visible again.
-        const resumeAudio = () => {
-            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
-        };
-        document.addEventListener('visibilitychange', resumeAudio);
-        resumeAudio();
-
-        return () => {
-            document.removeEventListener('visibilitychange', resumeAudio);
-            if (audioCtx && audioCtx.state !== 'closed') {
-                audioCtx.close().catch(() => {});
-            }
-        };
-    }, []);
-
-    // Suppress OS-level media transport overlay (play/pause/seek) that Android TV /
-    // WebOS show whenever they detect an actively playing <video>/<audio> element.
-    // The keepalive video is invisible plumbing, not user-facing media.
-    const suppressMediaSessionUi = useCallback(() => {
-        if (!('mediaSession' in navigator)) return;
-        try {
-            navigator.mediaSession.metadata = null;
-            navigator.mediaSession.playbackState = 'none';
-            // Android TV Chrome falls back to its native media-transport overlay
-            // when a registered action has no handler (i.e. handler === null).
-            // A no-op function fully swallows the remote's media keys instead.
-            const noop = () => {};
-            ['play', 'pause', 'stop', 'seekbackward', 'seekforward', 'seekto', 'previoustrack', 'nexttrack']
-                .forEach(action => {
-                    try { navigator.mediaSession.setActionHandler(action, noop); } catch (e) { /* unsupported action */ }
-                });
-        } catch (e) { /* mediaSession not fully supported */ }
-    }, []);
-
-    useEffect(() => {
-        suppressMediaSessionUi();
-    }, [suppressMediaSessionUi]);
-
-    // LG WebOS Keep-Alive: Keydown Heartbeat
-    // Dispatches a harmless keydown event every 45 seconds to satisfy
-    // the WebOS input activity detector and prevent idle timeout.
-    useEffect(() => {
-        const interval = setInterval(() => {
-            const event = new KeyboardEvent('keydown', {
-                bubbles: true, cancelable: true,
-                keyCode: 0, which: 0, key: 'Unidentified'
-            });
-            document.dispatchEvent(event);
-        }, 45000);
-        return () => clearInterval(interval);
-    }, []);
-
-    // LG WebOS Keep-Alive: Video Pause/Resume Cycle
-    // Periodically pauses and resumes the silent video element every 50 seconds
-    // to trigger media state changes that WebOS registers as activity.
-    // NOTE: silent.mp4 must have a silent audio track (not just video) for WebOS
-    // to count it as media activity. Generate with:
-    // ffmpeg -f lavfi -i color=black:s=2x2:r=1 -f lavfi -i anullsrc=r=44100:cl=mono \
-    //   -t 3600 -c:v libx264 -c:a aac -shortest silent.mp4
-    useEffect(() => {
-        const interval = setInterval(() => {
-            const vid = document.querySelector('video');
-            if (vid) {
-                vid.pause();
-                setTimeout(() => {
-                    vid.play().catch(() => {});
-                    suppressMediaSessionUi();
-                }, 300);
-            }
-        }, 50000);
-        return () => clearInterval(interval);
-    }, []);
 
     const saveSettings = () => {
         setSettings(tempSettings);
@@ -1011,6 +851,8 @@ export default function App() {
     return (
         <>
         <div className="fixed top-0 left-0 w-full h-full bg-black z-[50] overflow-hidden">
+            {/* Outside the scaled container: its fallback video has to span the real viewport */}
+            <KeepAwake />
             <div className="tv-container bg-black text-white font-sans overflow-hidden flex flex-col p-1 select-none"
                 style={{
                     width: '1920px',
@@ -1024,22 +866,6 @@ export default function App() {
                     contain: 'layout style paint'
                 }}>
                 
-                {/* Keepalive Video Element (Prevents sleep on Android TV browsers) */}
-                <video
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    disablePictureInPicture
-                    disableRemotePlayback
-                    controlsList="nodownload nofullscreen noremoteplayback"
-                    tabIndex={-1}
-                    aria-hidden="true"
-                    src="/silent.mp4"
-                    onLoadedMetadata={suppressMediaSessionUi}
-                    onPlay={suppressMediaSessionUi}
-                    style={{ position: 'absolute', width: '1px', height: '1px', opacity: 0, pointerEvents: 'none' }}
-                />
                 {/* Static CSS is in index.css */}
 
                 {isNightDimmed && <div className="dimmed-overlay" style={{ opacity: 0.6 }} />}

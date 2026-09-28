@@ -37,7 +37,7 @@ export default defineConfig(async () => {
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
-      includeAssets: ['favicon.png', 'logo.png', 'og-image.png', 'silent.mp4'],
+      includeAssets: ['favicon.png', 'logo.png', 'og-image.png', 'silent.mp4', 'keepalive.mp4'],
       workbox: {
         cleanupOutdatedCaches: true,
         skipWaiting: true,
@@ -47,10 +47,10 @@ export default defineConfig(async () => {
         maximumFileSizeToCacheInBytes: 20 * 1024 * 1024, // Increase to 20MB for high-res scenery
         runtimeCaching: [
           {
-            // Range-request-aware cache for the keepalive silent video.
+            // Range-request-aware cache for the keepalive videos.
             // Without rangeRequests plugin the SW returns 200 instead of 206,
             // and the <video> element stalls or refuses to play offline.
-            urlPattern: /\/silent\.mp4$/,
+            urlPattern: /\/(?:silent|keepalive)\.mp4$/,
             handler: 'CacheFirst',
             options: {
               cacheName: 'mosque-video-cache',
