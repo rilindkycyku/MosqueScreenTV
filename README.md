@@ -26,6 +26,19 @@ Aplikacioni është "hardened" për hardware të limituar:
 - **Hardware Acceleration:** Çdo komponent shfrytëzon GPU-në e TV për lëvizje të lëmuara.
 - **Data-Driven:** Imsaku, Sabahu, Dreka, Xhumaja, Ikindia, Akshami dhe Jacia llogariten lokalisht pa vonesa rrjeti.
 - **Smart Logic:** Sistemi kupton automatikisht vaktin e radhës, kohën e mbetur dhe prioritetin e njoftimeve.
+- **Ekrani nuk fiket:** Ekrani mbahet ndezur me *Screen Wake Lock*, pa asnjë video në faqe — prandaj në Android TV nuk del më player-i i videos. Për browser-ët pa Wake Lock ka një video rezervë të padukshme, që aktivizohet te Cilësimet.
+- **Memorie e kursyer:** Fotot e sfondit ruhen në madhësinë që i duhet ekranit (1920×1080), jo në rezolucionin e kamerës — e rëndësishme për TV me vetëm 1 GB RAM.
+
+### 📺 Android TV: që TV-ja të mos fiket vetë
+
+Shumë TV Android (p.sh. Dahua LTV43-SD200) kanë një kohëmatës që e fik TV-në pas disa orësh pa asnjë shtypje në telekomandë (në BE, parazgjedhja është 4 orë). Asnjë faqe interneti nuk mund ta ndalë këtë — duhet çaktivizuar në cilësimet e TV-së:
+
+1. **Settings → Device Preferences → Screen saver:** *When to start* → **Never** dhe *Put device to sleep* → **Never**.
+2. **Settings → Device Preferences → Power** (ose *Power & Energy*): çdo opsion si *Auto power off*, *Sleep timer*, *No operation power off* ose *Energy saver* → **Off / Never**.
+
+3. Hapeni faqen me **https://** (linku Live më poshtë) — vetëm ashtu browser-i e mban vetë ekranin ndezur, pa asnjë video. Te **Cilësimet → Ekrani → Video Rezervë** shihet se çfarë e mban ekranin ndezur.
+
+Emrat e menyve ndryshojnë pak nga një TV në tjetrin.
 
 ---
 
@@ -65,6 +78,7 @@ Nga paneli mund të ndryshoni:
 - **Modulin e Ramazanit:** Aktivizimi i emërtimit Syfyr/Iftar, kohës së Teravisë dhe Namazit të Natës.
 - Njoftimin e shpejtë të shfaqur në ekran.
 - Lidhjen dhe sigurinë e telekomandës (Remote).
+- **Videon rezervë** që e mban ekranin ndezur kur browser-i nuk e bën vetë — e çaktivizuar si parazgjedhje, sepse disa browser-a të TV-së e hapin videon në player-in e tyre. Aty shihet edhe çfarë e mban ekranin ndezur tani.
 
 ### 📸 Pamjet e Cilësimeve
 
