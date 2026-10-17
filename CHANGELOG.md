@@ -15,6 +15,7 @@ dhe merge-commit-et e PR-ve nuk kanë ngritur version.
 
 | Versioni | Data | Commit | Përshkrimi |
 | --- | --- | --- | --- |
+| 1.18.1 | 2026-10-17 | _ky commit_ | Profili i ri: Xhamia e Dubravës (Dubravë, Ferizaj), imam Shaqir Karaliti |
 | 1.18.0 | 2026-09-28 | _ky commit_ | Cilësimi "Video Rezervë" te Ekrani, i çaktivizuar si parazgjedhje (disa browser-a e hapin videon në player-in e tyre), dhe shfaqja e asaj që e mban ekranin ndezur |
 | 1.17.1 | 2026-09-28 | _ky commit_ | Ekrani mbahet ndezur në Android TV pa u shfaqur player-i i videos (Wake Lock, ose video e padukshme pa zë), dhe fotot e sfondit zvogëlohen në madhësinë që i duhet ekranit — më pak memorie në TV me 1 GB RAM |
 | 1.17.0 | 2026-08-26 | _ky commit_ | Njoftim për kohët e ndaluara (lindja, zenithi, perëndimi), me hadithin përkatës në vend të rotacionit normal |

@@ -87,5 +87,13 @@
                 "koha": "00:30"
             }
         }
+    },
+    "5": {
+        "name": "Xhamia e Dubravës",
+        "address": "Dubravë, Ferizaj",
+        "imamName": "Shaqir Karaliti",
+        "location": "ks",
+        "appMode": "mosque",
+        "showQr": false
     }
 }
