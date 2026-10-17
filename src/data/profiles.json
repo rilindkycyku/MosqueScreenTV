@@ -94,6 +94,13 @@
         "imamName": "Shaqir Karaliti",
         "location": "ks",
         "appMode": "mosque",
-        "showQr": false
+        "showQr": false,
+        "durations": {
+            "sabahuOffset": 40
+        },
+        "ramazan": {
+            "active": false,
+            "kohaTeravise": "00:00"
+        }
     }
 }
