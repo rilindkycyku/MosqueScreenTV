@@ -11,8 +11,9 @@ const NextPrayer = memo(function NextPrayer({ infoTani, ne24hFn, formatDallimFn,
         );
     }
 
-    const { isSilenceMode } = infoTani || {};
-    const showSilence = settings?.showSilenceWarning !== false;
+    const { isSilenceMode, isSilenceBoosted } = infoTani || {};
+    // The remote's silence boost overrides a switched-off warning (see App.jsx).
+    const showSilence = settings?.showSilenceWarning !== false || !!isSilenceBoosted;
     const isXh = infoTani.ardhshëm.isXh;
     const labelMain = infoTani.ardhshëm.label.replace('ME XHEMAT: ', '');
 

@@ -143,7 +143,7 @@ function IdentityForm({ st, patch }) {
               const allowed = [
                 "name", "address", "imamName", "location",
                 "manualDreka", "manualXhuma1", "manualXhuma2", "xhuma2Active",
-                "appMode", "showQr", "qrUrl", "showFooter",
+                "appMode", "showQr", "qrUrl",
                 "showSilenceWarning", "showProhibitedTimes", "showQuranRadio",
                 "durations", "iqamah", "ramazan",
               ];

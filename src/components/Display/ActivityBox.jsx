@@ -25,8 +25,9 @@ const ActivityBox = memo(function ActivityBox({ displayMode, settings, currentHa
     // `suppressTakeover` is set during the Friday silence-focus layout, where
     // the warning has already moved to the top-left slot (SilenceNotice) —
     // this box stays on Hadith duty the whole time instead of also taking over.
-    const { isSilenceTakeover } = infoTani || {};
-    const showSilence = settings?.showSilenceWarning !== false && !suppressTakeover;
+    const { isSilenceTakeover, isSilenceBoosted } = infoTani || {};
+    // The remote's silence boost overrides a switched-off warning (see App.jsx).
+    const showSilence = (settings?.showSilenceWarning !== false || !!isSilenceBoosted) && !suppressTakeover;
     const customMsg = settings?.customMsg || "";
 
     // REVOLUTIONARY DYNAMIC ROTATION: A fresh image every time the view cycles

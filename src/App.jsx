@@ -418,7 +418,6 @@ export default function App() {
                 qrUrl: config.tvOptions.qrUrl,
                 showSilenceWarning: config.tvOptions.showSilenceWarning,
                 showProhibitedTimes: config.tvOptions.showProhibitedTimes,
-                showFooter: config.tvOptions.showFooter,
                 showQuranRadio: config.tvOptions.showQuranRadio,
                 keepaliveVideo: config.tvOptions.keepaliveVideo
             };
@@ -457,7 +456,6 @@ export default function App() {
             durations: { ...config.tvOptions.durations },
             customMsg: "",
             showQr: config.tvOptions.showQr,
-            showFooter: config.tvOptions.showFooter,
             showSilenceWarning: config.tvOptions.showSilenceWarning,
             showProhibitedTimes: config.tvOptions.showProhibitedTimes,
             appMode: config.tvOptions.appMode,
@@ -786,10 +784,10 @@ export default function App() {
             // isSilenceMode is false (see isProhibitedFocus in the render below).
             const activeProhibited = getProhibitedWindows(vaktiSot).find(w => nowMin >= w.start && nowMin < w.end);
 
-            if (prev && prev.mbetur === nextInfo.mbetur && prev.isSilenceMode === isSilenceMode && prev.isSilenceTakeover === isSilenceTakeover && prev.ardhshëm?.id === nextInfo.ardhshëm?.id && prev.prohibitedId === (activeProhibited?.id ?? null)) {
+            if (prev && prev.mbetur === nextInfo.mbetur && prev.isSilenceMode === isSilenceMode && prev.isSilenceTakeover === isSilenceTakeover && prev.isSilenceBoosted === boosted && prev.ardhshëm?.id === nextInfo.ardhshëm?.id && prev.prohibitedId === (activeProhibited?.id ?? null)) {
                 return prev;
             }
-            return { ...nextInfo, isSilenceMode, isSilenceTakeover, nowMin, prohibitedLabel: activeProhibited?.label ?? null, prohibitedId: activeProhibited?.id ?? null };
+            return { ...nextInfo, isSilenceMode, isSilenceTakeover, isSilenceBoosted: boosted, nowMin, prohibitedLabel: activeProhibited?.label ?? null, prohibitedId: activeProhibited?.id ?? null };
         });
     }, [vaktiSot, vaktet, settings.appMode, settings.ramazan, settings.xhuma2Active, settings.durations?.silenceRegular, settings.durations?.silenceXhuma, xhemati, silenceBoostUntil]);
 
@@ -843,8 +841,9 @@ export default function App() {
     // hidden behind the reminder. Outside a silence window, layout is normal.
     // Gated on showSilenceWarning like NextPrayer/ActivityBox: without it,
     // "Vërejtja e Heshtjes: Jo Aktiv" only hid the badge while this swap still
-    // put "FIKNI TELEFONAT" on screen at every prayer.
-    const isSilenceFocus = settings.showSilenceWarning !== false && !!infoTani?.isSilenceMode;
+    // put "FIKNI TELEFONAT" on screen at every prayer. The phone's "Heshtje
+    // (10 Min)" is an explicit request from the imam, so it shows regardless.
+    const isSilenceFocus = (settings.showSilenceWarning !== false || !!infoTani?.isSilenceBoosted) && !!infoTani?.isSilenceMode;
     // Same top-left takeover as the silence notice, but for the sunrise/zenith/
     // sunset windows nafl prayer is forbidden in — only shown when no prayer is
     // imminent (silence always wins) and only in mosque mode, mirroring how
