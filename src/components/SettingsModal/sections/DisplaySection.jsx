@@ -39,7 +39,9 @@ export default function DisplaySection({ settings, setSettings, triggerConfirm, 
                             onClick={() => setSettings(p => ({
                                 ...p,
                                 appMode: 'mosque',
-                                showSilenceWarning: true,
+                                // Re-pressing "Xhami" while already in mosque mode must not
+                                // quietly turn a switched-off silence warning back on.
+                                showSilenceWarning: p.appMode === 'mosque' ? p.showSilenceWarning : true,
                                 showQr: p.showQr ?? false
                             }))}
                             className={`flex-1 py-8 rounded-[1.5rem] font-black text-2xl uppercase tracking-widest transition-all duration-500 relative z-10 ${settings.appMode === 'mosque' ? 'bg-emerald-500 text-black shadow-lg scale-[1.02]' : 'text-zinc-600 hover:text-emerald-500/50'}`}

@@ -44,6 +44,7 @@ export default function IdentitySection({ settings, setSettings, triggerConfirm,
                                                 qrUrl: profile.qrUrl ?? p.qrUrl,
                                                 showFooter: profile.showFooter ?? p.showFooter,
                                                 showSilenceWarning: profile.showSilenceWarning ?? p.showSilenceWarning,
+                                                showProhibitedTimes: profile.showProhibitedTimes ?? p.showProhibitedTimes,
                                                 showQuranRadio: profile.showQuranRadio ?? p.showQuranRadio,
                                                 durations: {
                                                     ...p.durations,

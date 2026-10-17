@@ -177,7 +177,9 @@ function DisplayForm({ st, patch }) {
         options={[{ value: "mosque", label: "Xhami" }, { value: "home", label: "Shtëpi" }]}
         onChange={(v) =>
           v === "mosque"
-            ? patch({ appMode: "mosque", showSilenceWarning: true, showQr: st.showQr ?? false })
+            // Re-tapping "Xhami" while already in mosque mode must not quietly
+            // turn the silence warning back on after it was switched off.
+            ? patch({ appMode: "mosque", showSilenceWarning: st.appMode === "mosque" ? st.showSilenceWarning : true, showQr: st.showQr ?? false })
             : patch({ appMode: "home", showSilenceWarning: false, showQr: false })
         }
       />

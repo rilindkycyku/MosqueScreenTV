@@ -841,7 +841,10 @@ export default function App() {
     // next-prayer countdown moves down to replace the full prayer-times grid,
     // and the Hadith/Ajet panel keeps showing throughout instead of being
     // hidden behind the reminder. Outside a silence window, layout is normal.
-    const isSilenceFocus = !!infoTani?.isSilenceMode;
+    // Gated on showSilenceWarning like NextPrayer/ActivityBox: without it,
+    // "Vërejtja e Heshtjes: Jo Aktiv" only hid the badge while this swap still
+    // put "FIKNI TELEFONAT" on screen at every prayer.
+    const isSilenceFocus = settings.showSilenceWarning !== false && !!infoTani?.isSilenceMode;
     // Same top-left takeover as the silence notice, but for the sunrise/zenith/
     // sunset windows nafl prayer is forbidden in — only shown when no prayer is
     // imminent (silence always wins) and only in mosque mode, mirroring how
