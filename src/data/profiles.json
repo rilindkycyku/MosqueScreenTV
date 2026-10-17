@@ -96,7 +96,7 @@
         "appMode": "mosque",
         "showQr": false,
         "durations": {
-            "sabahuOffset": 35
+            "sabahuOffset": 40
         },
         "ramazan": {
             "active": false,
