@@ -246,7 +246,7 @@ export default function App() {
         sendToRemoteRef.current = send;
         send({ type: 'SETTINGS_SYNC', payload: settingsRef.current });
     }, []);
-    const { remoteUrl, connected, remoteName, sendToRemote } = useMosqueRemote({
+    const { remoteUrl, connected, remoteName, sendToRemote, rotateRoom } = useMosqueRemote({
         onCommand: stableHandleRemoteCommand,
         onConnect: stableHandleRemoteConnect,
     });
@@ -975,6 +975,7 @@ export default function App() {
                     remoteUrl={remoteUrl}
                     connected={connected}
                     remoteName={remoteName}
+                    rotateRoom={rotateRoom}
                 />
 
                 <ConfirmDialog

@@ -15,6 +15,7 @@ dhe merge-commit-et e PR-ve nuk kanë ngritur version.
 
 | Versioni | Data | Commit | Përshkrimi |
 | --- | --- | --- | --- |
+| 1.19.0 | 2026-10-17 | _ky commit_ | Siguri e telekomandës: bllokim pas provave të gabuara, butoni "Ndrysho Lidhjen" për QR të ri, token-a me numra të rastësishëm kriptografikë |
 | 1.18.3 | 2026-10-17 | _ky commit_ | Butoni "Heshtje (10 Min)" në telefon e shfaq vërejtjen edhe kur ajo është e fikur; hiqet cilësimi i papërdorur `showFooter` |
 | 1.18.2 | 2026-10-17 | _ky commit_ | "Vërejtja e Heshtjes: Jo Aktiv" e fik vërtet "FIKNI TELEFONAT" gjatë namazit; shtypja e "Xhami" nuk e ndez më vërejtjen vetvetiu |
 | 1.18.1 | 2026-10-17 | _ky commit_ | Profili i ri: Xhamia e Dubravës (Dubravë, Ferizaj), imam Shaqir Karaliti |

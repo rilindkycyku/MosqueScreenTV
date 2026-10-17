@@ -31,6 +31,7 @@ export default function SettingsModal({
     remoteUrl,
     connected,
     remoteName,
+    rotateRoom,
 }) {
     const tabs = [
         { id: 'identity',  label: 'Të dhënat',    icon: HiIdentification, subtitle: 'Të dhënat e xhamisë',                mosqueOnly: true },
@@ -164,7 +165,7 @@ export default function SettingsModal({
                         {activeTab === 'durations' && <DurationsSection settings={tempSettings} setSettings={setTempSettings} triggerConfirm={triggerConfirm} onReset={() => resetCategory('durations')} />}
                         {activeTab === 'ramazan'   && <RamazanSection   settings={tempSettings} setSettings={setTempSettings} triggerConfirm={triggerConfirm} onReset={() => resetCategory('ramazan')} />}
                         {activeTab === 'message'   && <MessageSection   settings={tempSettings} setSettings={setTempSettings} triggerConfirm={triggerConfirm} onReset={() => resetCategory('message')} />}
-                        {activeTab === 'remote'    && <RemoteSection remoteUrl={remoteUrl} connected={connected} remoteName={remoteName} />}
+                        {activeTab === 'remote'    && <RemoteSection remoteUrl={remoteUrl} connected={connected} remoteName={remoteName} rotateRoom={rotateRoom} />}
                     </div>
                 </main>
             </div>

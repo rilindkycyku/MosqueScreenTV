@@ -3,7 +3,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { HiDeviceMobile, HiLockClosed, HiLockOpen, HiEye, HiEyeOff, HiCheckCircle, HiX } from "react-icons/hi";
+import { HiDeviceMobile, HiLockClosed, HiLockOpen, HiEye, HiEyeOff, HiCheckCircle, HiX, HiRefresh } from "react-icons/hi";
 import { SectionHeader } from "./shared";
 import { hasPasscode, savePasscode, clearPasscode, verifyPasscode } from "../../../remote/passcodeUtils";
 
@@ -171,8 +171,8 @@ function Banner({ type, msg }) {
 }
 
 // ── Main component ─────────────────────────────────────────────────────────────
-export default function RemoteSection({ remoteUrl, connected, remoteName }) {
-  const [mode, setMode]             = useState("idle"); // idle | set | change | remove
+export default function RemoteSection({ remoteUrl, connected, remoteName, rotateRoom }) {
+  const [mode, setMode]             = useState("idle"); // idle | set | change | remove | rotate
   const [passcodeExists, setPasscodeExists] = useState(false);
   const [currentVal, setCurrentVal] = useState("");
   const [newVal, setNewVal]         = useState("");
@@ -312,6 +312,15 @@ export default function RemoteSection({ remoteUrl, connected, remoteName }) {
 
       {/* Action buttons */}
       <div className="flex flex-col gap-4">
+        {rotateRoom && (
+          <button
+            onClick={() => setMode("rotate")}
+            className="flex items-center justify-center gap-5 py-8 bg-white/5 hover:bg-white/10 text-zinc-300 rounded-[2rem] font-black text-2xl uppercase tracking-[0.15em] border-2 border-white/10 transition-all active:scale-95"
+          >
+            <HiRefresh className="text-3xl" />
+            Ndrysho Lidhjen
+          </button>
+        )}
         {!passcodeExists ? (
           <button
             onClick={() => setMode("set")}
@@ -338,6 +347,38 @@ export default function RemoteSection({ remoteUrl, connected, remoteName }) {
             </button>
           </>
         )}
+      </div>
+    </div>
+  );
+
+  // ── ROTATE ─────────────────────────────────────────────────────────────────
+  if (mode === "rotate") return (
+    <div>
+      <SectionHeader icon={HiRefresh} title="Ndrysho Lidhjen" description="Krijon një QR kod të ri dhe e bën të pavlefshëm çdo QR kod ose link të vjetër." />
+      <div className="space-y-10">
+        <div className="p-10 bg-white/5 rounded-[3rem] border-2 border-white/5 flex flex-col gap-3">
+          {[
+            "Telefoni që është i lidhur tani do të shkëputet",
+            "Kush e ka skanuar QR kodin më parë nuk mund të lidhet më me atë link",
+            "Për t'u lidhur sërish, skanoni QR kodin e ri ose përdorni fjalëkalimin",
+          ].map((t) => (
+            <div key={t} className="flex items-start gap-4 text-xl text-zinc-400 font-medium">
+              <div className="w-2 h-2 rounded-full bg-amber-500/60 mt-3 shrink-0" />
+              {t}
+            </div>
+          ))}
+        </div>
+        <div className="flex gap-6">
+          <button onClick={resetForm}
+            className="flex-1 py-8 bg-white/5 hover:bg-white/10 text-zinc-400 rounded-[2rem] font-black text-2xl uppercase tracking-widest transition-all active:scale-95">
+            Anulo
+          </button>
+          <button onClick={() => { rotateRoom?.(); resetForm(); }}
+            className="flex-1 flex items-center justify-center gap-4 py-8 bg-amber-500 hover:bg-amber-400 text-black rounded-[2rem] font-black text-2xl uppercase tracking-[0.15em] transition-all active:scale-95">
+            <HiRefresh className="text-3xl" />
+            Ndrysho
+          </button>
+        </div>
       </div>
     </div>
   );
