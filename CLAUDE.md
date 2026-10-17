@@ -73,7 +73,7 @@ src/
     ConfirmDialog/, ErrorBoundary/
   remote/                  The phone remote: TV-side hook, phone-side page, passcode hashing
   data/                    Bundled JSON — prayer times, narrations, names, config, profiles
-  lib/                     analytics.js, version.js
+  lib/                     analytics.js, version.js, settingsBackup.js
   assets/scenery/          Background images (webp)
 scripts/convert-to-webp.mjs
 public/                    favicon, logo, og-image; silent.mp4 (webOS/Tizen keepalive),
@@ -129,6 +129,12 @@ wipe its siblings. Use it; a shallow spread is a bug here.
 
 `saveToSafety` keeps a last-known-good copy under `safety_*` keys, so a bad state can't leave the
 screen blank.
+
+`lib/settingsBackup.js` copies `tv_settings`, the passcode hash and the room guid into IndexedDB
+and Cache Storage on every change, and `main.jsx` awaits `restoreFromBackup()` before rendering.
+A power cut can corrupt Chromium's localStorage database, which Chromium then deletes outright;
+this is what brings the screen back as it was. Any new key the TV cannot do without belongs in
+its `KEYS` list.
 
 ### 3. Self-healing is a feature, not a hack
 

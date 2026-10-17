@@ -28,6 +28,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Peer from "peerjs";
 import { hasPasscode, verifyPasscode } from "./passcodeUtils";
+import { backupSettings } from "../lib/settingsBackup";
 
 const TOKEN_TTL_MS = 5 * 60 * 1000;
 const TOKEN_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -69,7 +70,7 @@ function generateUUID() {
 
 function loadOrCreateGuid() {
   let g = localStorage.getItem("mosque_room_guid");
-  if (!g) { g = generateUUID(); localStorage.setItem("mosque_room_guid", g); }
+  if (!g) { g = generateUUID(); localStorage.setItem("mosque_room_guid", g); backupSettings(); }
   return g;
 }
 

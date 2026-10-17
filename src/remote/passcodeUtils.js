@@ -5,6 +5,8 @@
 // crypto.subtle is only available in secure contexts (HTTPS / localhost).
 // A pure-JS SHA-256 fallback handles plain-HTTP local-network deployments.
 
+import { backupSettings } from "../lib/settingsBackup";
+
 const STORAGE_KEY = "mosque_remote_passcode_hash";
 
 // ── Pure-JS SHA-256 (fallback for HTTP) ────────────────────────────────────────
@@ -85,8 +87,10 @@ export async function verifyPasscode(raw) {
 
 export async function savePasscode(raw) {
   localStorage.setItem(STORAGE_KEY, await hashPasscode(raw));
+  backupSettings();
 }
 
 export function clearPasscode() {
   localStorage.removeItem(STORAGE_KEY);
+  backupSettings();
 }

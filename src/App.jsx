@@ -23,6 +23,7 @@ import { Analytics } from '@vercel/analytics/react';
 // Google Analytics
 import { initGA, logPageView, logEvent } from './lib/analytics';
 // Remote control
+import { backupSettings } from './lib/settingsBackup';
 import { useMosqueRemote } from './remote/useMosqueRemote';
 
 // On Fridays the screen shows only the Jumu'ah-tagged verses and narrations.
@@ -123,8 +124,12 @@ export default function App() {
 
     // Unified Settings State
     const [settings, setSettings] = useState(() => {
-        const saved = localStorage.getItem('tv_settings');
-        const parsed = saved ? JSON.parse(saved) : {};
+        // A corrupt value must fall back to defaults, not crash the screen.
+        let parsed = {};
+        try {
+            const saved = localStorage.getItem('tv_settings');
+            if (saved) parsed = JSON.parse(saved) || {};
+        } catch (e) { parsed = {}; }
 
         return {
             ...config.tvOptions,
@@ -250,6 +255,10 @@ export default function App() {
         onCommand: stableHandleRemoteCommand,
         onConnect: stableHandleRemoteConnect,
     });
+
+    // Every path that changes settings writes localStorage first, so one effect
+    // on `settings` covers them all for the power-cut backup.
+    useEffect(() => { backupSettings(); }, [settings]);
 
     // Keep the connected phone's mirror in sync with any TV-side settings change.
     useEffect(() => {
