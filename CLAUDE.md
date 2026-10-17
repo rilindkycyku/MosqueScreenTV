@@ -140,7 +140,11 @@ its `KEYS` list.
 
 The app watches itself and reloads when it can do so unnoticed:
 
-- A periodic refresh, and a reload if frame timing degrades for ~15 s.
+- A reload only when there is a reason — a new version is ready, the JS heap is past 75% of its
+  limit (or, where the browser reports no memory, the page has run 24 h) — and a reload if frame
+  timing degrades for ~15 s. Every reload drops the Screen Wake Lock for a moment, and on an
+  Android TV whose screen-off timeout expired days ago that moment can be enough to send it to
+  sleep, so never add a blind periodic reload back.
 - **Both are gated on `!isNearPrayer` and `navigator.onLine`** and only fire while the screen is in
   its idle rotation, never during a countdown and never while settings are open. A reload during the
   minute before Sabah is the one thing this must never do.

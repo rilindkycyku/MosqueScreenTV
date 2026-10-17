@@ -562,20 +562,42 @@ export default function App() {
         return !isNearPrayer && !info?.isSilenceMode && !open && navigator.onLine;
     }, []);
 
-    // --- MAINTENANCE & STABILITY: Smart Reload (4 times a day, or for an update) ---
-    // Due at a random minute just after each 6-hour boundary, or as soon as a new
-    // version has taken over the service worker (lib/swUpdate.js). Once due, it
-    // is retried every minute until the screen is idle and away from a prayer,
-    // instead of firing once and giving up until the next 6-hour period.
+    // --- MAINTENANCE & STABILITY: Smart Reload (only when it is needed) ---
+    // A reload is not free on a TV: unloading the page drops the Screen Wake
+    // Lock, and on Android TV, where nobody has touched the remote for days,
+    // the screen-off timeout expired long ago, so the moment the lock goes the
+    // TV may drop into its screensaver or switch off before the new page can
+    // take the lock back. This used to reload blindly four times a day.
+    //
+    // Now, at each 6-hour boundary, it reloads only if there is a reason:
+    // a new version has taken over the service worker (lib/swUpdate.js), or
+    // the JS heap is past 75% of its limit (the leak this reload exists for),
+    // or, on browsers that don't report memory, the page has run 24 hours.
+    // Once a reason exists it retries every minute until the screen is idle
+    // and away from a prayer. Offline it never reloads (navigator.onLine gate),
+    // though the service worker would serve the page from its cache anyway.
     useEffect(() => {
+        const startedAt = Date.now();
+        const HEAP_LIMIT_SHARE = 0.75;
+        const NO_MEMORY_INFO_MAX_AGE_MS = 24 * 60 * 60 * 1000;
         const nextBoundary = () => {
             const d = new Date();
             d.setHours((Math.floor(d.getHours() / 6) + 1) * 6, Math.floor(Math.random() * 15), 0, 0);
             return d.getTime();
         };
-        const due = nextBoundary();
+        const needsFreshPage = () => {
+            const mem = performance && performance.memory;
+            if (mem && mem.jsHeapSizeLimit > 0) return mem.usedJSHeapSize / mem.jsHeapSizeLimit > HEAP_LIMIT_SHARE;
+            return Date.now() - startedAt > NO_MEMORY_INFO_MAX_AGE_MS;
+        };
+        let due = nextBoundary();
+        let wanted = false;
         const id = setInterval(() => {
-            if (!isUpdateReady() && Date.now() < due) return;
+            if (!wanted && Date.now() >= due) {
+                wanted = needsFreshPage();
+                due = nextBoundary();
+            }
+            if (!wanted && !isUpdateReady()) return;
             if (reloadGateRef.current.displayMode === 'hadith' && canReloadNow(20)) window.location.reload();
         }, 60000);
         return () => clearInterval(id);
