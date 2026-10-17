@@ -11,9 +11,12 @@ import '@fontsource/amiri'
 import '@fontsource/amiri/700.css'
 import './index.css'
 import { restoreFromBackup } from './lib/settingsBackup'
+import { registerServiceWorker } from './lib/swUpdate'
 
 const isRemotePage = window.location.pathname === '/remote';
 if (isRemotePage) document.documentElement.classList.add('remote-page');
+
+registerServiceWorker()
 
 const render = () => ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>

@@ -41,7 +41,7 @@ commit body is where you say what you checked.
 
 A successful build is worth reading: it emits the modern bundle plus `index-legacy` and
 `polyfills-legacy` chunks (that is `@vitejs/plugin-legacy` doing its job for the old TV browsers),
-and Workbox reports the precache — currently **80 entries, ~13.5 MB** (the `includeAssets` files are listed twice; Workbox dedupes them). If a build
+and Workbox reports the precache — currently **79 entries, ~13.5 MB** (the `includeAssets` files are listed twice; Workbox dedupes them). If a build
 of yours drops the legacy chunks or shrinks that precache sharply, something in the PWA or legacy
 config has broken.
 
@@ -73,7 +73,7 @@ src/
     ConfirmDialog/, ErrorBoundary/
   remote/                  The phone remote: TV-side hook, phone-side page, passcode hashing
   data/                    Bundled JSON — prayer times, narrations, names, config, profiles
-  lib/                     analytics.js, version.js, settingsBackup.js
+  lib/                     analytics.js, version.js, settingsBackup.js, swUpdate.js
   assets/scenery/          Background images (webp)
 scripts/convert-to-webp.mjs
 public/                    favicon, logo, og-image; silent.mp4 (webOS/Tizen keepalive),
@@ -146,6 +146,12 @@ The app watches itself and reloads when it can do so unnoticed:
   minute before Sabah is the one thing this must never do.
 
 If you add another self-heal path, gate it the same way.
+
+New releases ride the same gate. `lib/swUpdate.js` registers the service worker itself
+(`injectRegister: false`), checks for a new `sw.js` hourly, and only flags an update once the new
+worker controls the page; the smart-reload check in `App.jsx` then reloads at the next safe minute.
+A screen is never navigated, so without that hourly check it would only ever see a release after
+one of its own reloads, and then only on the reload after that.
 
 ### 4. TV rendering discipline
 

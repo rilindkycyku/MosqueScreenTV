@@ -24,6 +24,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { initGA, logPageView, logEvent } from './lib/analytics';
 // Remote control
 import { backupSettings } from './lib/settingsBackup';
+import { isUpdateReady } from './lib/swUpdate';
 import { useMosqueRemote } from './remote/useMosqueRemote';
 
 // On Fridays the screen shows only the Jumu'ah-tagged verses and narrations.
@@ -550,27 +551,35 @@ export default function App() {
         return () => clearInterval(interval);
     }, [vaktiSot, settings, nightDimOverride]);
 
-    // --- MAINTENANCE & STABILITY: Smart Reload (4 times a day) ---
+    // Live view for the reload checks below. Their timers outlive many renders,
+    // and reading infoTani from a stale closure is how a reload could land a
+    // few minutes before a prayer while the check believed it was 20+ away.
+    const reloadGateRef = useRef({ infoTani, displayMode, showSettings });
+    reloadGateRef.current = { infoTani, displayMode, showSettings };
+    const canReloadNow = useCallback((nearPrayerMin) => {
+        const { infoTani: info, showSettings: open } = reloadGateRef.current;
+        const isNearPrayer = info && info.mbetur < nearPrayerMin;
+        return !isNearPrayer && !info?.isSilenceMode && !open && navigator.onLine;
+    }, []);
+
+    // --- MAINTENANCE & STABILITY: Smart Reload (4 times a day, or for an update) ---
+    // Due at a random minute just after each 6-hour boundary, or as soon as a new
+    // version has taken over the service worker (lib/swUpdate.js). Once due, it
+    // is retried every minute until the screen is idle and away from a prayer,
+    // instead of firing once and giving up until the next 6-hour period.
     useEffect(() => {
-        let timerId;
-        const checkReload = () => {
-            const now = new Date();
-            const currentPeriod = Math.floor(now.getHours() / 6);
-            const nextPeriodHour = (currentPeriod + 1) * 6;
-            const nextPeriodDate = new Date();
-            nextPeriodDate.setHours(nextPeriodHour, Math.floor(Math.random() * 15), 0, 0); 
-            
-            const msUntilCheck = nextPeriodDate.getTime() - now.getTime();
-            timerId = setTimeout(() => {
-                const isNearPrayer = infoTani && infoTani.mbetur < 20;
-                const isIdleMode = displayMode === 'hadith';
-                if (isIdleMode && !isNearPrayer && navigator.onLine && !showSettings) window.location.reload();
-                else setTimeout(checkReload, 5 * 60000);
-            }, msUntilCheck);
+        const nextBoundary = () => {
+            const d = new Date();
+            d.setHours((Math.floor(d.getHours() / 6) + 1) * 6, Math.floor(Math.random() * 15), 0, 0);
+            return d.getTime();
         };
-        checkReload();
-        return () => { if (timerId) clearTimeout(timerId); };
-    }, [displayMode, !!infoTani, showSettings]);
+        const due = nextBoundary();
+        const id = setInterval(() => {
+            if (!isUpdateReady() && Date.now() < due) return;
+            if (reloadGateRef.current.displayMode === 'hadith' && canReloadNow(20)) window.location.reload();
+        }, 60000);
+        return () => clearInterval(id);
+    }, [canReloadNow]);
 
     // --- RECOVERY & STABILITY: Performance Monitoring (Self-Healing) ---
     // If the TV's performance drops significantly for 15s, it triggers a safe reload
@@ -584,12 +593,9 @@ export default function App() {
             frames++;
             if (time >= lastTime + 1000) {
                 const fps = Math.round((frames * 1000) / (time - lastTime));
-                if (fps < 25 && !showSettings && document.visibilityState === 'visible') { // If bogged down below 25FPS
+                if (fps < 25 && !reloadGateRef.current.showSettings && document.visibilityState === 'visible') { // If bogged down below 25FPS
                     warningTicks++;
-                    if (warningTicks > 15) { // 15 consecutive seconds of lag
-                        const isNearPrayer = infoTani && infoTani.mbetur < 12;
-                        if (!isNearPrayer && navigator.onLine) window.location.reload();
-                    }
+                    if (warningTicks > 15 && canReloadNow(12)) window.location.reload(); // 15 consecutive seconds of lag
                 } else { warningTicks = 0; }
                 frames = 0;
                 lastTime = time;
@@ -598,7 +604,7 @@ export default function App() {
         };
         pTimer = requestAnimationFrame(monitor);
         return () => cancelAnimationFrame(pTimer);
-    }, [!!infoTani, showSettings]);
+    }, [canReloadNow]);
 
     // Compute the active prayer dataset based on location
     const vaktet = useMemo(() => {

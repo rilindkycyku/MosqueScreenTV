@@ -36,7 +36,9 @@ export default defineConfig(async () => {
     }),
     VitePWA({
       registerType: 'autoUpdate',
-      injectRegister: 'auto',
+      // Registered by src/lib/swUpdate.js instead, which also checks for
+      // updates hourly — the injected script only registered on load.
+      injectRegister: false,
       includeAssets: ['favicon.png', 'logo.png', 'og-image.png', 'silent.mp4', 'keepalive.mp4'],
       workbox: {
         cleanupOutdatedCaches: true,
