@@ -96,11 +96,15 @@
         "appMode": "mosque",
         "showQr": false,
         "durations": {
-            "sabahuOffset": 40
+            "sabahuOffset": 35
         },
         "ramazan": {
             "active": false,
-            "kohaTeravise": "00:00"
+            "kohaTeravise": "00:00",
+            "namazNate": {
+                "active": false,
+                "koha": "00:30"
+            }
         }
     }
 }
