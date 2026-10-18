@@ -16,7 +16,7 @@ dhe merge-commit-et e PR-ve nuk kanë ngritur version.
 | Versioni | Data | Commit | Përshkrimi |
 | --- | --- | --- | --- |
 | 1.19.4 | 2026-10-18 | _ky commit_ | Zgjedhja e një profili nuk lë më cilësime nga xhamia e mëparshme (p.sh. linku i QR-së): fillon nga vlerat fillestare, pastaj vendos profilin |
-& _ky commit_ | Pa ringarkime të panevojshme (më parë 4 herë në ditë, që mund ta fiknin TV-në): vetëm për version të ri, memorie të ngarkuar ose pas 24 orësh kur browser-i nuk e raporton memorien |
+| 1.19.3 | 2026-10-17 | _ky commit_ | Pa ringarkime të panevojshme (më parë 4 herë në ditë, që mund ta fiknin TV-në): vetëm për version të ri, memorie të ngarkuar ose pas 24 orësh kur browser-i nuk e raporton memorien |
 | 1.19.2 | 2026-10-17 | _ky commit_ | Versioni i ri arrin vetë në TV: kontroll çdo orë dhe ringarkim në momentin e parë të sigurt (jo afër namazit); ringarkimet automatike nuk anashkalohen më |
 | 1.19.1 | 2026-10-17 | _ky commit_ | Cilësimet nuk humbin më kur ikën rryma: kopje rezervë në IndexedDB dhe Cache Storage, që rikthehen automatikisht kur ndizet TV-ja |
 | 1.19.0 | 2026-10-17 | _ky commit_ | Siguri e telekomandës: bllokim pas provave të gabuara, butoni "Ndrysho Lidhjen" për QR të ri, token-a me numra të rastësishëm kriptografikë |
