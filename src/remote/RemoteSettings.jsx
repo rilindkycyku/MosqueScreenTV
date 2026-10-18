@@ -10,6 +10,7 @@
 
 import React, { useState } from "react";
 import profiles from "../data/profiles.json";
+import { profilePatch } from "../lib/profiles";
 
 // ── Mobile field primitives ────────────────────────────────────────────────
 // Visual language mirrors the TV SettingsModal: emerald accents, rounded glass
@@ -138,20 +139,9 @@ function IdentityForm({ st, patch }) {
             onChange={(e) => {
               const p = profiles[e.target.value];
               if (!p) return;
-              // Send only the keys this profile actually defines, so missing
-              // fields keep their current TV value (mirrors the TV's `?? p.x`).
-              const allowed = [
-                "name", "address", "imamName", "location",
-                "manualDreka", "manualXhuma1", "manualXhuma2", "xhuma2Active",
-                "appMode", "showQr", "qrUrl",
-                "showSilenceWarning", "showProhibitedTimes", "showQuranRadio",
-                "durations", "iqamah", "ramazan",
-              ];
-              const patchObj = {};
-              for (const k of allowed) {
-                if (p[k] !== undefined) patchObj[k] = p[k];
-              }
-              patch(patchObj);
+              // Whole mosque: defaults first, then the profile (lib/profiles.js),
+              // so nothing from the previously picked mosque survives.
+              patch(profilePatch(p));
             }}
           >
             <option value="" disabled>-- Zgjidh profilin --</option>

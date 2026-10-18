@@ -73,7 +73,7 @@ src/
     ConfirmDialog/, ErrorBoundary/
   remote/                  The phone remote: TV-side hook, phone-side page, passcode hashing
   data/                    Bundled JSON — prayer times, narrations, names, config, profiles
-  lib/                     analytics.js, version.js, settingsBackup.js, swUpdate.js
+  lib/                     analytics.js, version.js, settingsBackup.js, swUpdate.js, profiles.js
   assets/scenery/          Background images (webp)
 scripts/convert-to-webp.mjs
 public/                    favicon, logo, og-image; silent.mp4 (webOS/Tizen keepalive),
@@ -120,8 +120,9 @@ show exactly what a screen with internet shows.
 ### 2. Settings: defaults in `config.json`, live state in `localStorage`
 
 `config.json` holds the shipped defaults. The running settings are one `tv_settings` object in
-`localStorage`, and Reset writes the defaults back. `profiles.json` entries are *partial* patches a
-user applies over the current settings.
+`localStorage`, and Reset writes the defaults back. `profiles.json` entries are *partial*: picking one
+resets every mosque-specific key to its default and lays the profile over that (`lib/profiles.js`,
+shared by the TV panel and the phone remote), so nothing from the previous mosque survives.
 
 Patches from the phone remote go through a **deep merge** — plain objects merge recursively,
 everything else is replaced — so changing one key inside `durations`, `iqamah` or `ramazan` doesn't

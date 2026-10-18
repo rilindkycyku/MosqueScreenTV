@@ -1,6 +1,7 @@
 import { HiIdentification, HiCheckCircle } from "react-icons/hi";
 import { SectionHeader, InputField } from "./shared";
 import profiles from "../../../data/profiles.json";
+import { profilePatch } from "../../../lib/profiles";
 
 export default function IdentitySection({ settings, setSettings, triggerConfirm, onReset }) {
     return (
@@ -29,35 +30,8 @@ export default function IdentitySection({ settings, setSettings, triggerConfirm,
                                     onChange={(e) => {
                                         const profile = profiles[e.target.value];
                                         if (profile) {
-                                            setSettings(p => ({
-                                                ...p,
-                                                name: profile.name ?? p.name,
-                                                address: profile.address ?? p.address,
-                                                imamName: profile.imamName ?? p.imamName,
-                                                location: profile.location ?? p.location,
-                                                manualDreka: profile.manualDreka ?? p.manualDreka,
-                                                manualXhuma1: profile.manualXhuma1 ?? p.manualXhuma1,
-                                                manualXhuma2: profile.manualXhuma2 ?? p.manualXhuma2,
-                                                xhuma2Active: profile.xhuma2Active ?? p.xhuma2Active,
-                                                appMode: profile.appMode ?? p.appMode,
-                                                showQr: profile.showQr ?? p.showQr,
-                                                qrUrl: profile.qrUrl ?? p.qrUrl,
-                                                showSilenceWarning: profile.showSilenceWarning ?? p.showSilenceWarning,
-                                                showProhibitedTimes: profile.showProhibitedTimes ?? p.showProhibitedTimes,
-                                                showQuranRadio: profile.showQuranRadio ?? p.showQuranRadio,
-                                                durations: {
-                                                    ...p.durations,
-                                                    ...(profile.durations || {})
-                                                },
-                                                iqamah: {
-                                                    ...p.iqamah,
-                                                    ...(profile.iqamah || {})
-                                                },
-                                                ramazan: {
-                                                    ...p.ramazan,
-                                                    ...(profile.ramazan || {})
-                                                }
-                                            }));
+                                            // Whole mosque: defaults first, then the profile (lib/profiles.js).
+                                            setSettings(p => ({ ...p, ...profilePatch(profile) }));
                                         }
                                     }}
                                     defaultValue=""
